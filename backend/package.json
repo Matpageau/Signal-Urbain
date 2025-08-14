@@ -4,12 +4,11 @@
   "description": "",
   "license": "ISC",
   "author": "MatPageau, AboutinCA",
-  "type": "commonjs",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "app": "npm run build && npm run start",
+    "dev": "node .",
+    "app": "npm run build && npm run dev",
     "watch": "tsc --watch"
   },
   "dependencies": {
@@ -17,14 +16,24 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "i18next": "^25.3.2",
+    "i18next-fs-backend": "^2.6.0",
+    "i18next-http-middleware": "^3.8.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.2",
-    "typescript": "^5.8.3"
+    "bcryptjs": "^3.0.2",
+    "mongoose": "^8.16.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10"
+    "@types/i18next": "^12.1.0",
+    "@types/i18next-fs-backend": "^1.1.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.2.0",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
   }
 }
