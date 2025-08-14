@@ -16,6 +16,7 @@
 
 # Mono auto generated files
 mono_crash.*
+frontend/env.d.ts
 
 # Build results
 [Dd]ebug/
