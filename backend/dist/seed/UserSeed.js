@@ -30,8 +30,8 @@ const createDefaultUsers = async () => {
         await User_2.default.registerUser(defaultCityAdmin);
     }
     if (isAdminExisting && isManagerExisting) {
-        console.log(`Default user already exists, skipping creation.`);
-        console.log(`Admin: ${defaultAdmin.email}, City Admin: ${defaultCityAdmin.email}`);
+        console.log(`Admin : ${defaultAdmin.email}`);
+        console.log(`City Admin : ${defaultCityAdmin.email}`);
     }
 };
 exports.createDefaultUsers = createDefaultUsers;

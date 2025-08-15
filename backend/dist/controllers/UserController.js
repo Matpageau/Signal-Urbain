@@ -32,9 +32,13 @@ const userController = {
             if (typeof result === 'string') {
                 return res.status(400).json({ ApiMessage: result });
             }
+            res.cookie('token', result.token, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60 * 24
+            });
             res.status(200).json({
                 ApiMessage: req.t('controllers.user.login-success'),
-                return: result,
+                return: result.user,
             });
         }
         catch (error) {

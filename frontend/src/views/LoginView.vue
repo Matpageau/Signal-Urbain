@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import axios, { AxiosError } from "axios"
 
+const userStore = useUserStore()
 import BaseInput from '@/components/shared/BaseInput.vue';
 import groupedIcons from '@/assets/img/groupedIcons.png'
 import BaseButton from '@/components/shared/BaseButton.vue';
+import { useUserStore } from '@/stores/userStore';
+import router from '@/router';
 
 const { t } = useI18n()
 
@@ -16,6 +20,22 @@ const password = ref<string>('')
 watch([username, password], () => {
   errorsMsgs.value = []
 })
+
+const handleLogin = async () => {
+  try {
+    const payload = {email: username.value, password: password.value}
+    const res = await axios.post("http://localhost:3000/api/user/login", payload)
+
+    if(res.data) {
+      userStore.currentUser = res.data
+      router.push('/')
+    }
+  } catch (error) {
+    const err = error as AxiosError<{ code?: [string] }>
+    errorsMsgs.value = err.response?.data?.code ?? ["UNKNOWN_ERROR"]
+    console.error(err)
+  }
+}
 </script>
 
 <template>
@@ -42,7 +62,7 @@ watch([username, password], () => {
       </form>
       <div class="flex flex-col items-center">
         <p>{{ t('DONTHAVEACCOUNT') }}<a href="/register">{{ t('SIGNUPNOW') }}</a></p>
-        <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white">
+        <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white" @click="handleLogin">
           <p>{{ t('SIGNIN') }}</p>
         </BaseButton>
       </div>

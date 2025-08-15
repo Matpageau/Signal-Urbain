@@ -19,7 +19,7 @@ const userController = {
 		}
 	},
 
-	async login(req: Request, res: Response, next: NextFunction) {
+	async login(req: Request, res: Response, next: NextFunction) {    
     const { email, password } = req.body;
 
 		if (!email || !password) {
@@ -34,9 +34,14 @@ const userController = {
 				return res.status(400).json({ ApiMessage: result });
 			}
 
+      res.cookie('token', result.token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24
+      })
+
       res.status(200).json({
         ApiMessage: req.t('controllers.user.login-success'),
-        return: result,
+        return: result.user,
       });
     } catch (error) {
       next(error);
