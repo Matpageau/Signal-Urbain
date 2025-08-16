@@ -7,8 +7,18 @@ import { useUserStore } from '@/stores/userStore';
 
 import avatarPlaceholder from '@/assets/img/Avatar placeholder.png'
 import GearIcon from '@/components/icons/GearIcon.vue';
+import ReportCard from '@/components/feature/home/ReportCard.vue';
+import { onMounted } from 'vue';
+import { useReportStore } from '@/stores/reportStore';
 
 const userStore = useUserStore()
+const reportStore = useReportStore()
+
+onMounted(async () => {
+  if(!reportStore.reports) {
+    reportStore.fetchReports()
+  }
+})
 </script>
 
 <template>
@@ -16,7 +26,11 @@ const userStore = useUserStore()
     <BaseMapbox class="absolute top-0 left-0"/>
     <div class="absolute flex flex-col top-0 left-0 h-full w-fit pl-4 py-4">
       <div class="flex flex-col h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10">
-        
+        <ReportCard 
+          v-for="report in reportStore.reports"
+          :key="report._id"
+          :report="report"
+        />
       </div>
       <a v-if="!userStore.currentUser" href="/login" class="flex shrink-0 items-center justify-center bg-(--blue) hover:bg-(--blue_hover) transition-colors mt-4 h-[56px] text-white font-bold rounded-lg cursor-pointer">
         <p class="text-white text-center">Se connecter</p>

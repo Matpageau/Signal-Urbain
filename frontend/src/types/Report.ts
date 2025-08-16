@@ -1,4 +1,5 @@
 export type ReportData = {
+  _id: string
   comments: string[]
   type: typeEnum
   description: string

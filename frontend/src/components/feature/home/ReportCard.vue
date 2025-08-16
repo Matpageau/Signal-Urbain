@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CommentIcon from '@/components/icons/CommentIcon.vue';
+import UpvoteIcon from '@/components/icons/UpvoteIcon.vue';
 import type { ReportData, statusEnum, typeEnum } from '@/types/Report';
 import axios from 'axios';
 
@@ -70,7 +72,18 @@ const getNeighborhood = async (long: number, lat: number) => {
       </div>
       <div>
         <h2>{{ getType(props.report.type) }}</h2>
-        <p>{{ await getNeighborhood(props.report.long, props.report.lat) }}</p>
+        <p>{{ getNeighborhood(props.report.long, props.report.lat) }}</p>
+      </div>
+    </div>
+    <img :src="props.report.media[0]" alt="report image">
+    <div class="flex justify-between">
+      <div class="flex">
+        <CommentIcon class="mr-4"/>
+        <p>{{ props.report.comments.length }}</p>
+      </div>
+      <div class="flex">
+        <p>{{ props.report.upvote }}</p>
+        <UpvoteIcon class="ml-4"/>
       </div>
     </div>
   </div>

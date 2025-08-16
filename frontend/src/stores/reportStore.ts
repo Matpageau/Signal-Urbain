@@ -3,8 +3,8 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const usePinStore = defineStore('pins', () => {
-  const pins = ref<ReportData[]>([])
+export const useReportStore = defineStore('report', () => {
+  const reports = ref<ReportData[]>([])
   const isFetching = ref(false)
   const isReady = ref(false)
   let fetchPromise: Promise<void> | null = null
@@ -16,9 +16,9 @@ export const usePinStore = defineStore('pins', () => {
     fetchPromise = axios
     .get<ReportData[]>('http://localhost:3000/api/report/get')
     .then(res => {
-      pins.value = res.data
+      reports.value = res.data
     }).catch(() => {
-      pins.value = []
+      reports.value = []
     })
     .finally(() => {
       isFetching.value = false
@@ -30,7 +30,7 @@ export const usePinStore = defineStore('pins', () => {
   }
 
   return {
-    pins,
+    reports,
     isReady,
     fetchReports
   }
