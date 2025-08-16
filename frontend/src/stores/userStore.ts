@@ -18,8 +18,8 @@ export const useUserStore = defineStore('user', () => {
 
     isFetching.value = true
     fetchPromise = axios
-      .get<UserData>('http://localhost:3000/users/me', { withCredentials: true })
-      .then(res => {        
+      .get<UserData>('http://localhost:3000/api/user/me', { withCredentials: true })
+      .then(res => {
         currentUser.value = res.data
       })
       .catch(() => {

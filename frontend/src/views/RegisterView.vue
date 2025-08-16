@@ -55,7 +55,7 @@ watch([username, email, password, confirmPassword], () => {
       </form>
       <div class="flex flex-col items-center">
         <p>{{ t('ALREADYHAVEACCOUNT') }}<a href="/login">{{ t('CONNECTNOW') }}</a></p>
-        <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white">
+        <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white px-15">
           <p>{{ t('SIGNUP') }}</p>
         </BaseButton>
       </div>

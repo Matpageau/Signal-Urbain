@@ -62,7 +62,7 @@ const handleLogin = async () => {
       </form>
       <div class="flex flex-col items-center">
         <p>{{ t('DONTHAVEACCOUNT') }}<a href="/register">{{ t('SIGNUPNOW') }}</a></p>
-        <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white" @click="handleLogin">
+        <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white px-15" @click="handleLogin">
           <p>{{ t('SIGNIN') }}</p>
         </BaseButton>
       </div>
