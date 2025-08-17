@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
 import FilterBar from '@/components/feature/home/FilterBar.vue';
 import PlusIcon from '@/components/icons/PlusIcon.vue';
 import BaseButton from '@/components/shared/BaseButton.vue';
 import BaseMapbox from '@/components/shared/BaseMapbox.vue';
 import { useUserStore } from '@/stores/userStore';
-
 import avatarPlaceholder from '@/assets/img/Avatar placeholder.png'
 import GearIcon from '@/components/icons/GearIcon.vue';
 import ReportCard from '@/components/feature/home/ReportCard.vue';
-import { onMounted } from 'vue';
 import { useReportStore } from '@/stores/reportStore';
+import BaseModal from '@/components/shared/ReportModal.vue';
 
 const userStore = useUserStore()
 const reportStore = useReportStore()
+
+const isModalOpen = ref(true)
 
 onMounted(async () => {
   if(!reportStore.reports) {
@@ -23,6 +26,10 @@ onMounted(async () => {
 
 <template>
   <div class="relative w-full h-full select-none">
+    <BaseModal
+      v-if="isModalOpen"
+      @click="isModalOpen = false"
+    />
     <BaseMapbox class="absolute top-0 left-0"/>
     <div class="absolute flex flex-col top-0 left-0 h-full w-fit pl-4 py-4">
       <div class="flex flex-col h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10">
@@ -46,7 +53,8 @@ onMounted(async () => {
     <FilterBar class="absolute top-4 left-[398px]"/>
     <BaseButton
       class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"
-      :disable="!userStore.currentUser ? true : false"
+      :disable="userStore.currentUser ? true : false"
+      :onclick="() => isModalOpen = true"
     >
       <PlusIcon class="h-7 w-7 text-white stroke-3"/>
     </BaseButton>
