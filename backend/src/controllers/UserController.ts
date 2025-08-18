@@ -3,6 +3,7 @@ import { IUserInfos, UserRoleEnum } from '../models/User';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import createError from '../utils/Error';
+import { create } from 'domain';
 
 const userController = {
 
@@ -22,25 +23,23 @@ const userController = {
 
 	async login(req: Request, res: Response, next: NextFunction) {    
     const { email, password } = req.body;
+		const errorMessages = [];
 
 		if (!email || !password) {
-			return res.status(400).json({
-				ApiMessage: req.t('controllers.user.login-error')
-			});
+			errorMessages.push(createError("You must provide a valid email and password", 401, "INPUT_INVALID"))
     }
 
     try {
 			const userJsonWebToken = await User.loginUser(email, password);
-			if (typeof userJsonWebToken === 'string') {
-				return res.status(400).json({ ApiMessage: userJsonWebToken });
+
+			if (userJsonWebToken) {
+				res.cookie('token', userJsonWebToken.token, {
+					httpOnly: true,
+					maxAge: 1000 * 60 * 60 * 24
+				})
 			}
 
-      res.cookie('token', userJsonWebToken.token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24
-      })
-
-      res.status(200).json(userJsonWebToken);
+      res.status(200).json(userJsonWebToken.token);
     } catch (error) {
       next(error);
     }

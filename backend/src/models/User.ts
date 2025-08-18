@@ -104,34 +104,39 @@ export default class User {
    * @param password The password of the user trying to log in.
    * @returns A valid JWT token if the credentials are correct, or an error message if they are not.
    */
-  static async loginUser(email: string, password: string): Promise<{ token: string, user: IUserInfos } | string > {
+  static async loginUser(email: string, password: string): Promise<{ token: string | null, user: IUserInfos } > {
     try {
       // Find user by username
+      const errorMessages = [];
       const user = await User.findByEmail(email);
       if (!user) {
-        return t("classes.user.errors.invalid-email");
+        errorMessages.push(createError("The email provided is not found.", 404, "EMAIL_NOT_FOUND"));
+        throw errorMessages;
       }
 
       // Verify password
       const isValidPassword = await user.comparePassword(password);
       if (!isValidPassword) {
-        return t("classes.user.errors.invalid-password");
+        errorMessages.push(createError("The password provided is invalid.", 404, "PASSWORD_INVALID"));        
+        throw errorMessages;
       }
 
+      const token = user.generateToken(false);
+      
       // Generate JWT for 15 minutes
-      const token = await user.generateToken(false);
       return {
-      token,
+        token,
         user: {
-        _id: user._id,
-        username: user.username,
-        password:  "",
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-        avatar: user.avatar,
-      }
-    };
+          _id: user._id,
+          username: user.username,
+          password:  "",
+          email: user.email,
+          role: user.role,
+          createdAt: user.createdAt,
+          avatar: user.avatar,
+        }
+        
+      };
     } catch (error) {
       console.error("Error logging in user:", error);
       throw error;
@@ -169,7 +174,7 @@ export default class User {
   };
 
   /**
-   * This function generates a JWT token for the user.
+   * This function uses jwt.sign functions and generates a JWT token for the user.
    * @param rememberMe A boolean that manage the duration of the token by indicating if the user wants to be remembered (true, 7day) or not (false, 15min).
    * @returns A JWT token as a string
    */
