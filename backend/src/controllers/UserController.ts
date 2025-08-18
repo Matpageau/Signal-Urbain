@@ -63,7 +63,6 @@ const userController = {
 			}
 			
 			const user = await User.findById(decodedToken._id);
-      console.log(user);
       
 			if (!user) {
 				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))

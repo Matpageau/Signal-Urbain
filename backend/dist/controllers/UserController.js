@@ -52,7 +52,6 @@ const userController = {
                 errorMessages.push((0, Error_1.default)("The token provided is invalid.", 401, "TOKEN_INVALID"));
             }
             const user = await User_2.default.findById(decodedToken._id);
-            console.log(user);
             if (!user) {
                 errorMessages.push((0, Error_1.default)("The user could not be found with this token.", 404, "USER_NOT_FOUND"));
             }
