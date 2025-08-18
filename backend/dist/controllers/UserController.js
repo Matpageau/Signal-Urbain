@@ -3,18 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("../models/User"));
+const User_1 = require("../models/User");
+const User_2 = __importDefault(require("../models/User"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const Error_1 = __importDefault(require("../utils/Error"));
 const userController = {
     async createUser(req, res, next) {
         try {
-            const newUser = req.body;
-            const user = await User_1.default.registerUser(newUser);
-            res.status(201).json({
-                ApiMessage: ({
-                    ApiMessage: req.t('controllers.user.new-user-success'),
-                    return: user
-                })
-            });
+            const newUserData = req.body;
+            newUserData.role = User_1.UserRoleEnum.USER;
+            const newUser = await User_2.default.registerUser(newUserData);
+            res.status(201).json(newUser);
         }
         catch (error) {
             next(error);
@@ -28,14 +27,36 @@ const userController = {
             });
         }
         try {
-            const result = await User_1.default.loginUser(email, password);
-            if (typeof result === 'string') {
-                return res.status(400).json({ ApiMessage: result });
+            const userJsonWebToken = await User_2.default.loginUser(email, password);
+            if (typeof userJsonWebToken === 'string') {
+                return res.status(400).json({ ApiMessage: userJsonWebToken });
             }
-            res.status(200).json({
-                ApiMessage: req.t('controllers.user.login-success'),
-                return: result,
-            });
+            res.status(200).json(userJsonWebToken);
+        }
+        catch (error) {
+            next(error);
+        }
+    },
+    async getByToken(req, res, next) {
+        try {
+            const errorMessages = [];
+            const token = req.cookies.token;
+            if (!token) {
+                errorMessages.push((0, Error_1.default)("There is no token provided.", 401, "TOKEN_MISSING"));
+            }
+            const secret = process.env.PRIV_JWT_CODE;
+            const decodedToken = jsonwebtoken_1.default.verify(token, secret);
+            if (!decodedToken._id) {
+                errorMessages.push((0, Error_1.default)("The token provided is invalid.", 401, "TOKEN_INVALID"));
+            }
+            const user = User_2.default.findById(decodedToken._id);
+            if (!user) {
+                errorMessages.push((0, Error_1.default)("The user could not be found with this token.", 404, "USER_NOT_FOUND"));
+            }
+            if (errorMessages.length > 0) {
+                throw errorMessages;
+            }
+            res.status(200).send(user);
         }
         catch (error) {
             next(error);
@@ -43,7 +64,7 @@ const userController = {
     },
     async getAllUsers(req, res, next) {
         try {
-            const users = await User_1.default.findAll();
+            const users = await User_2.default.findAll();
             if (!users || users.length === 0) {
                 return res.status(404).json({
                     ApiMessage: req.t('controllers.user.errors.no-user-found')
@@ -60,7 +81,7 @@ const userController = {
     },
     async getUserById(req, res, next) {
         try {
-            const user = await User_1.default.findUserById(req.params.id);
+            const user = await User_2.default.findUserById(req.params.id);
             if (!user) {
                 return res.status(404).json({
                     ApiMessage: req.t('controllers.user.errors.invalid-id')
@@ -79,7 +100,7 @@ const userController = {
     async deleteUser(req, res, next) {
         try {
             const userId = req.params.id;
-            const deletedUser = await User_1.default.deleteUserById(userId);
+            const deletedUser = await User_2.default.deleteUserById(userId);
             if (!deletedUser) {
                 return res.status(404).json({
                     ApiMessage: req.t('controllers.user.errors.invalid-id')

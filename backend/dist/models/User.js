@@ -8,16 +8,17 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const i18next_1 = require("i18next");
+const Error_1 = __importDefault(require("../utils/Error"));
 const UserSchema_1 = __importDefault(require("./UserSchema"));
 var UserRoleEnum;
 (function (UserRoleEnum) {
-    UserRoleEnum["GUESS"] = "guess";
     UserRoleEnum["USER"] = "user";
     UserRoleEnum["CITYADMIN"] = "cityadmin";
     UserRoleEnum["ADMIN"] = "admin";
 })(UserRoleEnum || (exports.UserRoleEnum = UserRoleEnum = {}));
 class User {
-    constructor({ username, email, password, role }) {
+    constructor({ _id, username, email, password, role }) {
+        this._id = _id || null;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -54,31 +55,30 @@ class User {
      * @returns The newly created user information as object
      */
     static async registerUser(data) {
-        try {
-            // Check if user already exists
-            const existingUsername = await mongoose_1.default.model('User').findOne({ username: data.username });
-            const existingEmail = await mongoose_1.default.model('User').findOne({ email: data.email });
-            if (existingEmail) {
-                return (0, i18next_1.t)("classes.user.errors.existing-email");
-            }
-            else if (existingUsername) {
-                return (0, i18next_1.t)("classes.user.errors.existing-username");
-            }
-            else if (!data.username || !data.email || !data.password) {
-                return (0, i18next_1.t)("classes.user.errors.invalid-fields");
-            }
-            // Create new instance
-            const newUser = new User(data);
-            // Hash password
-            newUser.password = await newUser.hashPassword();
-            // Save to DB
-            await newUser.save();
-            return newUser;
+        // Check if user already exists
+        const existingUsername = await mongoose_1.default.model('User').findOne({ username: data.username });
+        const existingEmail = await mongoose_1.default.model('User').findOne({ email: data.email });
+        const errorMessages = [];
+        // Validation
+        if (existingEmail) {
+            errorMessages.push((0, Error_1.default)("Email you are have entered is already in use.", 401, "EMAIL_ALREADY_EXIST"));
         }
-        catch (error) {
-            console.error("Error registering user:", error);
-            throw error;
+        if (existingUsername) {
+            errorMessages.push((0, Error_1.default)("Username you are have entered is already in use.", 401, "USERNAME_ALREADY_EXIST"));
         }
+        if (!data.username || !data.email || !data.password) {
+            errorMessages.push((0, Error_1.default)("You must provide username, email and password.", 401, "INPUT_INVALID"));
+        }
+        if (errorMessages.length > 0) {
+            throw errorMessages;
+        }
+        // Create new instance
+        const newUser = new User(data);
+        // Hash password
+        newUser.password = await newUser.hashPassword();
+        // Save to DB
+        await newUser.save();
+        return newUser;
     }
     /**
      * A static async function that logs in a user by verifying their credentials.
@@ -103,6 +103,7 @@ class User {
             return {
                 token,
                 user: {
+                    _id: user._id,
                     username: user.username,
                     password: "",
                     email: user.email,
@@ -153,26 +154,42 @@ class User {
      */
     generateToken(rememberMe = false) {
         try {
-            const payload = {
+            const userPayload = {
+                _id: this._id,
                 email: this.email,
                 username: this.username,
                 role: this.role,
                 createdAt: this.createdAt,
                 avatar: this.avatar
             };
-            const secret = process.env.PRIV_JWT_CODE || 'dev_secret_key';
+            const secret = process.env.PRIV_JWT_CODE;
             const options = {
                 // Ternary condition that set the expiration token based on @param: rememberMe<boolean> checkbox
                 // 604,800 seconds = 7 days, 900 seconds = 15 minutes
                 expiresIn: rememberMe ? 604800 : 900
             };
-            const token = jsonwebtoken_1.default.sign(payload, secret, options);
+            const token = jsonwebtoken_1.default.sign(userPayload, secret, options);
             return token;
         }
         catch (error) {
             console.error("Error generating token:", error);
             throw error;
         }
+    }
+    static async findById(id) {
+        const user = await UserSchema_1.default.findById(id);
+        if (user) {
+            return new User({
+                _id: user._id,
+                username: user.username,
+                password: user.password,
+                role: user.role,
+                email: user.email,
+                createdAt: user.createdAt,
+                avatar: user.avatar
+            });
+        }
+        return null;
     }
     /**
      * This async function retrieves all users from the database.
@@ -185,6 +202,7 @@ class User {
                 return [];
             }
             return databaseUsers.map(user => new User({
+                _id: user._id,
                 username: user.username,
                 email: user.email,
                 password: user.password,
@@ -210,6 +228,7 @@ class User {
                 return null;
             }
             return new User({
+                _id: user._id,
                 username: user.username,
                 email: user.email,
                 password: "",
@@ -236,6 +255,7 @@ class User {
                 return null;
             }
             return new User({
+                _id: user._id,
                 username: user.username,
                 email: user.email,
                 password: user.password,
@@ -257,6 +277,7 @@ class User {
                 return null;
             }
             return new User({
+                _id: user._id,
                 username: user.username,
                 email: user.email,
                 password: user.password,

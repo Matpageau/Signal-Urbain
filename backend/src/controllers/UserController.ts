@@ -1,23 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUserInfos } from '../models/User';
+import { IUserInfos, UserRoleEnum } from '../models/User';
 import User from '../models/User';
+import jwt from 'jsonwebtoken';
+import createError from '../utils/Error';
 
 const userController = {
+
 	async createUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			const newUser: IUserInfos = req.body;
-			const user = await User.registerUser(newUser);
+			const newUserData: IUserInfos = req.body;
+			newUserData.role = UserRoleEnum.USER;
 
-			res.status(201).json({
-				ApiMessage: ({
-					ApiMessage: req.t('controllers.user.new-user-success'),
-					return: user
-				})
-			});
+			const newUser = await User.registerUser(newUserData);
+			res.status(201).json(newUser);
+
 		} catch (error) {
 			next(error);
 		}
 	},
+
 
 	async login(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
@@ -29,20 +30,51 @@ const userController = {
     }
 
     try {
-			const result = await User.loginUser(email, password);
-			if (typeof result === 'string') {
-				return res.status(400).json({ ApiMessage: result });
+			const userJsonWebToken = await User.loginUser(email, password);
+			if (typeof userJsonWebToken === 'string') {
+				return res.status(400).json({ ApiMessage: userJsonWebToken });
 			}
 
-      res.status(200).json({
-        ApiMessage: req.t('controllers.user.login-success'),
-        return: result,
-      });
+      res.status(200).json(userJsonWebToken);
     } catch (error) {
       next(error);
     }
 	},
+
+
+	async getByToken(req: Request, res: Response, next: NextFunction) {
+		try {
+		
+			const errorMessages = [];
+			const token = req.cookies.token;
+			if (!token) {
+				errorMessages.push(createError("There is no token provided.", 401, "TOKEN_MISSING"))
+			}
+			
+			const secret = process.env.PRIV_JWT_CODE
+			const decodedToken = jwt.verify(token, secret!) as { _id: string }
+
+			if (!decodedToken._id) {
+				errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
+			}
+			
+			const user = User.findById(decodedToken._id);
+			if (!user) {
+				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
+			}
+
+			if (errorMessages.length > 0) {
+        throw errorMessages;
+      }
+
+			res.status(200).send(user);
 	
+		} catch (error) {
+			next(error)
+		}
+	},
+	
+
 	async getAllUsers(req: Request, res: Response, next: NextFunction) {
 		try {
 			const users = await User.findAll();
@@ -61,6 +93,7 @@ const userController = {
 		}
 	},
 
+	
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
 

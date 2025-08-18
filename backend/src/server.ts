@@ -5,6 +5,8 @@ import cors from 'cors';
 import { createDefaultUsers } from './seed/UserSeed';
 import i18nMiddleware from './middlewares/I18n';
 import MainRouter from './router/MainRouter';
+import { ErrorData } from './utils/Error';
+// import { ErrorData } from './utils/Error';
 
 dotenv.config();
 
@@ -18,9 +20,9 @@ app.use(i18nMiddleware);
 app.use("/", MainRouter);
 
 // Simple error middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+app.use((err: ErrorData, req: Request, res: Response, next: NextFunction): void => {
   console.error("An error has happened:", err);
-  res.status(500).send("Internal Server Error");
+  res.status(err.statusCode || 500).send(err);
 });
 
 // Connection to MongoDB 
@@ -30,7 +32,6 @@ mongoose.connect(URL)
     console.log("Connected to MongoDB");
     console.log("Attempting to create default users...");
     await createDefaultUsers();
-    
     
     app.listen(PORT, () => {
       console.log(`Server is running on Port: ${PORT}`);

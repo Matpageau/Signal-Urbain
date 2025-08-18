@@ -11,6 +11,8 @@ const UserRoutes = express_1.default.Router();
 UserRoutes.post("/register", UserController_1.default.createUser);
 // http://localhost:3000/api/user/login
 UserRoutes.post("/login", UserController_1.default.login);
+// http://localhost:3000/api/user/me
+UserRoutes.get("/me", UserController_1.default.getByToken);
 // // http://localhost:3000/api/user/all
 // UserRoutes.get("/", AuthJWT, UserCrontroller.getAllUsers);
 // // http://localhost:3000/api/user/:id

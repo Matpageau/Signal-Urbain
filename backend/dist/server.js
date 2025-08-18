@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const UserSeed_1 = require("./seed/UserSeed");
 const I18n_1 = __importDefault(require("./middlewares/I18n"));
 const MainRouter_1 = __importDefault(require("./router/MainRouter"));
+// import { ErrorData } from './utils/Error';
 dotenv_1.default.config();
 const PORT = process.env.PORT || 3000;
 const URL = process.env.DB_URL || "";
@@ -21,7 +22,7 @@ app.use("/", MainRouter_1.default);
 // Simple error middleware
 app.use((err, req, res, next) => {
     console.error("An error has happened:", err);
-    res.status(500).send("Internal Server Error");
+    res.status(err.statusCode || 500).send(err);
 });
 // Connection to MongoDB 
 // Change the URL to your MongoDB connection string

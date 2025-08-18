@@ -10,6 +10,9 @@ UserRoutes.post("/register", UserCrontroller.createUser);
 // http://localhost:3000/api/user/login
 UserRoutes.post("/login", UserCrontroller.login);
 
+// http://localhost:3000/api/user/me
+UserRoutes.get("/me", UserCrontroller.getByToken)
+
 // // http://localhost:3000/api/user/all
 // UserRoutes.get("/", AuthJWT, UserCrontroller.getAllUsers);
 
