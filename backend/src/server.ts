@@ -6,7 +6,7 @@ import { createDefaultUsers } from './seed/UserSeed';
 import i18nMiddleware from './middlewares/I18n';
 import MainRouter from './router/MainRouter';
 import { ErrorData } from './utils/Error';
-// import { ErrorData } from './utils/Error';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -14,7 +14,11 @@ const PORT = process.env.PORT || 3000;
 const URL: string = process.env.DB_URL || "";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(i18nMiddleware);
 app.use("/", MainRouter);

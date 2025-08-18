@@ -52,7 +52,7 @@ const handleCreateModal = () => {
       <div v-else class="flex items-center justify-between px-2 shrink-0 h-[56px] bg-white mt-4 rounded-lg">
         <div class="flex items-center">
           <img :src="avatarPlaceholder" alt="Avatar" class="h-[49px] w-[49px] rounded-full mr-1">
-          <p>Username</p>
+          <p>{{ userStore.currentUser.username }}</p>
         </div>
         <GearIcon class="cursor-pointer"/>
       </div>
@@ -60,7 +60,7 @@ const handleCreateModal = () => {
     <FilterBar class="absolute top-4 left-[398px]"/>
     <BaseButton
       class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"
-      :disable="userStore.currentUser ? true : false"
+      :disable="!userStore.currentUser ? true : false"
       :onclick="() => handleCreateModal()"
     >
       <PlusIcon class="h-7 w-7 text-white stroke-3"/>

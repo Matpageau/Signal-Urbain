@@ -21,21 +21,19 @@ const userController = {
     },
     async login(req, res, next) {
         const { email, password } = req.body;
+        const errorMessages = [];
         if (!email || !password) {
-            return res.status(400).json({
-                ApiMessage: req.t('controllers.user.login-error')
-            });
+            errorMessages.push((0, Error_1.default)("You must provide a valid email and password", 401, "INPUT_INVALID"));
         }
         try {
             const userJsonWebToken = await User_2.default.loginUser(email, password);
-            if (typeof userJsonWebToken === 'string') {
-                return res.status(400).json({ ApiMessage: userJsonWebToken });
+            if (userJsonWebToken) {
+                res.cookie('token', userJsonWebToken.token, {
+                    httpOnly: true,
+                    maxAge: 1000 * 60 * 60 * 24
+                });
             }
-            res.cookie('token', userJsonWebToken.token, {
-                httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24
-            });
-            res.status(200).json(userJsonWebToken);
+            res.status(200).json(userJsonWebToken.token);
         }
         catch (error) {
             next(error);
@@ -53,7 +51,8 @@ const userController = {
             if (!decodedToken._id) {
                 errorMessages.push((0, Error_1.default)("The token provided is invalid.", 401, "TOKEN_INVALID"));
             }
-            const user = User_2.default.findById(decodedToken._id);
+            const user = await User_2.default.findById(decodedToken._id);
+            console.log(user);
             if (!user) {
                 errorMessages.push((0, Error_1.default)("The user could not be found with this token.", 404, "USER_NOT_FOUND"));
             }

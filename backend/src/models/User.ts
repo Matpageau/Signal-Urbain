@@ -138,7 +138,6 @@ export default class User {
         
       };
     } catch (error) {
-      console.error("Error logging in user:", error);
       throw error;
     }
   }

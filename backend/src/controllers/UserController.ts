@@ -3,7 +3,6 @@ import { IUserInfos, UserRoleEnum } from '../models/User';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import createError from '../utils/Error';
-import { create } from 'domain';
 
 const userController = {
 
@@ -51,6 +50,7 @@ const userController = {
 		
 			const errorMessages = [];
 			const token = req.cookies.token;
+      
 			if (!token) {
 				errorMessages.push(createError("There is no token provided.", 401, "TOKEN_MISSING"))
 			}
@@ -62,7 +62,9 @@ const userController = {
 				errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
 			}
 			
-			const user = User.findById(decodedToken._id);
+			const user = await User.findById(decodedToken._id);
+      console.log(user);
+      
 			if (!user) {
 				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
 			}
