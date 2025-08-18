@@ -11,17 +11,24 @@ import GearIcon from '@/components/icons/GearIcon.vue';
 import ReportCard from '@/components/feature/home/ReportCard.vue';
 import { useReportStore } from '@/stores/reportStore';
 import BaseModal from '@/components/shared/ReportModal.vue';
+import type { ReportData } from '@/types/Report';
 
 const userStore = useUserStore()
 const reportStore = useReportStore()
 
-const isModalOpen = ref(true)
+const isModalOpen = ref(false)
+const selectedReport = ref<ReportData | null>()
 
 onMounted(async () => {
   if(!reportStore.reports) {
     reportStore.fetchReports()
   }
 })
+
+const handleCreateModal = () => {
+  selectedReport.value = null
+  isModalOpen.value = true
+}
 </script>
 
 <template>
@@ -54,7 +61,7 @@ onMounted(async () => {
     <BaseButton
       class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"
       :disable="userStore.currentUser ? true : false"
-      :onclick="() => isModalOpen = true"
+      :onclick="() => handleCreateModal()"
     >
       <PlusIcon class="h-7 w-7 text-white stroke-3"/>
     </BaseButton>

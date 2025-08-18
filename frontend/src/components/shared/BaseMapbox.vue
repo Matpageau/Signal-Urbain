@@ -18,22 +18,23 @@ onMounted(() => {
 
       map = new mapboxgl.Map({
         container: mapContainer.value,
-        style: 'mapbox://styles/mapbox/standard',
+        style: 'mapbox://styles/mapbox/standard?optimize=true',
         center: [longitude, latitude],
-        zoom: 1
+        zoom: 2,
+        attributionControl: false,
+        pitchWithRotate: false,
+        dragRotate: false
       })
     
       map.addControl(new mapboxgl.NavigationControl({
-        showZoom: false,
-        visualizePitch: true
+        showZoom: false
       }))
 
       const geolocate = new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
         },
-        trackUserLocation: true,
-        showAccuracyCircle: true,
+        trackUserLocation: false,
         fitBoundsOptions: {maxZoom: 12}
       })
 
@@ -50,9 +51,12 @@ onMounted(() => {
 
       map = new mapboxgl.Map({
         container: mapContainer.value,
-        style: 'mapbox://styles/mapbox/standard',
+        style: 'mapbox://styles/mapbox/standard?optimize=true',
         center: [0, 0],
-        zoom: 2
+        zoom: 2,
+        attributionControl: false,
+        pitchWithRotate: false,
+        dragRotate: false
       })
     }
   )

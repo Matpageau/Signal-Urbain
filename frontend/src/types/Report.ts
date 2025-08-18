@@ -16,6 +16,7 @@ export enum typeEnum  {
   ROADOBSTACLE = 'roadobstacle',
   FAULTYLIGHT = 'faultylight',
   DANGEROUSTREE = 'dangeroustree',
+  VANDALISM = 'vandalism',
   OTHER = 'other'
 }
 
