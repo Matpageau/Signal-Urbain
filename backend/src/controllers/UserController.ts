@@ -20,7 +20,7 @@ const userController = {
 	},
 
 
-	async login(req: Request, res: Response, next: NextFunction) {
+	async login(req: Request, res: Response, next: NextFunction) {    
     const { email, password } = req.body;
 
 		if (!email || !password) {
@@ -34,6 +34,11 @@ const userController = {
 			if (typeof userJsonWebToken === 'string') {
 				return res.status(400).json({ ApiMessage: userJsonWebToken });
 			}
+
+      res.cookie('token', result.token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24
+      })
 
       res.status(200).json(userJsonWebToken);
     } catch (error) {

@@ -1,0 +1,15 @@
+export default {
+  REGISTER: "Inscription",
+  LOGIN: "Connexion",
+  USERNAME: "Nom d'utilisateur",
+  EMAIL: "Adresse email",
+  EMAILORUSERNAME: "Adresse email ou pseudo",
+  PASSWORD: "Mot de passe",
+  CONFIRMPASSWORD: "Confirmer le mot de passe",
+  ALREADYHAVEACCOUNT: "Vous avez déjà un compte ? ",
+  DONTHAVEACCOUNT: "Vous n'avez pas de compte ? ",
+  CONNECTNOW: "Se connecter maintenant",
+  SIGNUPNOW: "Créer maintenant",
+  SIGNUP: "S'inscrire",
+  SIGNIN: "Se connecter",
+}

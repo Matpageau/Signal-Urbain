@@ -187,8 +187,7 @@ export default class User {
       const secret = process.env.PRIV_JWT_CODE;
       const options = {
         // Ternary condition that set the expiration token based on @param: rememberMe<boolean> checkbox
-        // 604,800 seconds = 7 days, 900 seconds = 15 minutes
-        expiresIn: rememberMe ? 604800 : 900 
+        expiresIn: rememberMe ? 1000 * 60 * 60 * 24 * 7 : 1000 * 60 * 60 * 24
       };
 
       const token = jwt.sign(userPayload, secret!, options);

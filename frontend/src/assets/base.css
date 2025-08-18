@@ -2,7 +2,10 @@
 @import "tailwindcss";
 
 :root {
-  --main: #ffffff;
+  --background-white: #f9f9f9;
+
+  --blue: #008CFF;
+  --blue_hover: #007de4;
   --junge: 'Junge', sans-serif;
 }
 
@@ -13,6 +16,7 @@
 body {
   min-height: 100vh;
   line-height: 1.6;
+  background-color: var(--background-white);
   font-family:
     Inter,
     -apple-system,
@@ -30,4 +34,12 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--blue);
+}
+
+a:hover {
+  text-decoration: underline;
 }
