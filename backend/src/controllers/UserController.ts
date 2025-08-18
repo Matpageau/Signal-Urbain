@@ -35,7 +35,7 @@ const userController = {
 				return res.status(400).json({ ApiMessage: userJsonWebToken });
 			}
 
-      res.cookie('token', result.token, {
+      res.cookie('token', userJsonWebToken.token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24
       })
