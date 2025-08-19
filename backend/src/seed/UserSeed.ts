@@ -1,38 +1,40 @@
 import mongoose from "mongoose";
-import { IUserInfos, UserRoleEnum } from "../models/User";
-import User from '../models/User';
+import User, { iUserValues, UserRoleEnum } from "../models/User";
 
 export const createDefaultUsers = async () => {
-  const defaultAdmin: IUserInfos = {
+  const defaultAdmin: iUserValues = {
     _id: new mongoose.Types.ObjectId("777000000000000000000011").toString(),
     username: 'admin',
     email: 'admin@example.com',
     password: '12345',
     createdAt: new Date(),
-    role: UserRoleEnum.ADMIN
+    role: UserRoleEnum.ADMIN,
+    upvoted_report_ids: []
   }
   
-  const defaultCityAdmin: IUserInfos = {
+  const defaultCityAdmin: iUserValues = {
     _id: new mongoose.Types.ObjectId("777000000000000000000012").toString(),
     username: 'cityadmin',
     email: 'cityadmin@example.com',
     password: '12345',
     createdAt: new Date(),
-    role: UserRoleEnum.CITYADMIN
+    role: UserRoleEnum.CITYADMIN,
+    upvoted_report_ids: []
   } 
 
-  const defaultUser: IUserInfos = {
+  const defaultUser: iUserValues = {
     _id: new mongoose.Types.ObjectId("777000000000000000000013").toString(),
     username: "user",
     email: "user@example.com",
     password: "12345",
     createdAt: new Date(),
-    role: UserRoleEnum.USER
+    role: UserRoleEnum.USER,
+    upvoted_report_ids: []
   }
 
-  const isAdminExisting = await User.findByUsername(defaultAdmin.username);
-  const isManagerExisting = await User.findByUsername(defaultCityAdmin.username);
-  const isUserExisting = await User.findByUsername(defaultUser.username);
+  const isAdminExisting = await User.findByEmail(defaultAdmin.email);
+  const isManagerExisting = await User.findByEmail(defaultCityAdmin.email);
+  const isUserExisting = await User.findByEmail(defaultUser.email);
 
   if (!isAdminExisting) {
     await User.registerUser(defaultAdmin);
@@ -45,8 +47,10 @@ export const createDefaultUsers = async () => {
   }
 
   if (isAdminExisting && isManagerExisting && isUserExisting) {
+    console.log(``);
+    console.log(`User: ${defaultUser.email}`);
     console.log(`Admin : ${defaultAdmin.email}`); 
     console.log(`City Admin : ${defaultCityAdmin.email}`);
-    console.log(`User: ${defaultUser.email}`);
+    console.log(``);
   }
 };

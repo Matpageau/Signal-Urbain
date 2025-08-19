@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUserInfos, UserRoleEnum } from '../models/User';
-import User from '../models/User';
+import User, { iUserValues, UserRoleEnum } from '../models/User';
 import jwt from 'jsonwebtoken';
 import createError from '../utils/Error';
 
@@ -8,7 +7,7 @@ const userController = {
 
 	async createUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			const newUserData: IUserInfos = req.body;
+			const newUserData: iUserValues = req.body;
 			newUserData.role = UserRoleEnum.USER;
 
 			const newUser = await User.registerUser(newUserData);
@@ -63,7 +62,7 @@ const userController = {
 				errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
 			}
 			
-			const user = await User.findById(decodedToken._id);
+			const user = await User.findUserById(decodedToken._id);
       
 			if (!user) {
 				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
@@ -84,15 +83,15 @@ const userController = {
 	async getAllUsers(req: Request, res: Response, next: NextFunction) {
 		try {
 			const errorMessages = [];
-			const users = await User.findAll();
+			const dbUsers = await User.findAll();
 
 			// Validation
-			if (!users || users.length === 0) {				
+			if (!dbUsers || dbUsers.length === 0) {				
 				errorMessages.push(createError("There was no user found.", 404, "NO_USER_FOUND"));			
 				throw errorMessages;
 			}
 
-			res.status(200).json(users);
+			res.status(200).json(dbUsers);
 
 		} catch (error) {
 			next(error);
@@ -103,15 +102,15 @@ const userController = {
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const errorMessages = [];
-			const user = await User.findUserById(req.params.id);
+			const dbUser = await User.findUserById(req.params.id);
 
 			// Validation
-			if (!user) {
-				errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"));
+			if (!dbUser) {
+				errorMessages.push(createError("The id provided dit not match any user.", 404, "USER_NOT_FOUND"));
 				throw errorMessages;
 			}
 
-			res.status(200).json(user);
+			res.status(200).json(dbUser);
 
 		} catch (error) {
 			next(error);
