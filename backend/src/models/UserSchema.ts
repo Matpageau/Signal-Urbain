@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import { IUserInfos } from './User';
+import { iUserValues } from './User';
 
-const userSchema = new Schema<IUserInfos>({
+const userSchema = new Schema<iUserValues>({
   username: {
     type: String,
     required: true
@@ -25,8 +25,12 @@ const userSchema = new Schema<IUserInfos>({
   avatar: {
     type: String,
     required: false
+  },
+  upvoted_report_ids: {
+    type: [String],
+    required: false
   }
 });
 
-const UserModel = mongoose.model<IUserInfos>('User', userSchema);
+const UserModel = mongoose.model('User', userSchema);
 export default UserModel;
