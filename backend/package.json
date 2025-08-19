@@ -7,11 +7,12 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "dev": "node .",
-    "app": "npm run build && npm run dev",
+    "app": "node .",
+    "dev": "npm run build && npm run app",
     "watch": "tsc --watch"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
@@ -20,11 +21,10 @@
     "i18next-fs-backend": "^2.6.0",
     "i18next-http-middleware": "^3.8.0",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^3.0.2",
     "mongoose": "^8.16.2"
   },
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { t } from 'i18next';
 import createError from '../utils/Error';
 import UserModel from './UserSchema';
+import { error } from 'console';
 
 export interface IUserInfos {
   _id: string | null;
@@ -70,6 +71,7 @@ export default class User {
    * @returns The newly created user information as object
    */
   static async registerUser(data: IUserInfos): Promise<User | string> {
+    
     // Check if user already exists
       const existingUsername = await mongoose.model('User').findOne({ username: data.username });
       const existingEmail = await mongoose.model('User').findOne({ email: data.email });
@@ -120,10 +122,10 @@ export default class User {
         errorMessages.push(createError("The password provided is invalid.", 404, "PASSWORD_INVALID"));        
         throw errorMessages;
       }
-
+      
+      // Generate JWT for 1 day
       const token = user.generateToken(false);
       
-      // Generate JWT for 15 minutes
       return {
         token,
         user: {
@@ -135,10 +137,8 @@ export default class User {
           createdAt: user.createdAt,
           avatar: user.avatar,
         }
-        
       };
     } catch (error) {
-      console.error("Error logging in user:", error);
       throw error;
     }
   }
@@ -160,17 +160,15 @@ export default class User {
    * @returns A boolean
    */
   async comparePassword(rawPassword: string): Promise<boolean> {
-    try {
-      if (!rawPassword || rawPassword.trim() === '') {
-        throw new Error(t("classes.user.errors.invalid-password"));
-      }
-      
-      return bcrypt.compare(rawPassword, this.password);
+  
+    const errorMessages = [];
+
+    if (!rawPassword || rawPassword.trim() === '') {
+      errorMessages.push(createError("The password provided is invalid.", 401, "PASSWORD_INVALID" ))
+      throw errorMessages;
     }
-    catch (error) {
-      console.error("Error comparing password:", error);
-      throw error;
-    }
+    
+    return bcrypt.compare(rawPassword, this.password);
   };
 
   /**
@@ -199,8 +197,7 @@ export default class User {
       return token;
 
     } catch (error) {
-      console.error("Error generating token:", error);
-      throw error;
+      throw createError("There was an error during token generation", 500, "GEN_TOKEN_ERROR" )
     }
   }
 
@@ -226,26 +223,21 @@ export default class User {
    * @returns It returns an array of User instances.
    */
   static async findAll(): Promise<User[]> {
-    try {
-      const databaseUsers = await mongoose.model('User').find();
-      if (!databaseUsers || databaseUsers.length === 0) {
-        return [];
-      }
 
-      return databaseUsers.map(user => new User({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        role: user.role,
-        createdAt: user.createdAt,
-        avatar: user.avatar
-      }));
-
-    } catch (error) {
-      console.error("Error finding users:", error);
-      throw error;
+    const databaseUsers = await mongoose.model('User').find();
+    if (!databaseUsers || databaseUsers.length === 0) {
+      return [];
     }
+
+    return databaseUsers.map(user => new User({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      role: user.role,
+      createdAt: user.createdAt,
+      avatar: user.avatar
+    }));
   }
 
   /**
@@ -254,27 +246,24 @@ export default class User {
    * @returns It returns the user object if found, or null if not found.
    */
   static async findByUsername(username: string): Promise<User | null> {
-    try {
-      const user = await mongoose.model('User').findOne({ username });
-      if (!user) {
-        return null;
-      }
+    
+    const errorMessages = [];
+    const user = await mongoose.model('User').findOne({ username });
 
-      return new User({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        password: "",
-        role: user.role,
-        createdAt: user.createdAt,
-        avatar: user.avatar
-      });
-      
-    } catch (error) {
-      console.error(`Error finding user with username: ${username}`);
-      console.error(`Error:`, error);
-      throw error;
+    if (!user) {
+      errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"));
+      throw errorMessages;
     }
+
+    return new User({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      password: "",
+      role: user.role,
+      createdAt: user.createdAt,
+      avatar: user.avatar
+    });
   }
 
   /**
@@ -282,48 +271,51 @@ export default class User {
    * @param userId The ID of the user to search for. 
    * @returns It returns the user object if found, or null if not found.
    */
-  static async findUserById(userId: string): Promise<User | null> {
-    try {
-      const user = await mongoose.model('User').findById(userId);
-      if (!user) {
-        return null;
-      }
-      return new User({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        role: user.role,
-        createdAt: user.createdAt,
-        avatar: user.avatar
-      });
+  static async findUserById(userId: string): Promise<User> {
 
-    } catch (error) {
-      console.error(`Error finding user with ID: ${userId}`);
-      console.error(`Error:`, error);
-      throw error;
+    const errorMessages = [];
+    const user = await mongoose.model('User').findById(userId);
+    
+    if (!user) {
+      errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+      throw errorMessages;
     }
+
+    return new User({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      role: user.role,
+      createdAt: user.createdAt,
+      avatar: user.avatar
+    });
   }
 
+  /**
+   * An async function that searches for a user by their email in the database.
+   * @param email The email of the user to search for.
+   * @returns It returns the user object if found, or null if not found.
+   */
   static async findByEmail(email: string): Promise<User | null> {
-    try {
-      const user = await mongoose.model('User').findOne({ email });
-      if (!user) {
-        return null;
-      }
-      return new User({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        role: user.role,
-        createdAt: user.createdAt,
-        avatar: user.avatar
-      });
-    } catch (error) {
-      console.error(`Error finding user with email: ${email}`);
-      throw error;
+    
+    const errorMessages = [];
+    const user = await mongoose.model('User').findOne({ email });
+    
+    if (!user) {
+      errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+      throw errorMessages;
     }
+    
+    return new User({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      role: user.role,
+      createdAt: user.createdAt,
+      avatar: user.avatar
+    });
   }
   
   /**
@@ -331,18 +323,16 @@ export default class User {
    * @param userId The ID of the user to delete.
    * @returns A message indicating the result of the deletion operation, or null if the user was not found.
    */
-  static async deleteUserById(userId: string): Promise<string | null> {
-    try {
-      const user = await mongoose.model('User').findByIdAndDelete(userId);
-      if (!user) {
-        return null;
-      }
-      return `User with ID ${userId} has been deleted successfully.`;
-
-    } catch (error) {
-      console.error(`Error deleting user with ID: ${userId}`);
-      console.error(`Error:`, error)
-      throw error;
+  static async deleteUserById(userId: string): Promise<boolean> {
+    
+    const errorMessages = [];
+    const user = await mongoose.model('User').findByIdAndDelete(userId);
+    
+    if (!user) {
+      errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+      throw errorMessages;
     }
+  
+    return true;
   }
 };

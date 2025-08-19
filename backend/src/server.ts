@@ -2,8 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { createDefaultUsers } from './seed/UserSeed';
-import i18nMiddleware from './middlewares/I18n';
 import MainRouter from './router/MainRouter';
 import { ErrorData } from './utils/Error';
 // import { ErrorData } from './utils/Error';
@@ -14,9 +14,15 @@ const PORT = process.env.PORT || 3000;
 const URL: string = process.env.DB_URL || "";
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
+app.use(cookieParser())
+app.use(express.json())
 app.use(express.json());
-app.use(i18nMiddleware);
 app.use("/", MainRouter);
 
 // Simple error middleware
@@ -39,7 +45,7 @@ mongoose.connect(URL)
     });
   })
   .catch((err: Error) => {
-    console.error("An error has happened:", err);
+    console.error("A server side error happened: ", err);
 });
 
 export default app;

@@ -7,17 +7,21 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const UserSeed_1 = require("./seed/UserSeed");
-const I18n_1 = __importDefault(require("./middlewares/I18n"));
 const MainRouter_1 = __importDefault(require("./router/MainRouter"));
 // import { ErrorData } from './utils/Error';
 dotenv_1.default.config();
 const PORT = process.env.PORT || 3000;
 const URL = process.env.DB_URL || "";
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
-app.use(I18n_1.default);
+app.use(express_1.default.json());
 app.use("/", MainRouter_1.default);
 // Simple error middleware
 app.use((err, req, res, next) => {
@@ -37,6 +41,6 @@ mongoose_1.default.connect(URL)
     });
 })
     .catch((err) => {
-    console.error("An error has happened:", err);
+    console.error("A server side error happened: ", err);
 });
 exports.default = app;

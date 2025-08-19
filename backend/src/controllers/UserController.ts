@@ -4,6 +4,7 @@ import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import createError from '../utils/Error';
 import { create } from 'domain';
+import UserModel from '../models/UserSchema';
 
 const userController = {
 
@@ -59,12 +60,12 @@ const userController = {
 			const decodedToken = jwt.verify(token, secret!) as { _id: string }
 
 			if (!decodedToken._id) {
-				errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
+				throw errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
 			}
 			
 			const user = User.findById(decodedToken._id);
 			if (!user) {
-				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
+				throw errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
 			}
 
 			if (errorMessages.length > 0) {
@@ -81,17 +82,15 @@ const userController = {
 
 	async getAllUsers(req: Request, res: Response, next: NextFunction) {
 		try {
+			const errorMessages = [];
 			const users = await User.findAll();
-			if (!users || users.length === 0) {
-				return res.status(404).json({
-					ApiMessage: req.t('controllers.user.errors.no-user-found')
-				});
+
+			if (!users || users.length === 0) {				
+				throw errorMessages.push(createError("There was no user found.", 404, "NO_USER_FOUND"));			
 			}
 
-			res.status(200).json({
-				ApiMessage: req.t('controllers.user.get-users-success'),
-				return: users
-			});
+			res.status(200).json(users);
+
 		} catch (error) {
 			next(error);
 		}
@@ -100,38 +99,41 @@ const userController = {
 	
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
-
+			const errorMessages = [];
 			const user = await User.findUserById(req.params.id);
+
+			// Validation
 			if (!user) {
-				return res.status(404).json({
-					ApiMessage: req.t('controllers.user.errors.invalid-id')
-				});
+				throw errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
 			}
 
-			res.status(200).json({
-					ApiMessage: req.t('controllers.user.get-user-success'),
-					return: user
-				});
+			res.status(200).json(user);
 
 		} catch (error) {
 			next(error);
 		}
 	},
 
-	// TODO Implement that only admin can delete users
+	// TODO Put request updateUserById()
+
 	async deleteUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			const userId = req.params.id;
-			const deletedUser = await User.deleteUserById(userId);
-			if (!deletedUser) {
-				return res.status(404).json({
-					ApiMessage: req.t('controllers.user.errors.invalid-id')
-				});
+			const errorMessages = [];
+			const id  = req.params.id;
+			const user = await User.findUserById(id);
+
+			// Validation
+			if (!user) {
+				throw errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
 			}
-			res.status(200).json({
-				ApiMessage: req.t('controllers.user.delete-success'),
-				return: deletedUser
-			});
+			// Admin validation
+			if (user.role != 'admin') {
+				throw errorMessages.push(createError("You do not have the rights to delete a user.", 404, "RIGHTS_ERROR"))
+			}
+				
+			await User.deleteUserById(req.params.id);
+			res.status(200).json(`User with id of ${req.params.id} was found and successfully deleted.`);
+
 		} catch (error) {
 			next(error);
 		}
