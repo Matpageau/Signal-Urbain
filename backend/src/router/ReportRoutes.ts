@@ -3,10 +3,17 @@ import ReportController from "../controllers/ReportController";
 
 const ReportRoutes = express.Router();
 
+// Create
 ReportRoutes.post("/create", ReportController.createReport);
 
+// Get
 ReportRoutes.get("/", ReportController.getAllReport);
+ReportRoutes.get("/:id", ReportController.getReport);
 
-ReportRoutes.patch("/upvote", ReportController.upvoteReport);
+// Patch
+ReportRoutes.patch("/upvote/:id", ReportController.upvoteReport);
+
+// Delete
+ReportRoutes.delete("/delete/:id", ReportController.deleteReport);
 
 export default ReportRoutes;

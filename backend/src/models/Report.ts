@@ -104,7 +104,7 @@ export default class Report {
     });
   }
 
-  static async findAllReports(): Promise<Report[]> {
+  static async findAllReports() {
     
     const dbReports = await ReportModel.find();
     if (!dbReports || dbReports.length === 0) {
@@ -112,16 +112,21 @@ export default class Report {
     }
     
     // TODO Must populate the comments
-    return dbReports.map((report: any) => new Report({
-      _id: report._id,
-      category: report.category,
-      status: report.status,
-      description: report.description,
-      long: report.long,
-      lat: report.lat,
-      upvote: report.upvote,
-      media: report.media
+    const reportMap = dbReports.map((report: any) => ({
+      ...new Report({
+        _id: report._id,
+        category: report.category,
+        status: report.status,
+        description: report.description,
+        long: report.long,
+        lat: report.lat,
+        upvote: report.upvote,
+        media: report.media
+      }),
+      comments: []
     }));
+
+    return reportMap;
   }
 
   static async upvoteReport(userId: string, reportId: string) {
