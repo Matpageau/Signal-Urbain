@@ -70,22 +70,17 @@ export default class Report {
   }
 
   static async createReport(data: iReportValues) {
-    const errorMessages : ErrorData[] = [];
+    try {
+      data.status = statusEnum.CREATED;
+      data.upvote = 1;
 
-    // Create new instance
-    data.status = statusEnum.CREATED;
-    data.upvote = 1;
-    data.status = statusEnum.CREATED;
-    data.upvote = 1;
-    const newReport = new Report(data);
-    // Saving to DB
-    await newReport.saveReport().then(() => {
-      return newReport;
-
-    }).catch(() => {
-      errorMessages.push(createError("An error happened during data saving", 401, "SAVING_DATA_ERROR"))
-      throw errorMessages;
-    })
+      const newReport = new Report(data);
+      await newReport.saveReport();
+      return newReport; 
+      
+    } catch (error) {
+      throw [createError("An error happened during data saving", 401, "SAVING_DATA_ERROR")];
+    }
   }
   
   static async findAllReports() {

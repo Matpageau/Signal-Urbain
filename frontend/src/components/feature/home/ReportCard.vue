@@ -30,7 +30,7 @@ onMounted(async () => {
         <p class="leading-none text-xs">{{ neighborhood }}</p>
       </div>
     </div>
-    <img :src="props.report.media[0]" alt="report image" class="my-3 cursor-pointer" @click="emit('click')">
+    <img :src="props.report.medias[0]" alt="report image" class="my-3 cursor-pointer" @click="emit('click')">
     <div class="flex justify-between">
       <div class="flex">
         <CommentIcon class="mr-4"/>
