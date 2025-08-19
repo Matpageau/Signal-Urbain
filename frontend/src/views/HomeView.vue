@@ -18,7 +18,7 @@ const reportStore = useReportStore()
 
 const isModalOpen = ref(false)
 const selectedReport = ref<ReportData>()
-const selectedCategories = ref<categoryEnum[]>([categoryEnum.DMGELEMENT]);
+const selectedCategories = ref<categoryEnum[]>([]);
 
 onMounted(async () => {
   await reportStore.fetchReports()

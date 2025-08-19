@@ -14,13 +14,11 @@ const handleFilterChange = (category: categoryEnum) => {
     filters.value = filters.value.filter(c => c != category)
   }else{
     filters.value.push(category)
-  }
-  console.log(filters.value);
-  
+  }  
 }
 
-watch(() => filters, (newFilters) => {
-  emit('change', newFilters.value)
+watch(() => filters.value, (newFilters) => {
+  emit('change', newFilters)
 })
 </script>
 
