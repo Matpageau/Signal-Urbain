@@ -15,7 +15,7 @@ const reportController = {
         errorMessages.push(createError("The object values are invalid.", 404, "INVALID_VALUES"))
         throw errorMessages;
       }
-
+      
       const newReport = await Report.createReport(newReportData);
       res.status(201).json(newReport);
 
