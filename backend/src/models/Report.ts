@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import createError from '../utils/Error';
+import createError, { ErrorData } from '../utils/Error';
 import ReportModel from "./ReportSchema";
 import UserModel from "./UserSchema";
 
@@ -26,7 +26,7 @@ export interface iReportValues {
   long: number;
   lat: number;
   upvote: number;
-  media: string[] | [];
+  medias: string[] | [];
 }
 
 export default class Report {
@@ -37,9 +37,9 @@ export default class Report {
   long: number;
   lat: number;
   upvote: number;
-  media: string[] | [];
+  medias: string[] | [];
 
-  constructor({ _id, category, status, description, long, lat, upvote, media}: iReportValues) {
+  constructor({ _id, category, status, description, long, lat, upvote, medias}: iReportValues) {
     this._id = _id || null;
     this.category = category;
     this.status = status;
@@ -47,10 +47,10 @@ export default class Report {
     this.long = long;
     this.lat = lat;
     this.upvote = upvote;
-    this.media = media || [];
+    this.medias = medias || [];
   }
 
-  async saveReport(): Promise<void> {
+  async saveReport() {
     try {
       const reportValues = new ReportModel({
         category: this.category,
@@ -59,7 +59,7 @@ export default class Report {
         long: this.long,
         lat: this.lat,
         upvote: this.upvote,
-        media: this.media
+        medias: this.medias
       });
 
       await reportValues.save();
@@ -70,23 +70,56 @@ export default class Report {
   }
 
   static async createReport(data: iReportValues) {
-    const errorMessages = [];
+    const errorMessages : ErrorData[] = [];
 
     // Create new instance
+    data.status = statusEnum.CREATED;
+    data.upvote = 1;
     const newReport = new Report(data);
     // Saving to DB
     await newReport.saveReport().then(() => {
       return newReport;
 
-    }).catch((err) => {
-      err = errorMessages.push(createError("An error happened during data saving", 401, "SAVING_DATA_ERROR"))
-      throw err;
+    }).catch(() => {
+      errorMessages.push(createError("An error happened during data saving", 401, "SAVING_DATA_ERROR"))
+      throw errorMessages;
     })
   }
+  
+  static async findAllReports() {
+    
+    const dbReports = await ReportModel.find();
+    if (!dbReports || dbReports.length === 0) {
+      return [];
+    }
+    
+    const reportMap = dbReports.map((report: any) => ({
+      ...new Report({
+        _id: report._id,
+        category: report.category,
+        status: report.status,
+        description: report.description,
+        long: report.long,
+        lat: report.lat,
+        upvote: report.upvote,
+        medias: report.medias
+      }),
+      comments: []
+    }));
 
-  static async findReportById(id: string): Promise<Report | null> {
+    return reportMap;
+  }
 
-    const dbReport = await ReportModel.findById(id);
+  static async findReportById(userId: string): Promise<Report | null> {
+    const errorMessages = [];
+
+    // Id's validation
+    if (!Types.ObjectId.isValid(userId)) {
+      errorMessages.push(createError("One of the ID's provided is invalid.", 401, "INVALID_ID"))
+      throw errorMessages;
+    }
+
+    const dbReport = await ReportModel.findById(userId);
     if (!dbReport) {
       return null;
     }
@@ -100,33 +133,8 @@ export default class Report {
         long: dbReport.long,
         lat: dbReport.lat,
         upvote: dbReport.upvote,
-        media: dbReport.media
+        medias: dbReport.medias
     });
-  }
-
-  static async findAllReports() {
-    
-    const dbReports = await ReportModel.find();
-    if (!dbReports || dbReports.length === 0) {
-      return [];
-    }
-    
-    // TODO Must populate the comments
-    const reportMap = dbReports.map((report: any) => ({
-      ...new Report({
-        _id: report._id,
-        category: report.category,
-        status: report.status,
-        description: report.description,
-        long: report.long,
-        lat: report.lat,
-        upvote: report.upvote,
-        media: report.media
-      }),
-      comments: []
-    }));
-
-    return reportMap;
   }
 
   static async upvoteReport(userId: string, reportId: string) {

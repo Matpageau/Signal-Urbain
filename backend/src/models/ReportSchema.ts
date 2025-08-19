@@ -1,4 +1,4 @@
-import mongoose, { mongo, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { iReportValues } from "./Report";
 
 const reportSchema = new Schema<iReportValues>({
@@ -26,7 +26,7 @@ const reportSchema = new Schema<iReportValues>({
     type: Number,
     required: true,
   },
-  media: {
+  medias: {
     type: [String],
     required: false,
   }

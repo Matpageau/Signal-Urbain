@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import Report, { iReportValues, categoryEnum, statusEnum } from "../models/Report";
-import { REFUSED } from "dns";
+import Report, { categoryEnum, statusEnum } from "../models/Report";
 
 export const createDefaultReports = async () => {
 
@@ -12,7 +11,7 @@ export const createDefaultReports = async () => {
     long: -71.79702,
     lat: 45.13266,
     upvote: 1,
-    media: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"]
+    medias: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"]
   };
   
   const defaultPotHoleTwo = {
@@ -23,7 +22,7 @@ export const createDefaultReports = async () => {
     long: -75.79702,
     lat: 42.13266,
     upvote: 1,
-    media: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"]
+    medias: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"]
   };
   
   const isPhOneExisting = await Report.findReportById(defaultPotHoleOne._id);

@@ -4,7 +4,7 @@ import ReportController from "../controllers/ReportController";
 const ReportRoutes = express.Router();
 
 // Create
-ReportRoutes.post("/create", ReportController.createReport);
+ReportRoutes.post("/", ReportController.createReport);
 
 // Get
 ReportRoutes.get("/", ReportController.getAllReport);
