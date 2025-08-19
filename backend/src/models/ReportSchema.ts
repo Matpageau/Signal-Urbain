@@ -26,7 +26,7 @@ const reportSchema = new Schema<iReportValues>({
     type: Number,
     required: true,
   },
-  media: {
+  medias: {
     type: [String],
     required: false,
   }

@@ -9,9 +9,14 @@ import { getNeighborhood, getType } from '@/utils/reportUtils';
 import elementPlaceholder from '@/assets/img/elementor-placeholder-image.png'
 import SelectMap from '../feature/modal/SelectMap.vue';
 import BaseInput from './BaseInput.vue';
+import axios from 'axios';
 
 const props = defineProps<{
   report?: ReportData
+}>()
+
+const emit = defineEmits<{
+  (e: 'close'): void
 }>()
 
 const neighborhood = ref<string>("Loading...")
@@ -19,25 +24,38 @@ const neighborhood = ref<string>("Loading...")
 const coord = ref<[number, number] | undefined>(props.report?.long != undefined && props.report.lat != undefined ? [props.report.long, props.report.lat] : undefined)
 const category = ref<categoryEnum>(props.report?.category ?? categoryEnum.OTHER)
 const description = ref<string>('')
-const image1 = ref<string>(props.report?.media[0] ?? "")
-const image2 = ref<string>(props.report?.media[1] ?? "")
-const image3 = ref<string>(props.report?.media[2] ?? "")
+const image1 = ref<string>(props.report?.medias[0] ?? "")
+const image2 = ref<string>(props.report?.medias[1] ?? "")
+const image3 = ref<string>(props.report?.medias[2] ?? "")
 
 onMounted(async () => {
   neighborhood.value = await getNeighborhood(props.report?.long, props.report?.lat)
 })
 
+const handleCreateReport = async () => {
+  try {
+    const payload = {
+      category: category.value,
+      description: description.value,
+      long: coord.value?.[0],
+      lat: coord.value?.[1],
+      medias: [image1.value, image2.value, image3.value]
+    }
+    const repRes = await axios.post('http://localhost:3000/api/report', payload)
+
+    if(repRes.data) {
+      emit('close')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 watch(() => coord.value, async (newCoord) => {
-  if(newCoord) {
-    console.log('new coords');
-    
+  if(newCoord) {    
     neighborhood.value = await getNeighborhood(newCoord[0], newCoord[1])
   }
 })
-
-const emit = defineEmits<{
-  (e: 'click'): void
-}>()
 </script>
 
 <template>
@@ -56,10 +74,14 @@ const emit = defineEmits<{
           </div>
         </div>
         <div class="flex items-center h-1/2">
-          <BaseButton v-if="!report" class="px-4 mr-4 bg-(--blue) hover:bg-(--blue_hover) text-white">
+          <BaseButton 
+            v-if="!report"
+            class="px-4 mr-4 bg-(--blue) hover:bg-(--blue_hover) text-white"
+            @click="handleCreateReport"
+          >
             Sauvegarder
           </BaseButton>
-          <PlusIcon class="rotate-45 cursor-pointer" :onclick="() => emit('click')"/>
+          <PlusIcon class="rotate-45 cursor-pointer" :onclick="() => emit('close')"/>
         </div>
       </div>
       <div class="grid grid-cols-5 mt-1 gap-4 pb-4 border-b border-neutral-300">

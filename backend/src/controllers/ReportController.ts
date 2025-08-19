@@ -7,8 +7,14 @@ const reportController = {
 
   async createReport(req: Request, res: Response, next: NextFunction) {
     try {
+      const errorMessages = [];
       const newReportData: iReportValues = req.body;
 
+      if (!newReportData) {
+        errorMessages.push(createError("The object values are invalid.", 404, "INVALID_VALUES"))
+        throw errorMessages;
+      }
+      
       const newReport = await Report.createReport(newReportData);
       res.status(201).json(newReport);
 

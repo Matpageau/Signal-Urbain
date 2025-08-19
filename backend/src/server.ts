@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { createDefaultUsers } from './seed/UserSeed';
-import { createDefaultReports } from './seed/ReportSeed';
+// import { createDefaultReports } from './seed/ReportSeed';
 import MainRouter from './router/MainRouter';
 import { ErrorData } from './utils/Error';
 

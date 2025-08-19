@@ -7,7 +7,7 @@ export type ReportData = {
   lat: number
   status: statusEnum
   upvote: number
-  media: string[]
+  medias: string[]
 }
 
 export enum categoryEnum  {

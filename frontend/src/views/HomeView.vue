@@ -53,7 +53,7 @@ const handleReportModal = (report: ReportData) => {
     <BaseModal
       v-if="isModalOpen"
       :report="selectedReport"
-      @click="isModalOpen = false"
+      @close="isModalOpen = false"
     />
     <BaseMapbox class="absolute top-0 left-0" :reports="filteredReports" @select="(r) => handleReportModal(r)"/>
     <div class="absolute flex flex-col top-0 left-0 h-full w-fit pl-4 py-4">

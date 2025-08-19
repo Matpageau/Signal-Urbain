@@ -1,4 +1,4 @@
-import { statusEnum, categoryEnum, type ReportData } from "@/types/Report";
+import { categoryEnum, type ReportData } from "@/types/Report";
 import axios from "axios";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -15,7 +15,7 @@ export const useReportStore = defineStore('report', () => {
     isFetching.value = true
     fetchPromise = axios
     .get<ReportData[]>('http://localhost:3000/api/report')
-    .then(res => {
+    .then(res => {     
       reports.value = res.data
     }).catch(() => {
       reports.value = []
@@ -24,18 +24,6 @@ export const useReportStore = defineStore('report', () => {
       isFetching.value = false
       isReady.value = true
       fetchPromise = null
-
-      reports.value.push({
-        _id: 'adadauihdun',
-        comments: [],
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus.",
-        lat: 46.8687,
-        long: -71.2504,
-        media: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"],
-        status: statusEnum.CREATED,
-        category: categoryEnum.POTHOLE,
-        upvote: 200
-      })
     })
 
     return fetchPromise
