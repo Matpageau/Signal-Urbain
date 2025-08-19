@@ -35,7 +35,6 @@ mongoose.connect(URL)
     console.log("Connected to MongoDB");
     console.log("Attempting to create default users...");
     await createDefaultUsers();
-    //await createDefaultReports();
     
     app.listen(PORT, () => {
       console.log(`Server is running on Port: ${PORT}`);

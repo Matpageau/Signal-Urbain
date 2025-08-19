@@ -14,7 +14,7 @@ export const useReportStore = defineStore('report', () => {
 
     isFetching.value = true
     fetchPromise = axios
-    .get<ReportData[]>('http://localhost:3000/api/report/get')
+    .get<ReportData[]>('http://localhost:3000/api/report')
     .then(res => {
       reports.value = res.data
     }).catch(() => {
