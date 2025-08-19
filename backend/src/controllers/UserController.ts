@@ -3,8 +3,6 @@ import { IUserInfos, UserRoleEnum } from '../models/User';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import createError from '../utils/Error';
-import { create } from 'domain';
-import UserModel from '../models/UserSchema';
 
 const userController = {
 
@@ -23,14 +21,15 @@ const userController = {
 
 
 	async login(req: Request, res: Response, next: NextFunction) {    
-    const { email, password } = req.body;
-		const errorMessages = [];
+		try {
+			const { email, password } = req.body;
+			const errorMessages = [];
 
-		if (!email || !password) {
-			errorMessages.push(createError("You must provide a valid email and password", 401, "INPUT_INVALID"))
-    }
+			if (!email || !password) {
+				errorMessages.push(createError("You must provide a valid email and password", 401, "INPUT_INVALID"))
+				throw errorMessages;
+			}
 
-    try {
 			const userJsonWebToken = await User.loginUser(email, password);
 
 			if (userJsonWebToken) {
@@ -52,6 +51,7 @@ const userController = {
 		
 			const errorMessages = [];
 			const token = req.cookies.token;
+      
 			if (!token) {
 				errorMessages.push(createError("There is no token provided.", 401, "TOKEN_MISSING"))
 			}
@@ -60,12 +60,13 @@ const userController = {
 			const decodedToken = jwt.verify(token, secret!) as { _id: string }
 
 			if (!decodedToken._id) {
-				throw errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
+				errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
 			}
 			
-			const user = User.findById(decodedToken._id);
+			const user = await User.findById(decodedToken._id);
+      
 			if (!user) {
-				throw errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
+				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
 			}
 
 			if (errorMessages.length > 0) {
@@ -85,8 +86,10 @@ const userController = {
 			const errorMessages = [];
 			const users = await User.findAll();
 
+			// Validation
 			if (!users || users.length === 0) {				
-				throw errorMessages.push(createError("There was no user found.", 404, "NO_USER_FOUND"));			
+				errorMessages.push(createError("There was no user found.", 404, "NO_USER_FOUND"));			
+				throw errorMessages;
 			}
 
 			res.status(200).json(users);
@@ -104,7 +107,8 @@ const userController = {
 
 			// Validation
 			if (!user) {
-				throw errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+				errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"));
+				throw errorMessages;
 			}
 
 			res.status(200).json(user);
@@ -124,11 +128,13 @@ const userController = {
 
 			// Validation
 			if (!user) {
-				throw errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+				errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"));
+				throw errorMessages;
 			}
 			// Admin validation
 			if (user.role != 'admin') {
-				throw errorMessages.push(createError("You do not have the rights to delete a user.", 404, "RIGHTS_ERROR"))
+				errorMessages.push(createError("You do not have the rights to delete a user.", 404, "RIGHTS_ERROR"))
+				throw errorMessages;
 			}
 				
 			await User.deleteUserById(req.params.id);

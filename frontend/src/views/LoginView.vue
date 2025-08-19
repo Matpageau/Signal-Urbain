@@ -3,16 +3,17 @@ import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import axios, { AxiosError } from "axios"
 
-const userStore = useUserStore()
 import BaseInput from '@/components/shared/BaseInput.vue';
 import groupedIcons from '@/assets/img/groupedIcons.png'
 import BaseButton from '@/components/shared/BaseButton.vue';
 import { useUserStore } from '@/stores/userStore';
 import router from '@/router';
+import type { ApiError } from '@/types/ApiError';
 
+const userStore = useUserStore()
 const { t } = useI18n()
 
-const errorsMsgs = ref<string[]>(['INVLID_USERNAME', 'INVLID_PASSWORD'])
+const errorsMsgs = ref<string[]>([])
 
 const username = ref<string>('')
 const password = ref<string>('')
@@ -24,16 +25,20 @@ watch([username, password], () => {
 const handleLogin = async () => {
   try {
     const payload = {email: username.value, password: password.value}
-    const res = await axios.post("http://localhost:3000/api/user/login", payload)
+    const res = await axios.post("http://localhost:3000/api/user/login", payload, { withCredentials: true })
 
     if(res.data) {
-      userStore.currentUser = res.data
+      userStore.fetchUser()
       router.push('/')
     }
   } catch (error) {
-    const err = error as AxiosError<{ code?: [string] }>
-    errorsMsgs.value = err.response?.data?.code ?? ["UNKNOWN_ERROR"]
-    console.error(err)
+    const err = error as AxiosError<ApiError[]>
+
+    if (err.response?.data) {
+      errorsMsgs.value = err.response.data.map(e => e.errorKey);
+    } else {
+      errorsMsgs.value = ["Unknown error occurred"];
+    }
   }
 }
 </script>
@@ -51,13 +56,13 @@ const handleLogin = async () => {
           v-model="username"
           type="email"
           :placeholder="t('EMAILORUSERNAME')"
-          :error="errorsMsgs.includes('INVALID_EMAIL') ? t('errors.INVALID_EMAIL') : ''"
+          :error="errorsMsgs.includes('EMAIL_NOT_FOUND') ? t('errors.INVALID_EMAIL') : ''"
         />
         <BaseInput 
           v-model="password"
           type="password"
           :placeholder="t('PASSWORD')"
-          :error="errorsMsgs.includes('INVLID_PASSWORD') ? t('errors.INVALID_PASSWORD') : ''"
+          :error="errorsMsgs.includes('PASSWORD_INVALID') ? t('errors.INVALID_PASSWORD') : ''"
         />
       </form>
       <div class="flex flex-col items-center">
