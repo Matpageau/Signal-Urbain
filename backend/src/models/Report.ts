@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import createError, { ErrorData } from '../utils/Error';
 import ReportModel from "./ReportSchema";
 import UserModel from "./UserSchema";
@@ -27,7 +27,6 @@ export interface iReportValues {
   lat: number;
   upvote: number;
   medias: string[] | [];
-  medias: string[] | [];
 }
 
 export default class Report {
@@ -39,9 +38,7 @@ export default class Report {
   lat: number;
   upvote: number;
   medias: string[] | [];
-  medias: string[] | [];
 
-  constructor({ _id, category, status, description, long, lat, upvote, medias}: iReportValues) {
   constructor({ _id, category, status, description, long, lat, upvote, medias}: iReportValues) {
     this._id = _id || null;
     this.category = category;
@@ -51,10 +48,8 @@ export default class Report {
     this.lat = lat;
     this.upvote = upvote;
     this.medias = medias || [];
-    this.medias = medias || [];
   }
 
-  async saveReport() {
   async saveReport() {
     try {
       const reportValues = new ReportModel({
@@ -64,7 +59,6 @@ export default class Report {
         long: this.long,
         lat: this.lat,
         upvote: this.upvote,
-        medias: this.medias
         medias: this.medias
       });
 
@@ -76,7 +70,6 @@ export default class Report {
   }
 
   static async createReport(data: iReportValues) {
-    const errorMessages : ErrorData[] = [];
     const errorMessages : ErrorData[] = [];
 
     // Create new instance
@@ -93,12 +86,7 @@ export default class Report {
       errorMessages.push(createError("An error happened during data saving", 401, "SAVING_DATA_ERROR"))
       throw errorMessages;
     })
-    }).catch(() => {
-      errorMessages.push(createError("An error happened during data saving", 401, "SAVING_DATA_ERROR"))
-      throw errorMessages;
-    })
   }
-  
   
   static async findAllReports() {
     
@@ -116,7 +104,6 @@ export default class Report {
         long: report.long,
         lat: report.lat,
         upvote: report.upvote,
-        medias: report.medias
         medias: report.medias
       }),
       comments: []
