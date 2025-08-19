@@ -1,11 +1,51 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { createApp, h, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from "mapbox-gl"
+import type { ReportData } from '@/types/Report';
+import PinComp from './PinComp.vue';
+
+const props = defineProps<{
+  reports: ReportData[]
+}>()
+
+const emit = defineEmits<{
+  (e: 'select', report: ReportData): void
+}>()
 
 const mapContainer = ref<HTMLDivElement | null>(null)
 let map: mapboxgl.Map | null = (null)
+let markers: mapboxgl.Marker[] = []
+
+function renderMarkers(reports: ReportData[]) {
+  if (!map) return
+
+  // supprimer les anciens
+  markers.forEach(m => m.remove())
+  markers = []
+
+  // recréer les nouveaux
+  reports.forEach(report => {
+    if (!map) return
+    const el = document.createElement('div')
+
+    createApp({
+      render: () =>
+        h(PinComp, {
+          report: report,
+          canHover: true,
+          onSelect: () => emit('select', report)
+        }),
+    }).mount(el)
+
+    const marker = new mapboxgl.Marker({ element: el })
+      .setLngLat([report.long, report.lat])
+      .addTo(map)
+
+    markers.push(marker)
+  })
+}
 
 onMounted(() => {
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN!
@@ -41,6 +81,7 @@ onMounted(() => {
       map.addControl(geolocate)
 
       map.on('load', () => {
+        renderMarkers(props.reports)
         geolocate.trigger()
       })
     },
@@ -62,7 +103,14 @@ onMounted(() => {
   )
 })
 
+watch(() => props.reports, (newReports) => {
+    renderMarkers(newReports)
+  },
+  { deep: true }
+)
+
 onUnmounted(() => {
+  markers.forEach(m => m.remove())
   map?.remove()
 })
 </script>

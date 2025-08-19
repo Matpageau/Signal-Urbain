@@ -1,7 +1,7 @@
-import type { statusEnum, typeEnum } from "./Report"
+import type { statusEnum, categoryEnum } from "./Report"
 
 export type PinData = {
   status?: statusEnum
   upvote?: number
-  type?: typeEnum
+  category?: categoryEnum
 }

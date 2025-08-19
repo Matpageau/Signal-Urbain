@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 
-import { typeEnum, type ReportData } from '@/types/Report';
+import { categoryEnum, statusEnum, type ReportData } from '@/types/Report';
 import PlusIcon from '../icons/PlusIcon.vue';
 import BaseButton from './BaseButton.vue';
 import PinComp from './PinComp.vue';
@@ -17,7 +17,7 @@ const props = defineProps<{
 const neighborhood = ref<string>("Loading...")
 
 const coord = ref<[number, number] | undefined>(props.report?.long != undefined && props.report.lat != undefined ? [props.report.long, props.report.lat] : undefined)
-const type = ref<typeEnum>(props.report?.type ?? typeEnum.OTHER)
+const category = ref<categoryEnum>(props.report?.category ?? categoryEnum.OTHER)
 const description = ref<string>('')
 const image1 = ref<string>(props.report?.media[0] ?? "")
 const image2 = ref<string>(props.report?.media[1] ?? "")
@@ -45,12 +45,10 @@ const emit = defineEmits<{
     <div class="relative bg-white w-1/2 h-fit rounded-lg p-3">
       <div class="flex justify-between">
         <div class="flex">
-          <PinComp :pin="{
-            type: type
-          }"/>
+          <PinComp :report="props.report" :pin-data="{category: category, status: statusEnum.CREATED, upvote: 1}"/>
           <div class="ml-2">
             <div class="flex items-center">
-              <h1 class="font-bold text-2xl">{{ getType(type) }}</h1>
+              <h1 class="font-bold text-2xl">{{ getType(category) }}</h1>
               <div class="w-[20px] h-[1px] bg-black ml-3 mr-1"></div>
               <p class="italic">{{ props.report?.status ?? 'Creating' }}</p>
             </div>
@@ -58,7 +56,7 @@ const emit = defineEmits<{
           </div>
         </div>
         <div class="flex items-center h-1/2">
-          <BaseButton class="px-4 mr-4 bg-(--blue) hover:bg-(--blue_hover) text-white">
+          <BaseButton v-if="!report" class="px-4 mr-4 bg-(--blue) hover:bg-(--blue_hover) text-white">
             Sauvegarder
           </BaseButton>
           <PlusIcon class="rotate-45 cursor-pointer" :onclick="() => emit('click')"/>
@@ -90,22 +88,31 @@ const emit = defineEmits<{
         <div class="col-span-2 h-full rounded-2xl overflow-hidden">
           <SelectMap 
             :coord="coord"
-            :pin-dat="{
-              type: type
-            }"
+            :report="props.report"
+            :pin-data="{category: category, status: statusEnum.CREATED, upvote: 1}"
+            :can-move="!props.report"
             @select="(c) => coord = c"
           />
         </div>
       </div>
-      <div v-if="props.report" class="mt-4">
-
+      <div v-if="props.report" class="mt-3">
+        <div v-if="props.report.description">
+          <h1 class="font-bold">Description</h1>
+          <p class="text-xs">{{ props.report.description }}</p>
+        </div>
+        <div class="mt-3">
+          <div class="flex">
+            <h1 class="font-bold">Commentaires</h1>
+            <p class="ml-3">{{ props.report.comments.length }}</p>
+          </div>
+        </div>
       </div>
       <div v-else class="grid grid-cols-5 gap-4 mt-4 justify-between">
         <div class="col-span-3">
           <div>
             <p>Informations générales</p>
             <BaseInput
-              v-model="type"
+              v-model="category"
               type="select"
               placeholder="Type"
               :options="[

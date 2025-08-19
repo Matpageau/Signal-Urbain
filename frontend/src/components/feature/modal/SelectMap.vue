@@ -4,6 +4,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import PinComp from '@/components/shared/PinComp.vue';
 import type { PinData } from '@/types/Pin';
+import type { ReportData } from '@/types/Report';
 
 const mapContainer = ref<HTMLDivElement | null>(null);
 let map: mapboxgl.Map | null = null;
@@ -11,16 +12,18 @@ let marker: mapboxgl.Marker | null = null;
 
 const props = defineProps<{
   coord?: [number, number];
-  pinDat?: PinData
+  report?: ReportData
+  pinData?: PinData
+  canMove: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'select', coord: [number, number]): void
 }>()
 
-const pinRef = ref<PinData | undefined>(props.pinDat)
+const pinRef = ref<PinData | undefined>(props.report)
 
-watch(() => props.pinDat, (newPin) => {
+watch(() => props.report, (newPin) => {
   pinRef.value = newPin;
 });
 
@@ -32,7 +35,7 @@ const setMarker = (coords: [number, number]) => {
     const el = document.createElement('div')
     
     createApp({
-      render: () => h(PinComp, { pin: pinRef.value })
+      render: () => h(PinComp, { report: props.report, pinData: { category: props.pinData?.category, status: props.pinData?.status, upvote: props.pinData?.upvote } })
     }).mount(el)
 
     marker = new mapboxgl.Marker({ element: el })
@@ -73,10 +76,12 @@ onMounted(() => {
     setMarker(props.coord);
   }
 
-  map.on('click', (e) => {
-    const coords: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-    setMarker(coords);
-  });
+  if(props.canMove == true) {
+    map.on('click', (e) => {
+      const coords: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+      setMarker(coords);
+    });
+  }
 
   if (!props.coord && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(

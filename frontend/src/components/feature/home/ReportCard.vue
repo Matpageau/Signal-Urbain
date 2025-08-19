@@ -10,6 +10,10 @@ const props = defineProps<{
   report: ReportData
 }>()
 
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
+
 const neighborhood = ref<string>("Loading...")
 
 onMounted(async () => {
@@ -18,15 +22,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-fit">
-    <div class="flex">
+  <div class="flex flex-col w-full h-fit bg-white rounded-lg p-4">
+    <div class="flex items-center cursor-pointer w-fit" @click="emit('click')">
       <PinComp :report="props.report"/>
-      <div>
-        <h1 class="font-bold text-2xl">{{ getType(props.report.type) }}</h1>
-        <p>{{ neighborhood }}</p>
+      <div class="ml-1">
+        <h1 class="font-bold leading-none">{{ getType(props.report.category) }}</h1>
+        <p class="leading-none text-xs">{{ neighborhood }}</p>
       </div>
     </div>
-    <img :src="props.report.media[0]" alt="report image">
+    <img :src="props.report.media[0]" alt="report image" class="my-3 cursor-pointer" @click="emit('click')">
     <div class="flex justify-between">
       <div class="flex">
         <CommentIcon class="mr-4"/>
@@ -34,7 +38,7 @@ onMounted(async () => {
       </div>
       <div class="flex">
         <p>{{ props.report.upvote }}</p>
-        <UpvoteIcon class="ml-4"/>
+        <UpvoteIcon class="ml-4 cursor-pointer"/>
       </div>
     </div>
   </div>

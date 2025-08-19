@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import FilterBar from '@/components/feature/home/FilterBar.vue';
 import PlusIcon from '@/components/icons/PlusIcon.vue';
@@ -11,22 +11,39 @@ import GearIcon from '@/components/icons/GearIcon.vue';
 import ReportCard from '@/components/feature/home/ReportCard.vue';
 import { useReportStore } from '@/stores/reportStore';
 import BaseModal from '@/components/shared/ReportModal.vue';
-import type { ReportData } from '@/types/Report';
+import { categoryEnum, type ReportData } from '@/types/Report';
 
 const userStore = useUserStore()
 const reportStore = useReportStore()
 
 const isModalOpen = ref(false)
-const selectedReport = ref<ReportData | null>()
+const selectedReport = ref<ReportData>()
+const selectedCategories = ref<categoryEnum[]>([categoryEnum.DMGELEMENT]);
 
 onMounted(async () => {
-  if(!reportStore.reports) {
-    reportStore.fetchReports()
-  }
+  await reportStore.fetchReports()
 })
 
+const filteredReports = computed(() => {
+  if (!selectedCategories.value.length) return reportStore.reports;
+
+  console.log(filteredReports.value);
+  return reportStore.reports.filter(report =>
+    selectedCategories.value.includes(report.category)
+  );
+});
+
+const handleFilterChange = (categories: categoryEnum[]) => {
+  selectedCategories.value = categories
+};
+
 const handleCreateModal = () => {
-  selectedReport.value = null
+  selectedReport.value = undefined
+  isModalOpen.value = true
+}
+
+const handleReportModal = (report: ReportData) => {
+  selectedReport.value = report
   isModalOpen.value = true
 }
 </script>
@@ -35,15 +52,17 @@ const handleCreateModal = () => {
   <div class="relative w-full h-full select-none">
     <BaseModal
       v-if="isModalOpen"
+      :report="selectedReport"
       @click="isModalOpen = false"
     />
-    <BaseMapbox class="absolute top-0 left-0"/>
+    <BaseMapbox class="absolute top-0 left-0" :reports="filteredReports" @select="(r) => handleReportModal(r)"/>
     <div class="absolute flex flex-col top-0 left-0 h-full w-fit pl-4 py-4">
       <div class="flex flex-col h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10">
         <ReportCard 
-          v-for="report in reportStore.reports"
+          v-for="report in filteredReports"
           :key="report._id"
           :report="report"
+          @click="() => handleReportModal(report)"
         />
       </div>
       <a v-if="!userStore.currentUser" href="/login" class="flex shrink-0 items-center justify-center bg-(--blue) hover:bg-(--blue_hover) transition-colors mt-4 h-[56px] text-white font-bold rounded-lg cursor-pointer">
@@ -57,7 +76,7 @@ const handleCreateModal = () => {
         <GearIcon class="cursor-pointer"/>
       </div>
     </div>
-    <FilterBar class="absolute top-4 left-[398px]"/>
+    <FilterBar class="absolute top-4 left-[398px]" @change="handleFilterChange"/>
     <BaseButton
       class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"
       :disable="!userStore.currentUser ? true : false"

@@ -1,7 +1,7 @@
 export type ReportData = {
   _id: string
   comments: string[]
-  type: typeEnum
+  category: categoryEnum
   description: string
   long: number
   lat: number
@@ -10,7 +10,7 @@ export type ReportData = {
   media: string[]
 }
 
-export enum typeEnum  {
+export enum categoryEnum  {
   POTHOLE = 'pothole',
   DMGELEMENT = 'dmgelement',
   ROADOBSTACLE = 'roadobstacle',

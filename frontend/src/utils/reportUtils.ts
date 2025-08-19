@@ -1,7 +1,7 @@
-import type { typeEnum } from "@/types/Report"
+import type { categoryEnum } from "@/types/Report"
 import axios from "axios"
 
-export const getType = (type?: typeEnum): string => {
+export const getType = (type?: categoryEnum): string => {
   switch (type) {
     case 'pothole':
       return "Pothole"
