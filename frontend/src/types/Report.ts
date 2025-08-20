@@ -8,6 +8,7 @@ export type ReportData = {
   status: statusEnum
   upvote: number
   medias: string[]
+  commentCount: number
 }
 
 export enum categoryEnum  {

@@ -4,6 +4,7 @@ export type UserData = {
   email: string
   password: string
   role: UserRoleEnum
+  upvoted_report_id: string[]
   avatar_url: string
 }
 

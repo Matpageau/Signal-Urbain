@@ -25,7 +25,7 @@ export const useReportStore = defineStore('report', () => {
       isReady.value = true
       fetchPromise = null
     })
-
+    
     return fetchPromise
   }
 
@@ -38,6 +38,7 @@ export const useReportStore = defineStore('report', () => {
   const upvoteReport = async (id: string) => {
     try {
       const res = await axios.patch(`http://localhost:3000/api/report/${id}/upvote`, {}, { withCredentials: true })
+      console.log(res.data);
 
       const index = reports.value.findIndex(r => r._id == id)
       if(index != -1) {

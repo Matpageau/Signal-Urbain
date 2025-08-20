@@ -37,11 +37,11 @@ onMounted(async () => {
     <div class="flex justify-between">
       <div class="flex">
         <CommentIcon class="mr-4"/>
-        <!-- <p>{{ props.report.comments.length }}</p> -->
+        <p>{{ props.report.commentCount }}</p>
       </div>
       <div class="flex">
         <p>{{ props.report.upvote }}</p>
-        <UpvoteIcon class="ml-4 cursor-pointer" @click="reportStore.upvoteReport(props.report._id)"/>
+        <UpvoteIcon :class="['ml-4 cursor-pointer']" @click="reportStore.upvoteReport(props.report._id)"/> //CHECK AVEC LE REPORT STORE
       </div>
     </div>
   </div>

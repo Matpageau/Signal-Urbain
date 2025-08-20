@@ -174,7 +174,10 @@ export default class Report {
       );
       // Decrement the report upvote count
       return await ReportModel.findByIdAndUpdate(
+      return await ReportModel.findByIdAndUpdate(
         reportId,
+        { $inc: { upvote: -1 } },
+        { new: true }
         { $inc: { upvote: -1 } },
         { new: true }
       )
@@ -187,7 +190,10 @@ export default class Report {
       );
       // Increment the report upvote count
       return await ReportModel.findByIdAndUpdate(
+      return await ReportModel.findByIdAndUpdate(
         reportId,
+        { $inc: { upvote: 1 } },
+        { new: true }
         { $inc: { upvote: 1 } },
         { new: true }
       )

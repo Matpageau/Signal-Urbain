@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
-import { iUserValues } from "../models/User";
+import { iUserValues, UserRoleEnum } from "../models/User";
 import createError from "../utils/Error";
+import { error } from "console";
 
 declare global {
   namespace Express {
