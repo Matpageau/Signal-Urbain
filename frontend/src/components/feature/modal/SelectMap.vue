@@ -58,7 +58,7 @@ onMounted(() => {
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN!;
 
   const center: [number, number] = props.coord || [0, 0];
-  const zoom = props.coord ? 12 : 2;
+  const zoom = props.coord ? 12 : 9;
 
   map = new mapboxgl.Map({
     container: mapContainer.value,

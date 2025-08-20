@@ -10,6 +10,9 @@ import elementPlaceholder from '@/assets/img/elementor-placeholder-image.png'
 import SelectMap from '../feature/modal/SelectMap.vue';
 import BaseInput from './BaseInput.vue';
 import axios from 'axios';
+import { useReportStore } from '@/stores/reportStore';
+
+const reportStore = useReportStore()
 
 const props = defineProps<{
   report?: ReportData
@@ -44,6 +47,7 @@ const handleCreateReport = async () => {
     const repRes = await axios.post('http://localhost:3000/api/report', payload)
 
     if(repRes.data) {
+      await reportStore.fetchReports()
       emit('close')
     }
   } catch (error) {
