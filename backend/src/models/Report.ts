@@ -59,6 +59,7 @@ export default class Report {
   async saveReport() {
     try {
       const reportMongoModel = new ReportModel({
+        _id: this._id || new Types.ObjectId,
         category: this.category,
         status: this.status,
         description: this.description,
@@ -69,7 +70,7 @@ export default class Report {
       });
 
       await reportMongoModel.save();
-      console.log(`New report with category ${this.category} was saved successfully.`)
+      
     } catch (error) {
       throw [createError("An error happened during data saving", 500, "SAVING_DATA_ERROR")];
     }
@@ -77,8 +78,10 @@ export default class Report {
 
   static async createReport(data: iReportValues) {
     try {
+      //TODO Specific error each required report Key value
+      
       data.status = statusEnum.CREATED;
-      data.upvote = 1;
+      data.upvote += 1;
 
       const newReport = new Report(data);
       await newReport.saveReport();

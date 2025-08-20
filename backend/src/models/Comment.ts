@@ -32,7 +32,6 @@ export default class Comment {
       })
 
       await commentValues.save();
-      console.log(`A new comment added to the report with id : ${this.report_id} .`)
 
     } catch (error) {
       throw error;

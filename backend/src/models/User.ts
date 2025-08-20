@@ -58,7 +58,6 @@ export default class User {
         avatar: this.avatar
       });
       await userValues.save();
-      console.log(`User ${this.username} was saved successfully.`);
       
     } catch (error) {
       throw error;

@@ -11,9 +11,11 @@ ReportRoutes.get("/", ReportController.getAllReport);
 ReportRoutes.get("/:id", ReportController.getReport);
 
 // Patch
+// TODO ADD Role authentication 
 ReportRoutes.patch("/upvote", ReportController.upvoteReport);
 
-// Delete
+// Delete 
+// TODO ADD Role authentication 
 ReportRoutes.delete("/delete/:id", ReportController.deleteReport);
 
 export default ReportRoutes;
