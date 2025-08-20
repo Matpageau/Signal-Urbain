@@ -1,8 +1,6 @@
 import { Types } from "mongoose";
 import createError from '../utils/Error';
 import ReportModel from "./ReportSchema";
-import UserModel from "./UserSchema";
-import User from "./User";
 
 export enum categoryEnum  {
   POTHOLE = 'pothole',
@@ -51,6 +49,7 @@ export default class Report {
     this.lat = lat;
     this.upvote = upvote;
     this.upvote_user_ids = [];
+    this.upvote_user_ids = [];
     this.medias = medias || [];
   }
   
@@ -70,6 +69,7 @@ export default class Report {
         long: this.long,
         lat: this.lat,
         upvote: this.upvote,
+        upvote_user_ids: this.upvote_user_ids,
         upvote_user_ids: this.upvote_user_ids,
         medias: this.medias
       });
