@@ -27,8 +27,9 @@ const reportSchema = new Schema<iReportValues>({
     required: true,
   },
   upvote_user_ids: {
-    type: [String],
-    required: true,
+    type: [Schema.Types.ObjectId],
+    ref: "User",
+    default: []
   },
   medias: {
     type: [String],

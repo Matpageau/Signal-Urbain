@@ -27,7 +27,7 @@ export interface iReportValues {
   long: number;
   lat: number;
   upvote: number;
-  upvote_user_ids: string[];
+  upvote_user_ids: string[] | Types.ObjectId[];
   medias: string[];
 }
 
@@ -39,6 +39,7 @@ export default class Report {
   long: number;
   lat: number;
   upvote: number;
+  upvote_user_ids: string[] | Types.ObjectId[];
   medias: string[];
 
   constructor({ _id, category, status, description, long, lat, upvote, medias}: iReportValues) {
@@ -49,6 +50,7 @@ export default class Report {
     this.long = long;
     this.lat = lat;
     this.upvote = upvote;
+    this.upvote_user_ids = [];
     this.medias = medias || [];
   }
   
@@ -68,6 +70,7 @@ export default class Report {
         long: this.long,
         lat: this.lat,
         upvote: this.upvote,
+        upvote_user_ids: this.upvote_user_ids,
         medias: this.medias
       });
 
@@ -154,7 +157,7 @@ export default class Report {
     // Update comment
   }
 
-  static async upvoteReport(userId: string, reportId: string) {
+  static async upvoteReport(userId: string , reportId: string) {
 
     // Id's validation
     if (!Types.ObjectId.isValid(reportId)) 
@@ -166,18 +169,17 @@ export default class Report {
       throw (createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
 
     // Verifier si le user a deja upvote ce report
-    if (report.upvote_user_ids.includes(userId)) {
+    const userObjectId = new Types.ObjectId(userId);
+
+    if (report.upvote_user_ids.some((id: any) => id.toString() === userObjectId.toString())) {
       // Remove the upvote_user_id vote
       await ReportModel.findByIdAndUpdate(
         reportId,
-        { $pull: { upvote_user_ids: report._id }}
+        { $pull: { upvote_user_ids: userObjectId } }
       );
       // Decrement the report upvote count
       return await ReportModel.findByIdAndUpdate(
-      return await ReportModel.findByIdAndUpdate(
         reportId,
-        { $inc: { upvote: -1 } },
-        { new: true }
         { $inc: { upvote: -1 } },
         { new: true }
       )
@@ -186,14 +188,11 @@ export default class Report {
       // Add the user vote to the upvote_user_id's list
       await ReportModel.findByIdAndUpdate(
         reportId,
-        { $addToSet: { upvote_user_ids: report._id } }
+        { $addToSet: { upvote_user_ids: userObjectId } }
       );
       // Increment the report upvote count
       return await ReportModel.findByIdAndUpdate(
-      return await ReportModel.findByIdAndUpdate(
         reportId,
-        { $inc: { upvote: 1 } },
-        { new: true }
         { $inc: { upvote: 1 } },
         { new: true }
       )

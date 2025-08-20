@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import createError from "../utils/Error";
 import CommentModel from "./CommentSchema";
 
 export interface iCommentValues {
   _id: string | null;
-  report_id: string;
-  author_id: string;
+  report_id: Types.ObjectId;
+  author_id: Types.ObjectId;
   content: string;
 }
 
 export default class Comment {
   _id: string | null;
-  report_id: string;
-  author_id: string;
+  report_id: Types.ObjectId;
+  author_id: Types.ObjectId;
   content: string;
   
   constructor({ _id, report_id, author_id, content }: iCommentValues) {
