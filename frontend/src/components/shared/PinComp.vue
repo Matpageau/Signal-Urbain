@@ -77,7 +77,7 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
   >
     <div 
       v-if="showHovered && canHover && props.report"
-      class="absolute flex flex-col bg-white w-[135px] h-[110px] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg p-2 z-100"
+      class="absolute flex flex-col bg-white w-[135px] h-[110px] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg p-2 z-50"
     > 
       <img :src="props.report.medias[0]" alt="report image" class="rounded-lg shrink-0 h-[75px] cursor-pointer object-cover" @click="emit('select')">
       <div class="flex justify-between">
@@ -88,7 +88,7 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
         </div>
       </div>
     </div>
-    <div :class="[getRingColor(effectiveStatus, effectiveUpvote), 'flex justify-center items-center border-4 rounded-full h-[30px] w-[30px] bg-white p-0.5']">
+    <div :class="[getRingColor(effectiveStatus, effectiveUpvote), 'flex justify-center items-center border-4 rounded-full h-[30px] w-[30px] bg-white p-0.5 z-1']">
       <component :is="getIconType(effectiveCategory)" class="rounded-full" />
     </div>
   </div>
