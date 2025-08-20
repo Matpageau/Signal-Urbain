@@ -48,3 +48,7 @@ a:hover {
   width: 0px;
   height: 0px;
 }
+
+.mapboxgl-marker {
+  z-index: 0 !important;
+}

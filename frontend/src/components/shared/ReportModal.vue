@@ -7,11 +7,16 @@ import BaseButton from './BaseButton.vue';
 import PinComp from './PinComp.vue';
 import { getNeighborhood, getType } from '@/utils/reportUtils';
 import elementPlaceholder from '@/assets/img/elementor-placeholder-image.png'
+import userPlaceholder from '@/assets/img/Avatar placeholder.png'
 import SelectMap from '../feature/modal/SelectMap.vue';
 import BaseInput from './BaseInput.vue';
 import axios from 'axios';
 import { useReportStore } from '@/stores/reportStore';
+import { useUserStore } from '@/stores/userStore';
+import CommentComp from '../feature/modal/CommentComp.vue';
+import type { CommentData } from '@/types/Comment';
 
+const userStore = useUserStore()
 const reportStore = useReportStore()
 
 const props = defineProps<{
@@ -22,6 +27,7 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
+const commentList = ref<CommentData[]>([])
 const neighborhood = ref<string>("Loading...")
 
 const coord = ref<[number, number] | undefined>(props.report?.long != undefined && props.report.lat != undefined ? [props.report.long, props.report.lat] : undefined)
@@ -32,7 +38,13 @@ const image2 = ref<string>(props.report?.medias[1] ?? "")
 const image3 = ref<string>(props.report?.medias[2] ?? "")
 
 onMounted(async () => {
-  neighborhood.value = await getNeighborhood(props.report?.long, props.report?.lat)
+  const [resNeighborhood, resComments] = await Promise.all([
+    getNeighborhood(props.report?.long, props.report?.lat),
+    axios.get(`http://localhost:3000/api/comment/${props.report?._id}/comments`)
+  ])
+
+  neighborhood.value = resNeighborhood
+  commentList.value = resComments.data
 })
 
 const handleCreateReport = async () => {
@@ -127,9 +139,27 @@ watch(() => coord.value, async (newCoord) => {
           <p class="text-xs">{{ props.report.description }}</p>
         </div>
         <div class="mt-3">
-          <div class="flex">
-            <h1 class="font-bold">Commentaires</h1>
-            <p class="ml-3">{{ props.report.comments.length }}</p>
+          <div class="flex flex-col">
+            <div class="flex">
+              <h1 class="font-bold">Commentaires</h1>
+              <p class="ml-3">{{ props.report.comments.length }}</p>
+            </div>
+            <div class="flex flex-col gap-4">
+              <div class="flex items-center">
+                <img
+                  :src="userStore.currentUser?.avatar_url || userPlaceholder"
+                  alt="avatar"
+                  class="w-[25px] h-[25px] rounded-full"
+                  @error="($event) => ($event.target as HTMLImageElement).src = userPlaceholder"
+                >
+                <h2 class="ml-2">{{ userStore.currentUser?.username }}</h2>
+              </div>
+              <CommentComp 
+                v-for="comment in commentList"
+                :key="comment._id"
+                :comment="comment"
+              />
+            </div>
           </div>
         </div>
       </div>

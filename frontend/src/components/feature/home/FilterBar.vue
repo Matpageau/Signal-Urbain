@@ -9,7 +9,7 @@ const emit = defineEmits<{
 
 const filters = ref<categoryEnum[]>([])
 
-const handleFilterChange = (category: categoryEnum) => {
+const handleFilterChange = (category: categoryEnum) => {  
   if(filters.value.includes(category)) {
     filters.value = filters.value.filter(c => c != category)
   }else{
@@ -17,9 +17,9 @@ const handleFilterChange = (category: categoryEnum) => {
   }  
 }
 
-watch(() => filters.value, (newFilters) => {
-  emit('change', newFilters)
-})
+watch(() => filters, (newFilters) => {  
+  emit('change', newFilters.value)
+}, {deep: true})
 </script>
 
 <template>
