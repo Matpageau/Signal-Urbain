@@ -142,7 +142,7 @@ watch(() => coord.value, async (newCoord) => {
           <div class="flex flex-col">
             <div class="flex">
               <h1 class="font-bold">Commentaires</h1>
-              <p class="ml-3">{{ props.report.comments.length }}</p>
+              <p class="ml-3">{{ props.report.commentCount }}</p>
             </div>
             <div class="flex flex-col gap-4">
               <div class="flex items-center">

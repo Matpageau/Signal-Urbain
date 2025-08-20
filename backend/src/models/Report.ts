@@ -181,9 +181,10 @@ export default class Report {
         { $pull: { upvoted_report_ids: report._id }}
       );
       // Decrement the report upvote count
-      await ReportModel.findByIdAndUpdate(
+      return await ReportModel.findByIdAndUpdate(
         reportId,
-        { $inc: { upvote: -1 } }
+        { $inc: { upvote: -1 } },
+        { new: true }
       )
     
     } else {
@@ -193,9 +194,10 @@ export default class Report {
         { $addToSet: {upvoted_report_ids: report._id}}
       );
       // Increment the report upvote count
-      await ReportModel.findByIdAndUpdate(
+      return await ReportModel.findByIdAndUpdate(
         reportId,
-        { $inc: { upvote: 1 } }
+        { $inc: { upvote: 1 } },
+        { new: true }
       )
     }
   }
