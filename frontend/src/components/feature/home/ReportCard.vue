@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import CommentIcon from '@/components/icons/CommentIcon.vue';
 import UpvoteIcon from '@/components/icons/UpvoteIcon.vue';
 import PinComp from '@/components/shared/PinComp.vue';
+import { useReportStore } from '@/stores/reportStore';
 import type { ReportData } from '@/types/Report';
 import { getNeighborhood, getType } from '@/utils/reportUtils';
-import { onMounted, ref } from 'vue';
+
+const reportStore = useReportStore()
 
 const props = defineProps<{
   report: ReportData
@@ -38,7 +41,7 @@ onMounted(async () => {
       </div>
       <div class="flex">
         <p>{{ props.report.upvote }}</p>
-        <UpvoteIcon class="ml-4 cursor-pointer"/>
+        <UpvoteIcon class="ml-4 cursor-pointer" @click="reportStore.upvoteReport(props.report._id)"/>
       </div>
     </div>
   </div>

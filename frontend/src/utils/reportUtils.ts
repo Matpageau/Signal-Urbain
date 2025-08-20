@@ -1,4 +1,4 @@
-import type { categoryEnum } from "@/types/Report"
+import type { categoryEnum, statusEnum } from "@/types/Report"
 import axios from "axios"
 
 export const getType = (type?: categoryEnum): string => {
@@ -21,6 +21,22 @@ export const getType = (type?: categoryEnum): string => {
     case 'other':
     default:
       return "Other"
+  }
+}
+
+export const getStatus = (status?: statusEnum): string => {
+  switch (status) {
+    case 'created':
+      return "Créé"
+
+    case 'in_progress':
+      return "En progrès"
+
+    case 'resolved':
+      return "Résout"
+
+    default:
+      return "Créé"
   }
 }
 
