@@ -1,8 +1,6 @@
 import { Types } from "mongoose";
 import createError from '../utils/Error';
 import ReportModel from "./ReportSchema";
-import UserModel from "./UserSchema";
-import User from "./User";
 
 export enum categoryEnum  {
   POTHOLE = 'pothole',
@@ -39,6 +37,7 @@ export default class Report {
   long: number;
   lat: number;
   upvote: number;
+  upvote_user_ids: string[];
   medias: string[];
 
   constructor({ _id, category, status, description, long, lat, upvote, medias}: iReportValues) {
@@ -49,6 +48,7 @@ export default class Report {
     this.long = long;
     this.lat = lat;
     this.upvote = upvote;
+    this.upvote_user_ids = [];
     this.medias = medias || [];
   }
   
@@ -68,6 +68,7 @@ export default class Report {
         long: this.long,
         lat: this.lat,
         upvote: this.upvote,
+        upvote_user_ids: this.upvote_user_ids,
         medias: this.medias
       });
 
@@ -174,10 +175,7 @@ export default class Report {
       );
       // Decrement the report upvote count
       return await ReportModel.findByIdAndUpdate(
-      return await ReportModel.findByIdAndUpdate(
         reportId,
-        { $inc: { upvote: -1 } },
-        { new: true }
         { $inc: { upvote: -1 } },
         { new: true }
       )
@@ -190,10 +188,7 @@ export default class Report {
       );
       // Increment the report upvote count
       return await ReportModel.findByIdAndUpdate(
-      return await ReportModel.findByIdAndUpdate(
         reportId,
-        { $inc: { upvote: 1 } },
-        { new: true }
         { $inc: { upvote: 1 } },
         { new: true }
       )
