@@ -36,7 +36,23 @@ export const AuthJWT = (req: Request, res: Response, next: NextFunction) => {
     if (error !instanceof createError) {
       return next([createError("Error happened during authentication", 500, "AUTH_SERVER_ERROR")] )
     }
+    console.log(` ERROR IS : ${error} `)
     next(error);
   }
 }
+
+// TODO Roles Middlewares
+// export const requireCityAdmin = (req: Request, res: Response, next: NextFunction) => {
+//   if(req.user?.role == UserRoleEnum.CITYADMIN) {
+//     next()
+//   }
+//   next(error)
+// }
+
+// export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
+//   if(req.user?.role == UserRoleEnum.ADMIN) {
+//     next()
+//   }
+//   next(error)
+// }
 

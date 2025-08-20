@@ -8,8 +8,7 @@ export const createDefaultUsers = async () => {
     email: 'admin@example.com',
     password: '12345',
     createdAt: new Date(),
-    role: UserRoleEnum.ADMIN,
-    upvoted_report_ids: []
+    role: UserRoleEnum.ADMIN
   }
   
   const defaultCityAdmin: iUserValues = {
@@ -18,8 +17,7 @@ export const createDefaultUsers = async () => {
     email: 'cityadmin@example.com',
     password: '12345',
     createdAt: new Date(),
-    role: UserRoleEnum.CITYADMIN,
-    upvoted_report_ids: []
+    role: UserRoleEnum.CITYADMIN
   } 
 
   const defaultUser: iUserValues = {
@@ -28,8 +26,7 @@ export const createDefaultUsers = async () => {
     email: "user@example.com",
     password: "12345",
     createdAt: new Date(),
-    role: UserRoleEnum.USER,
-    upvoted_report_ids: []
+    role: UserRoleEnum.USER
   }
 
   const isAdminExisting = await User.findByEmail(defaultAdmin.email);

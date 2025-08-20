@@ -25,10 +25,6 @@ const userSchema = new Schema<iUserValues>({
   avatar: {
     type: String,
     required: false
-  },
-  upvoted_report_ids: {
-    type: [String],
-    required: false
   }
 });
 

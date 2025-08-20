@@ -18,7 +18,6 @@ export interface iUserValues {
   role: UserRoleEnum;
   createdAt: Date;
   avatar?: string;
-  upvoted_report_ids: string[];
 }
 
 export default class User {
@@ -29,7 +28,6 @@ export default class User {
   email: string;
   createdAt: Date;
   avatar?: string;
-  upvoted_report_ids: string[];
 
   constructor({ _id, username, email, password, role }: iUserValues) {
     this._id = _id || null;
@@ -39,7 +37,6 @@ export default class User {
     this.email = email;
     this.createdAt = new Date();
     this.avatar = undefined;
-    this.upvoted_report_ids= [];
   }
 
   /**
@@ -140,8 +137,7 @@ export default class User {
           email: user.email,
           role: user.role,
           createdAt: user.createdAt,
-          avatar: user.avatar,
-          upvoted_report_ids: user.upvoted_report_ids
+          avatar: user.avatar
         }
       };
     } catch (error) {
@@ -225,8 +221,7 @@ export default class User {
       password: user.password,
       role: user.role,
       createdAt: user.createdAt,
-      avatar: user.avatar,
-      upvoted_report_ids: user.upvoted_report_ids
+      avatar: user.avatar
     }));
   }
 
@@ -249,8 +244,7 @@ export default class User {
       password: user.password,
       role: user.role,
       createdAt: user.createdAt,
-      avatar: user.avatar,
-      upvoted_report_ids: user.upvoted_report_ids
+      avatar: user.avatar
     });
   }
 
@@ -265,7 +259,7 @@ export default class User {
     const user = await mongoose.model('User').findOne({ email });
     
     if (!user) {
-      errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+      errorMessages.push(createError("The email provided dit not match any user", 404, "EMAIL_NOT_FOUND"))
       throw errorMessages;
     }
     
@@ -276,8 +270,7 @@ export default class User {
       password: user.password,
       role: user.role,
       createdAt: user.createdAt,
-      avatar: user.avatar,
-      upvoted_report_ids: user.upvoted_report_ids
+      avatar: user.avatar
     });
   }
   

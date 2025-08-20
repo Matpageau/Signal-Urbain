@@ -37,7 +37,7 @@ onMounted(async () => {
     <div class="flex justify-between">
       <div class="flex">
         <CommentIcon class="mr-4"/>
-        <p>{{ props.report.comments.length }}</p>
+        <!-- <p>{{ props.report.comments.length }}</p> -->
       </div>
       <div class="flex">
         <p>{{ props.report.upvote }}</p>

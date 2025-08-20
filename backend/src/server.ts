@@ -34,7 +34,7 @@ mongoose.connect(URL)
   .then(async () => {
     console.log("Connected to MongoDB");
     
-    await createDefaultUsers();
+    //await createDefaultUsers();
     await createDefaultReports();
     
     app.listen(PORT, () => {

@@ -26,11 +26,22 @@ const reportSchema = new Schema<iReportValues>({
     type: Number,
     required: true,
   },
+  upvote_user_ids: {
+    type: [String],
+    required: true,
+  },
   medias: {
     type: [String],
     required: false,
   }
 });
+
+reportSchema.virtual('commentCount', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'report_id',
+  count: true
+})
 
 const ReportModel = mongoose.model('Report', reportSchema);
 export default ReportModel;
