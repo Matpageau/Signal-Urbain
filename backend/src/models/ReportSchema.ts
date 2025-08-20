@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { iReportValues } from "./Report";
+import "../models/CommentSchema"; //Retirer quand tu vas créer des comments
 
-const reportSchema = new Schema<iReportValues>({
+const reportSchema = new Schema({
   category: {
     type: String,
     required: true
@@ -22,10 +22,6 @@ const reportSchema = new Schema<iReportValues>({
     type: Number,
     required: true,
   },
-  upvote: {
-    type: Number,
-    required: true,
-  },
   upvote_user_ids: {
     type: [Schema.Types.ObjectId],
     ref: "User",
@@ -43,6 +39,9 @@ reportSchema.virtual('commentCount', {
   foreignField: 'report_id',
   count: true
 })
+
+reportSchema.set("toObject", { virtuals: true });
+reportSchema.set("toJSON", { virtuals: true });
 
 const ReportModel = mongoose.model('Report', reportSchema);
 export default ReportModel;

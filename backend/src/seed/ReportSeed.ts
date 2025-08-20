@@ -10,7 +10,6 @@ export const createDefaultReports = async () => {
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus.Lorems.",
     long: -71.79702,
     lat: 45.13266,
-    upvote: 504,
     upvote_user_ids: [],
     medias: ["https://sripath.com/wp-content/uploads/2025/01/iStock-174662203.jpg"]
   };
@@ -22,7 +21,6 @@ export const createDefaultReports = async () => {
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus.Lorems.",
     long: -73.79702,
     lat: 47.13266,
-    upvote: 291,
     upvote_user_ids: [],
     medias: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"]
   };
@@ -34,7 +32,6 @@ export const createDefaultReports = async () => {
     description: "Panneau de circulation tordu et illisible, représente un danger pour les automobilistes.",
     long: -71.21245,
     lat: 46.81388,
-    upvote: 112,
     upvote_user_ids: [],
     medias: ["https://i.shgcdn.com/b0479b9c-a292-43df-a700-1c4ea6130607/-/format/auto/-/preview/3000x3000/-/quality/lighter/"]
   };
@@ -46,7 +43,6 @@ export const createDefaultReports = async () => {
     description: "Rondin d’arbre tombé au milieu de la route après une tempête.",
     long: -72.52891,
     lat: 46.34567,
-    upvote: 76,
     upvote_user_ids: [],
     medias: ["https://www.codever.fr/upload/images/posts/3b3967d34223d2ddfc315a7e42b066c6.JPG"]
   };
@@ -58,7 +54,6 @@ export const createDefaultReports = async () => {
     description: "Lampadaire de rue qui clignote sans cesse, problème de sécurité la nuit.",
     long: -73.23456,
     lat: 45.67891,
-    upvote: 54,
     upvote_user_ids: [],
     medias: ["https://www.rrbslawnj.com/wp-content/uploads/2024/12/240_F_113286904_SnBrJyYmaCwZ7byEReCJ8Br4Y5hPTf8m.jpg"]
   };
@@ -70,7 +65,6 @@ export const createDefaultReports = async () => {
     description: "Arbre penché risquant de tomber sur la chaussée après de forts vents.",
     long: -70.98765,
     lat: 46.54321,
-    upvote: 132,
     upvote_user_ids: [],
     medias: ["https://res.cloudinary.com/jerrick/image/upload/d_642250b563292b35f27461a7.png,f_jpg,fl_progressive,q_auto,w_1024/67ed79aafd74a4001d6f0647.jpg"]
   };
@@ -82,7 +76,6 @@ export const createDefaultReports = async () => {
     description: "Panneau recouvert de graffitis non autorisés à l’entrée d’un parc public.",
     long: -72.11111,
     lat: 46.22222,
-    upvote: 88,
     upvote_user_ids: [],
     medias: ["https://cloudfront-us-east-1.images.arcpublishing.com/lescoopsdelinformation/FZ4H2DM7VJHEJN6CFTYHXAKWIA.jpg"]
   };
@@ -94,7 +87,6 @@ export const createDefaultReports = async () => {
     description: "Banc public brisé près d’un arrêt d’autobus, inutilisable pour les passants.",
     long: -73.87654,
     lat: 45.43210,
-    upvote: 47,
     upvote_user_ids: [],
     medias: ["https://thumbs.dreamstime.com/b/un-sans-abri-dort-sur-le-banc-de-l-arr%C3%AAt-bus-%C3%A0-baltimore-maryland-octobre-219416799.jpg"]
   };
@@ -106,7 +98,6 @@ export const createDefaultReports = async () => {
     description: "Cône de construction abandonné au milieu de la rue, perturbant la circulation.",
     long: -71.54321,
     lat: 46.87654,
-    upvote: 23,
     upvote_user_ids: [],
     medias: ["https://img.over-blog-kiwi.com/0/85/30/76/20180206/ob_0e10fb_co-ne-oublie.JPG"]
   };

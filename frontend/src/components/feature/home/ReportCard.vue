@@ -6,7 +6,9 @@ import PinComp from '@/components/shared/PinComp.vue';
 import { useReportStore } from '@/stores/reportStore';
 import type { ReportData } from '@/types/Report';
 import { getNeighborhood, getType } from '@/utils/reportUtils';
+import { useUserStore } from '@/stores/userStore';
 
+const userStore = useUserStore()
 const reportStore = useReportStore()
 
 const props = defineProps<{
@@ -40,8 +42,11 @@ onMounted(async () => {
         <p>{{ props.report.commentCount }}</p>
       </div>
       <div class="flex">
-        <p>{{ props.report.upvote }}</p>
-        <UpvoteIcon :class="['ml-4 cursor-pointer']" @click="reportStore.upvoteReport(props.report._id)"/> //CHECK AVEC LE REPORT STORE
+        <p>{{ props.report.upvote_user_ids.length }}</p>
+        <UpvoteIcon 
+          :class="['ml-4 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
+          @click="reportStore.upvoteReport(props.report._id)"
+        />
       </div>
     </div>
   </div>

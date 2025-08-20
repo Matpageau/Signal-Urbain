@@ -11,8 +11,11 @@ import type { PinData } from '@/types/Pin';
 import UpvoteIcon from '../icons/UpvoteIcon.vue';
 import { useReportStore } from '@/stores/reportStore';
 import { getStatus } from '@/utils/reportUtils';
+import { useUserStore } from '@/stores/userStore';
 
+const userStore = useUserStore()
 const reportStore = useReportStore()
+
 const props = defineProps<{
   report?: ReportData
   pinData?: PinData
@@ -32,7 +35,7 @@ const effectiveStatus = computed<statusEnum | undefined>(() => {
   return props.report?.status ?? props.pinData?.status
 })
 const effectiveUpvote = computed<number | undefined>(() => {
-  return props.report?.upvote ?? props.pinData?.upvote
+  return props.report?.upvote_user_ids.length ?? props.pinData?.upvote
 })
 
 const getIconType = (category?: categoryEnum) => {
@@ -84,7 +87,10 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
         <p>{{ getStatus(effectiveStatus) }}</p>
         <div class="flex items-center justify-end shrink-0">
           <p>{{ effectiveUpvote }}</p>
-          <UpvoteIcon class="ml-1 cursor-pointer" @click="reportStore.upvoteReport(props.report._id)"/>
+          <UpvoteIcon 
+            :class="['ml-4 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report?._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
+            @click="reportStore.upvoteReport(props.report._id)"
+          />
         </div>
       </div>
     </div>

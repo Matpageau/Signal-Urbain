@@ -6,7 +6,7 @@ export type ReportData = {
   long: number
   lat: number
   status: statusEnum
-  upvote: number
+  upvote_user_ids: string[]
   medias: string[]
   commentCount: number
 }

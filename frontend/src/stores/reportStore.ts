@@ -13,14 +13,13 @@ export const useReportStore = defineStore('report', () => {
     if (isFetching.value && fetchPromise) return fetchPromise
 
     isFetching.value = true
-    fetchPromise = axios
-    .get<ReportData[]>('http://localhost:3000/api/report')
+    fetchPromise = axios.get<ReportData[]>('http://localhost:3000/api/report')
     .then(res => {     
       reports.value = res.data
     }).catch(() => {
       reports.value = []
     })
-    .finally(() => {
+    .finally(() => {    
       isFetching.value = false
       isReady.value = true
       fetchPromise = null
@@ -38,7 +37,6 @@ export const useReportStore = defineStore('report', () => {
   const upvoteReport = async (id: string) => {
     try {
       const res = await axios.patch(`http://localhost:3000/api/report/${id}/upvote`, {}, { withCredentials: true })
-      console.log(res.data);
 
       const index = reports.value.findIndex(r => r._id == id)
       if(index != -1) {
