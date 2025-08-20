@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import createError, { ErrorData } from '../utils/Error';
 import ReportModel from "./ReportSchema";
 import UserModel from "./UserSchema";
+import User from "./User";
 
 export enum categoryEnum  {
   POTHOLE = 'pothole',
@@ -159,31 +160,44 @@ export default class Report {
       throw errorMessages;
     }
 
-    // Finding object in the database
-    const report = await ReportModel.findById(reportId);
+    // Finding the report and user in the database
+    const report = await ReportModel.findById(reportId).lean();
     if (!report) {
       errorMessages.push(createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
       throw errorMessages;
     }
-    
-    // Updating user
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
-      { $addToSet: {upvoted_report_ids: report._id} }, 
-      { new: true }
-    );
-    if (!updatedUser) {
+    const user = await UserModel.findById(userId).lean();
+    if (!user) {
       errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"));
       throw errorMessages;
     }
 
-    // Update le report avec findByIdAndUpdate
-    const updatedReport = await ReportModel.findByIdAndUpdate(
-      reportId,
-      { $inc: { upvote: 1 } }
-    )
+    const stringifiedReportId = report._id?.toString() || "";
+
+    if (user.upvoted_report_ids.includes(stringifiedReportId)) {
+      // Remove the user vote
+      await UserModel.findByIdAndUpdate(
+        userId,
+        { $pull: { upvoted_report_ids: report._id }}
+      );
+      // Decrement the report upvote count
+      await ReportModel.findByIdAndUpdate(
+        reportId,
+        { $inc: { upvote: -1 } }
+      )
     
-    return { user: updatedUser , report: updatedReport }
+    } else {
+      // Add the user vote
+      await UserModel.findByIdAndUpdate(
+        userId,
+        { $addToSet: {upvoted_report_ids: report._id}}
+      );
+      // Increment the report upvote count
+      await ReportModel.findByIdAndUpdate(
+        reportId,
+        { $inc: { upvote: 1 } }
+      )
+    }
   }
 
   static async deleteReportById(reportId: string) {

@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Express, Request, Response, NextFunction } from 'express';
 import Report, { iReportValues } from '../models/Report';
 import createError from '../utils/Error';
-import User from '../models/User';
+import { iUserValues } from '../models/User';
 import { error } from 'console';
 
 const reportController = {
@@ -71,11 +71,13 @@ const reportController = {
 
   async upvoteReport(req: Request, res: Response, next: NextFunction) { 
     try {
-      const { userId, reportId } = req.query;
-
-      if (typeof userId !== 'string' || typeof reportId !== 'string') {
+      const user = req.user;
+      const userId = user && user._id;
+      const { reportId } = req.params;
+      
+      if (!userId || !reportId || typeof userId !== 'string' || typeof reportId !== 'string') {
         return next(createError(
-          "userId and/or reportId are invalid.", 400, "INVALID_QUERY_PARAMS"
+          "The user ID and/or the report ID are invalid.", 400, "INVALID_QUERY_PARAMS"
         ));
       }
 
@@ -105,5 +107,6 @@ const reportController = {
     }
   },
 }
+
 
 export default reportController;
