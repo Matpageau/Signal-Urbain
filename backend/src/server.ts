@@ -29,11 +29,11 @@ app.use((err: ErrorData, req: Request, res: Response, next: NextFunction): void 
 });
 
 // Connection to MongoDB 
-// Change the URL to your MongoDB connection string
+// Change the URL in your .env for the proper MongoDB connection string
 mongoose.connect(URL)
   .then(async () => {
     console.log("Connected to MongoDB");
-    console.log("Attempting to create default users...");
+    
     await createDefaultUsers();
     // await createDefaultReports();
     

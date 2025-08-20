@@ -11,7 +11,7 @@ ReportRoutes.get("/", ReportController.getAllReport);
 ReportRoutes.get("/:id", ReportController.getReport);
 
 // Patch
-ReportRoutes.patch("/upvote/:id", ReportController.upvoteReport);
+ReportRoutes.patch("/upvote", ReportController.upvoteReport);
 
 // Delete
 ReportRoutes.delete("/delete/:id", ReportController.deleteReport);

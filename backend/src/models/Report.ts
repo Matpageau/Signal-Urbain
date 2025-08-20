@@ -19,7 +19,7 @@ export enum statusEnum {
 }
 
 export interface iReportValues {
-  _id: string | null;
+  _id: string | Types.ObjectId | null;
   category: categoryEnum;
   status: statusEnum; 
   description: string;
@@ -30,7 +30,7 @@ export interface iReportValues {
 }
 
 export default class Report {
-  _id: string | null;
+  _id: string | Types.ObjectId | null;
   category: categoryEnum;
   status: statusEnum; 
   description: string;
@@ -49,10 +49,16 @@ export default class Report {
     this.upvote = upvote;
     this.medias = medias || [];
   }
-
+  
+  /**
+   * Use this function with an object of type Report : iReportValues.
+   * This async function instanciate and save() a ReportModel.
+   * @returns Nothing
+   * @throws errorKey : "SAVING_DATA_ERROR"
+   */
   async saveReport() {
     try {
-      const reportValues = new ReportModel({
+      const reportMongoModel = new ReportModel({
         category: this.category,
         status: this.status,
         description: this.description,
@@ -62,10 +68,10 @@ export default class Report {
         medias: this.medias
       });
 
-      await reportValues.save();
+      await reportMongoModel.save();
       console.log(`New report with category ${this.category} was saved successfully.`)
     } catch (error) {
-      throw error;
+      throw [createError("An error happened during data saving", 500, "SAVING_DATA_ERROR")];
     }
   }
 
@@ -79,12 +85,11 @@ export default class Report {
       return newReport; 
       
     } catch (error) {
-      throw [createError("An error happened during data saving", 401, "SAVING_DATA_ERROR")];
+      throw error;
     }
   }
   
   static async findAllReports() {
-    
     const dbReports = await ReportModel.find();
     if (!dbReports || dbReports.length === 0) {
       return [];
@@ -134,19 +139,27 @@ export default class Report {
     });
   }
 
+  // TODO PATCH Request updateReportById()
+  static async updateReportById(reportId: string) {
+
+    // Update status
+    // Update description
+    // Update comment
+  }
+
   static async upvoteReport(userId: string, reportId: string) {
     const errorMessages = [];
 
     // Id's validation
     if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(reportId)) {
-      errorMessages.push(createError("One of the ID's provided is invalid.", 401, "INVALID_ID"))
+      errorMessages.push(createError("One of the ID's provided is invalid.", 400, "INVALID_ID"))
       throw errorMessages;
     }
 
     // Finding object in the database
     const report = await ReportModel.findById(reportId);
     if (!report) {
-      errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"))
+      errorMessages.push(createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
       throw errorMessages;
     }
     
@@ -171,12 +184,10 @@ export default class Report {
   }
 
   static async deleteReportById(reportId: string) {
-    const errorMessages = [];
     const report = await ReportModel.findByIdAndDelete(reportId);
     
     if (!report) {
-      errorMessages.push(createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
-      throw errorMessages;
+      throw [createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND")];
     }
   }
 }

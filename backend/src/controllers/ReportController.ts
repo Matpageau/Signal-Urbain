@@ -46,6 +46,10 @@ const reportController = {
     try {
       const errorMessages = [];
       const { id } = req.params;
+
+      if (typeof id !== 'string') {
+        return next(createError("userId provided is invalid.", 400, "INVALID_QUERY_PARAMS"))
+      }
       const dbReport = await Report.findReportById(id);
 
       if (!dbReport) {
@@ -58,14 +62,21 @@ const reportController = {
     } catch (error) {
       next(error)
     }
-   },
+  },
+  
+  // TODO PATCH REQUEST updateReport()
 
   async upvoteReport(req: Request, res: Response, next: NextFunction) { 
     try {
+      const { userId, reportId } = req.query;
 
-      const { userId, reportId } = req.params;
-      const updates = await Report.upvoteReport(userId, reportId)
-      
+      if (typeof userId !== 'string' || typeof reportId !== 'string') {
+        return next(createError(
+          "userId and/or reportId are invalid.", 400, "INVALID_QUERY_PARAMS"
+        ));
+      }
+
+      const updates = await Report.upvoteReport(userId, reportId);
       res.status(202).json(updates)
       
     } catch (error) {
@@ -75,11 +86,16 @@ const reportController = {
 
   async deleteReport(req: Request, res: Response, next: NextFunction) { 
     try {
+      const { reportId } = req.query;
 
-      const { id } = req.params;
-      await Report.deleteReportById(id);
+      if (typeof reportId !== 'string') {
+        return next(createError(
+          "userId and/or reportId are invalid.", 400, "INVALID_QUERY_PARAMS"
+        ));
+      }
+      await Report.deleteReportById(reportId);
 
-      res.status(200).json(`User with id of ${id} was found and successfully deleted.`);
+      res.status(200).json(`The report with id of ${reportId} was found and successfully deleted.`);
     
     } catch (error) {
       next(error);

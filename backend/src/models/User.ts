@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import createError from '../utils/Error';
@@ -11,7 +11,7 @@ export enum UserRoleEnum {
 }
 
 export interface iUserValues {
-  _id: string | null;
+  _id: string | Types.ObjectId | null;
   username: string;
   password: string;
   email: string;
@@ -22,7 +22,7 @@ export interface iUserValues {
 }
 
 export default class User {
-  _id: string | null;
+  _id: string | Types.ObjectId | null;
   username: string;
   password: string;
   role: iUserValues['role'];
@@ -72,7 +72,8 @@ export default class User {
    * @returns The newly created user information as object
    */
   static async registerUser(data: iUserValues) {
-    
+    try {
+      
     // Check if user already exists
     const existingUsername = await UserModel.findOne({ username: data.username });
     const existingEmail = await UserModel.findOne({ email: data.email });
@@ -97,16 +98,12 @@ export default class User {
     // Hash password
     newUser.password = await newUser.hashPassword();
     // Saving to DB
-    await newUser.saveUser().then(() => {
-      return newUser;
+    await newUser.saveUser();
+    return newUser;
       
-    }).catch((err) => {
-      errorMessages.push(createError("An error happened during data saving", 401, "SAVING_DATA_ERROR"))
-      if (errorMessages.length > 0) {
-        throw errorMessages;
-      }
-      throw err;
-    })
+    } catch (error) {
+      throw [createError("An error happened during user creation.", 401, "CREATE_USER_ERROR")];
+    }
   }
 
   /**

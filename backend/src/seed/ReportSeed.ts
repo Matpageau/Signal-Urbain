@@ -4,7 +4,7 @@ import Report, { iReportValues, categoryEnum, statusEnum } from "../models/Repor
 export const createDefaultReports = async () => {
 
   const defaultPotHoleOne: iReportValues = {
-    _id: new mongoose.Types.ObjectId("777000000000000000000001").toString(),
+    _id: new mongoose.Types.ObjectId("777000000000000000000001"),
     category: categoryEnum.POTHOLE,
     status: statusEnum.CREATED,
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus.Lorems.",
@@ -15,7 +15,7 @@ export const createDefaultReports = async () => {
   };
   
   const defaultPotHoleTwo: iReportValues = {
-    _id: new mongoose.Types.ObjectId("777000000000000000000002").toString() || null,
+    _id: new mongoose.Types.ObjectId("777000000000000000000002"),
     category: categoryEnum.POTHOLE,
     status: statusEnum.CREATED,
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis neque lacus. In in libero luctus, fringilla arcu eget, venenatis turpis. Praesent pharetra scelerisque dictum. Praesent sed eleifend urna. Nulla ultrices volutpat maximus.Lorems.",
@@ -25,8 +25,8 @@ export const createDefaultReports = async () => {
     medias: ["https://www.unionmutual.com/wp-content/uploads/2016/07/Potholes-resized-for-blog.jpg"]
   };
   
-  const isPhOneExisting = await Report.findReportById(defaultPotHoleOne._id!);
-  const isPhTwoExisting = await Report.findReportById(defaultPotHoleTwo._id!);
+  const isPhOneExisting = await Report.findReportById(defaultPotHoleOne._id!.toString());
+  const isPhTwoExisting = await Report.findReportById(defaultPotHoleTwo._id!.toString());
   
   if (!isPhOneExisting) {
     await Report.createReport(defaultPotHoleOne);
@@ -37,7 +37,7 @@ export const createDefaultReports = async () => {
 
   if (isPhOneExisting && isPhTwoExisting) {
     console.log(``);
-    console.log(`Default potholes already exist.`);
+    console.log(`Default reports are ready to use.`);
     console.log(``);
   }
 }
