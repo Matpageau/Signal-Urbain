@@ -35,10 +35,24 @@ export const useReportStore = defineStore('report', () => {
     )
   }
 
+  const upvoteReport = async (id: string) => {
+    try {
+      const res = await axios.patch(`http://localhost:3000/api/report/${id}/upvote`, {}, { withCredentials: true })
+
+      const index = reports.value.findIndex(r => r._id == id)
+      if(index != -1) {
+        reports.value[index] = res.data
+      }
+    } catch (error) {
+      console.error("Erreur upvote", error)
+    }
+  }
+
   return {
     reports,
     isReady,
     fetchReports,
-    getReportsByCategory
+    getReportsByCategory,
+    upvoteReport
   }
 })

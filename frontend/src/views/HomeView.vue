@@ -57,7 +57,7 @@ const handleReportModal = (report: ReportData) => {
     />
     <BaseMapbox class="absolute top-0 left-0" :reports="filteredReports" @select="(r) => handleReportModal(r)"/>
     <div class="absolute flex flex-col top-0 left-0 h-full w-fit pl-4 py-4">
-      <div class="flex flex-col h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10">
+      <div class="flex flex-col h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10 overflow-y-scroll scrollbar-none">
         <ReportCard 
           v-for="report in filteredReports"
           :key="report._id"
