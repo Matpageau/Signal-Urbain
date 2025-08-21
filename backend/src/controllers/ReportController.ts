@@ -88,7 +88,7 @@ const reportController = {
         return next(createError("The report id provided is invalid.", 400, "INVALID__REPORT_ID"));
       }
 
-      const report = Report.findReportWithComments(reportId);
+      const report = await Report.findReportWithComments(reportId);
       return res.status(200).json(report);
       
     } catch (error) {
