@@ -16,6 +16,7 @@ import { useUserStore } from '@/stores/userStore';
 import CommentComp from '../feature/modal/CommentComp.vue';
 import type { CommentData } from '@/types/Comment';
 import { useI18n } from 'vue-i18n';
+import ChevronIcon from '../icons/ChevronIcon.vue';
 
 const { getType, getStatus, getNeighborhood } = useReportUtils()
 
@@ -32,7 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const commentList = ref<CommentData[]>([])
-const neighborhood = ref<string>("Loading...")
+const neighborhood = ref<string>(t('LOADING'))
 
 const coord = ref<[number, number] | undefined>(props.report?.long != undefined && props.report.lat != undefined ? [props.report.long, props.report.lat] : undefined)
 const category = ref<categoryEnum>(props.report?.category ?? categoryEnum.OTHER)
@@ -40,6 +41,7 @@ const description = ref<string>('')
 const image1 = ref<string>(props.report?.medias[0] ?? "")
 const image2 = ref<string>(props.report?.medias[1] ?? "")
 const image3 = ref<string>(props.report?.medias[2] ?? "")
+const newComment = ref<string>("")
 
 onMounted(async () => {
   if(props.report) {
@@ -80,6 +82,25 @@ const handleCreateReport = async () => {
   } catch (error) {
     console.error(error)
   }
+}
+
+const handleCreateComment = async () => {
+  try {
+    const resCom = await axios.post(`http://localhost:3000/api/report/${props.report?._id}/comments`)
+
+    if(resCom.data) {
+      newComment.value = ""
+      commentList.value = [resCom.data, ...commentList.value]
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const autoGrow = (e: Event) => {
+  const el = e.target as HTMLTextAreaElement
+  el.style.height = "24px"
+  el.style.height = el.scrollHeight + "px"
 }
 
 watch(() => coord.value, async (newCoord) => {
@@ -150,24 +171,35 @@ watch(() => coord.value, async (newCoord) => {
       </div>
       <div v-if="props.report" class="mt-3">
         <div v-if="props.report.description">
-          <h1 class="font-bold">Description</h1>
+          <h1 class="font-bold">{{ t('DESCRIPTION')}}</h1>
           <p class="text-xs">{{ props.report.description }}</p>
         </div>
         <div class="mt-3">
           <div class="flex flex-col">
             <div class="flex">
-              <h1 class="font-bold">Commentaires</h1>
+              <h1 class="font-bold">{{ t("COMMENTS") }}</h1>
               <p class="ml-3">{{ props.report.commentCount }}</p>
             </div>
             <div class="flex flex-col gap-4">
-              <div class="flex items-center">
+              <div class="flex">
                 <img
                   :src="userStore.currentUser?.avatar_url || userPlaceholder"
                   alt="avatar"
                   class="w-[25px] h-[25px] rounded-full"
                   @error="($event) => ($event.target as HTMLImageElement).src = userPlaceholder"
                 >
-                <h2 class="ml-2">{{ userStore.currentUser?.username }}</h2>
+                <textarea 
+                  name="newComment"
+                  id="newComment"
+                  v-model="newComment"
+                  @input="autoGrow"
+                  class="resize-none w-full border-b border-neutral-300 ml-2 h-[24px] focus:outline-none scrollbar-none"
+                >
+                </textarea>
+                <ChevronIcon 
+                  class="cursor-pointer"
+                  @click="handleCreateComment"
+                />
               </div>
               <CommentComp 
                 v-for="comment in commentList"
@@ -181,19 +213,19 @@ watch(() => coord.value, async (newCoord) => {
       <div v-else class="grid grid-cols-5 gap-4 mt-4 justify-between">
         <div class="col-span-3">
           <div>
-            <p>Informations générales</p>
+            <p>{{ t('GENERALINFOS') }}</p>
             <BaseInput
               v-model="category"
               type="select"
               placeholder="Type"
               :options="[
-                { label: 'Nid-de-poule', value: 'pothole' },
-                { label: 'Élément endommagé', value: 'dmgelement' },
-                { label: 'Obstacle sur la route', value: 'roadobstacle' },
-                { label: 'Feux de circulation défectueux', value: 'faultylight' },
-                { label: 'Arbre problématique', value: 'dangeroustree' },
-                { label: 'Vandalisme', value: 'vandalism' },
-                { label: 'Autre', value: 'other' },
+                { label: t('POTHOLE'), value: 'pothole' },
+                { label: t('DMGELEMENT'), value: 'dmgelement' },
+                { label: t('ROADOBST'), value: 'roadobstacle' },
+                { label: t('FAULTTRAFIC'), value: 'faultylight' },
+                { label: t('DANGEROUSTREE'), value: 'dangeroustree' },
+                { label: t('VANDALISM'), value: 'vandalism' },
+                { label: t('OTHER'), value: 'other' },
               ]"
             />
           </div>
@@ -221,7 +253,7 @@ watch(() => coord.value, async (newCoord) => {
           </div>
         </div>
         <div class="flex flex-col col-span-2">
-          <p>Description</p>
+          <p>{{ t('DESCRIPTION') }}</p>
           <textarea  v-model="description" name="" id="" class="p-2 w-full flex-grow border border-neutral-200 rounded-lg resize-none"></textarea>
         </div>
       </div>

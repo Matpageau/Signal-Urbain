@@ -30,43 +30,43 @@ watch(() => filters, (newFilters) => {
       :class="['px-2', filters.includes(categoryEnum.POTHOLE) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.POTHOLE)"
     >
-      Nid-de-poule
+      {{ t('POTHOLE') }}
     </BaseButton>
     <BaseButton 
       :class="['px-2', filters.includes(categoryEnum.DMGELEMENT) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.DMGELEMENT)"
     >
-      Elements brisés
+      {{ t('DMGELEMENT') }}
     </BaseButton>
     <BaseButton 
       :class="['px-2', filters.includes(categoryEnum.ROADOBSTACLE) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.ROADOBSTACLE)"
     >
-      Route obstruée
+      {{ t('ROADOBST') }}
     </BaseButton>
     <BaseButton 
       :class="['px-2', filters.includes(categoryEnum.FAULTYLIGHT) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.FAULTYLIGHT)"
     >
-      Feux de circulation défectueux
+      {{ t('FAULTTRAFIC') }}
     </BaseButton>
     <BaseButton 
       :class="['px-2', filters.includes(categoryEnum.DANGEROUSTREE) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.DANGEROUSTREE)"
     >
-      Arbre problématique
+      {{ t('DANGEROUSTREE') }}
     </BaseButton>
     <BaseButton 
       :class="['px-2', filters.includes(categoryEnum.VANDALISM) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.VANDALISM)"
     >
-      Vandalisme
+      {{ t('VANDALISM') }}
     </BaseButton>
     <BaseButton 
       :class="['px-2', filters.includes(categoryEnum.OTHER) ? 'bg-(--blue) text-white' : 'bg-white']"
       @click="() => handleFilterChange(categoryEnum.OTHER)"
     >
-      Autres
+      {{ t('OTHER') }}
     </BaseButton>
   </div>
 </template>

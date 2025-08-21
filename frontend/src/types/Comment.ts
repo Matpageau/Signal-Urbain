@@ -1,9 +1,6 @@
-import type { UserData } from "./User"
-
 export type CommentData = {
-  _id?: string
-  report_id: string
-  author_id: string
+  _id: string
+  username: string
+  avatar: string
   content: string
-  author: UserData
 }

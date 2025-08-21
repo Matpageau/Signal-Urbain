@@ -1,4 +1,5 @@
 export default {
+  // Authentification
   REGISTER: "Inscription",
   LOGIN: "Connexion",
   USERNAME: "Nom d'utilisateur",
@@ -12,18 +13,30 @@ export default {
   SIGNUPNOW: "Créer maintenant",
   SIGNUP: "S'inscrire",
   SIGNIN: "Se connecter",
+
+  // Général
   BACKONAPP: "← Revenir sur l'application",
   SETTINGS: "Paramètres",
   FOLLOWEDREPORTS: "Rapports suivis",
   SAVE: "Sauvegarder",
-  POTHOLE: "Nid de poule",
+
+  // Types de rapport
+  POTHOLE: "Nid-de-poule",
   DMGELEMENT: "Élément endommagé",
   ROADOBST: "Obstacle routier",
   FAULTTRAFIC: "Feux défectueux",
   DANGEROUSTREE: "Arbre dangereux",
   VANDALISM: "Vandalisme",
   OTHER: "Autre",
+
+  // Statuts
   CREATED: "Créé",
-  INPROGRESS: "En progrès",
-  RESOLVED: "Résout",
+  INPROGRESS: "En cours",
+  RESOLVED: "Résolu",
+  LOADING: "Chargement...",
+
+  // Rapport
+  DESCRIPTION: "Description",
+  COMMENTS: "Commentaires",
+  GENERALINFOS: "Informations générales",
 }
