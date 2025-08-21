@@ -237,11 +237,6 @@ export default class User {
 
     return user;
   }
-
-
-  static async findUpvotedList(userId: string): Promise<mongoose.Document[]> {
-    return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
-  }
   
   
   /**

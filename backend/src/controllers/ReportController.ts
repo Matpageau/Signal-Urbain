@@ -65,6 +65,22 @@ const reportController = {
       next(error)
     }
   },
+
+
+  async getUpvotedReport(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?._id?.toString();
+      if (!userId) 
+        return next(createError("No user id provided.", 400, "INVALID_ID"));
+      
+      const userUpvoteList = await Report.findUpvotedList(userId);
+
+      res.status(200).json(userUpvoteList);
+
+    } catch (error) {
+      next(error);
+    }
+  },
   
   // TODO PATCH REQUEST updateReport()
   async updateReport(req: Request, res: Response, next: NextFunction) {},

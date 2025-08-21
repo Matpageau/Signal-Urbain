@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import createError from '../utils/Error';
 import ReportModel from "./ReportSchema";
 
@@ -115,6 +115,10 @@ export default class Report {
     return dbReport;
   }
 
+  static async findUpvotedList(userId: string): Promise<mongoose.Document[]> {
+    return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
+  }
+  
 
   // TODO PATCH Request updateReportById()
   static async updateReportById(reportId: string) {

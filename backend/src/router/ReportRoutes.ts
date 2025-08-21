@@ -9,7 +9,10 @@ ReportRoutes.post("/", ReportController.createReport);
 
 // Get
 ReportRoutes.get("/", ReportController.getAllReport);
-ReportRoutes.get("/:id", ReportController.getReport);
+
+// TODO GET/followed -> return toute les reports upvoted par un User
+// Recoit credential, utilise le REQ.USER
+ReportRoutes.get("/followed", AuthJWT, ReportController.getUpvotedReport)
 
 // Patch
 ReportRoutes.patch("/:reportId/upvote", AuthJWT, isUser, ReportController.upvoteReport);

@@ -69,29 +69,16 @@ const userController = {
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const userId = req.user?._id;
-			if (!userId) 
+			if (!userId) {
+				console.log(` ********************DEBUGGER********************`)	
 				return next(createError("No user id provided.", 400, "INVALID_ID"));
+			}
 
 			const userDoc = await User.findUserById(userId.toString());
 			if (!userDoc) 
 				return next(createError("The id provided dit not match any user.", 404, "USER_NOT_FOUND"));
 			
 			res.status(200).json(userDoc);
-
-		} catch (error) {
-			next(error);
-		}
-	},
-
-
-	async getUpvotedReport(req: Request, res: Response, next: NextFunction) {
-		try {
-			const userId = req.user?._id?.toString();
-			if (!userId) 
-				return next(createError("No user id provided.", 400, "INVALID_ID"));
-			
-			const userUpvoteList = User.findUpvotedList(userId);
-			res.status(200).json(userUpvoteList);
 
 		} catch (error) {
 			next(error);
