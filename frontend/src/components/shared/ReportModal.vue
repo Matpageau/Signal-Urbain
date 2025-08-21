@@ -7,21 +7,17 @@ import BaseButton from './BaseButton.vue';
 import PinComp from './PinComp.vue';
 import { useReportUtils } from '@/composables/useReportUtils';
 import elementPlaceholder from '@/assets/img/elementor-placeholder-image.png'
-import userPlaceholder from '@/assets/img/Avatar placeholder.png'
 import SelectMap from '../feature/modal/SelectMap.vue';
 import BaseInput from './BaseInput.vue';
 import axios from 'axios';
 import { useReportStore } from '@/stores/reportStore';
-import { useUserStore } from '@/stores/userStore';
-import CommentComp from '../feature/modal/CommentComp.vue';
-import type { CommentData } from '@/types/Comment';
 import { useI18n } from 'vue-i18n';
-import ChevronIcon from '../icons/ChevronIcon.vue';
+import CommentSection from '../feature/modal/CommentSection.vue';
+import type { CommentData } from '@/types/Comment';
 
 const { getType, getStatus, getNeighborhood } = useReportUtils()
 
 const { t } = useI18n()
-const userStore = useUserStore()
 const reportStore = useReportStore()
 
 const props = defineProps<{
@@ -32,8 +28,9 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const commentList = ref<CommentData[]>([])
+
 const neighborhood = ref<string>(t('LOADING'))
+const commentList = ref<CommentData[]>([])
 
 const coord = ref<[number, number] | undefined>(props.report?.long != undefined && props.report.lat != undefined ? [props.report.long, props.report.lat] : undefined)
 const category = ref<categoryEnum>(props.report?.category ?? categoryEnum.OTHER)
@@ -41,7 +38,6 @@ const description = ref<string>('')
 const image1 = ref<string>(props.report?.medias[0] ?? "")
 const image2 = ref<string>(props.report?.medias[1] ?? "")
 const image3 = ref<string>(props.report?.medias[2] ?? "")
-const newComment = ref<string>("")
 
 onMounted(async () => {
   if(props.report) {
@@ -57,7 +53,7 @@ onMounted(async () => {
     }
 
     if(resComments.status == 'fulfilled') {
-      commentList.value = resComments.value.data
+      commentList.value = resComments.value.data.slice().reverse()
     } else {
       console.error("Error comments", resComments.reason)
     }
@@ -82,28 +78,6 @@ const handleCreateReport = async () => {
   } catch (error) {
     console.error(error)
   }
-}
-
-const handleCreateComment = async () => {
-  try {
-    const resCom = await axios.post(
-      `http://localhost:3000/api/report/${props.report?._id}/comments`,
-      { comment: newComment.value },
-      { withCredentials: true }) 
-
-    if(resCom.data) {
-      newComment.value = ""
-      commentList.value = [resCom.data, ...commentList.value]
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const autoGrow = (e: Event) => {
-  const el = e.target as HTMLTextAreaElement
-  el.style.height = "24px"
-  el.style.height = el.scrollHeight + "px"
 }
 
 watch(() => coord.value, async (newCoord) => {
@@ -181,35 +155,13 @@ watch(() => coord.value, async (newCoord) => {
           <div class="flex flex-col">
             <div class="flex">
               <h1 class="font-bold">{{ t("COMMENTS") }}</h1>
-              <p class="ml-3">{{ props.report.commentCount }}</p>
+              <p class="ml-3">{{ commentList.length }}</p>
             </div>
-            <div class="flex flex-col gap-4">
-              <div class="flex">
-                <img
-                  :src="userStore.currentUser?.avatar_url || userPlaceholder"
-                  alt="avatar"
-                  class="w-[25px] h-[25px] rounded-full"
-                  @error="($event) => ($event.target as HTMLImageElement).src = userPlaceholder"
-                >
-                <textarea 
-                  name="newComment"
-                  id="newComment"
-                  v-model="newComment"
-                  @input="autoGrow"
-                  class="resize-none w-full border-b border-neutral-300 ml-2 h-[24px] focus:outline-none scrollbar-none"
-                >
-                </textarea>
-                <ChevronIcon 
-                  class="cursor-pointer"
-                  @click="handleCreateComment"
-                />
-              </div>
-              <!-- <CommentComp 
-                v-for="comment in commentList"
-                :key="comment._id"
-                :comment="comment"
-              /> -->
-            </div>
+            <CommentSection 
+              :report="props.report"
+              :comment-list="commentList"
+              @create="(comments) => commentList = comments"
+            />
           </div>
         </div>
       </div>

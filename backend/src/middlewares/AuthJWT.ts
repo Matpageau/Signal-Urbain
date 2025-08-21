@@ -56,10 +56,10 @@ export const isCityAdmin = (req: Request, res: Response, next: NextFunction) => 
     return next([createError("You do not have the permissions.", 401, "IS_NOT_CITYADMIN")]);  
 }
 
-export const isUser = (req: Request, res: Response, next: NextFunction) => {
+export const isUser = (req: Request, res: Response, next: NextFunction) => {  
   if (req.user?.role === UserRoleEnum.USER)
     next()
     
   else
-    return next([createError("You do not have the permissions.", 401, "IS_NOT_CITYADMIN")]);  
+    return next([createError("You do not have the permissions.", 401, "IS_NOT_USER")]);  
 }

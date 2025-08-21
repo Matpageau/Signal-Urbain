@@ -1,5 +1,6 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import Report, { iReportValues } from '../models/Report';
+import Comment from '../models/Comment';
 import createError from '../utils/Error';
 
 const reportController = {
@@ -17,29 +18,6 @@ const reportController = {
       const newReport = await Report.createReport(newReportData);
       res.status(201).json(newReport);
 
-    } catch (error) {
-      next(error)
-    }
-  },
-
-
-  async commentReport(req: Request, res: Response, next: NextFunction) {
-    try {
-      const user = req.user;
-      const userId = user && user._id;
-      const { reportId } = req.params;
-      
-      if (!reportId || !userId || typeof userId !== 'string' || typeof reportId !== 'string') 
-        return next(createError("The user ID provided is invalid.", 400, "USER_ID_INVALID"));
-      
-      const { comment } = req.body;
-      if (!comment && comment.toTrim() === "") {
-        return next(createError("The comment is null/undefined", 400, "COMMENTS_IS_FAULTY"))
-      }
-
-      const newComment = Report.addCommentToReport(userId, reportId, comment);
-      res.status(201).json(newComment);
-      
     } catch (error) {
       next(error)
     }
@@ -98,22 +76,6 @@ const reportController = {
 
       res.status(200).json(userUpvoteList);
 
-    } catch (error) {
-      next(error);
-    }
-  },
-
-
-  async getReportComments(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { reportId } = req.params;
-      if (!reportId) {
-        return next(createError("The report id provided is invalid.", 400, "INVALID__REPORT_ID"));
-      }
-
-      const report = await Report.findReportWithComments(reportId);
-      return res.status(200).json(report);
-      
     } catch (error) {
       next(error);
     }

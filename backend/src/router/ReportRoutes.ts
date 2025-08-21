@@ -1,5 +1,6 @@
 import express from "express";
 import ReportController from "../controllers/ReportController";
+import CommentController from "../controllers/CommentController";
 import { AuthJWT, isAdmin, isCityAdmin, isUser } from "../middlewares/AuthJWT";
 
 const ReportRoutes = express.Router();
@@ -9,9 +10,9 @@ ReportRoutes.post("/", ReportController.createReport);
 ReportRoutes.get("/", ReportController.getAllReport);
 
 ReportRoutes.get("/followed", AuthJWT, ReportController.getUpvotedReport)
-ReportRoutes.get("/:reportId/comments", ReportController.getReportComments)
+ReportRoutes.get("/:reportId/comments", CommentController.getReportComments)
 
-ReportRoutes.post("/:reportId/comments", AuthJWT, ReportController.commentReport)
+ReportRoutes.post("/:reportId/comments", AuthJWT, CommentController.createComment)
 
 
 // Patch

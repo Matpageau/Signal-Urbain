@@ -2,6 +2,7 @@ import mongoose, { Types } from "mongoose";
 import createError from '../utils/Error';
 import ReportModel from "./ReportSchema";
 import Comment, { iCommentValues } from "./Comment";
+import CommentModel from "./CommentSchema";
 
 export enum categoryEnum  {
   POTHOLE = 'pothole',
@@ -88,23 +89,6 @@ export default class Report {
       throw error;
     }
   }
-
-  static async addCommentToReport(userId: string, reportId: string, comment: string) {
-    // Validate if report exist
-    const doReportExist = ReportModel.findById(reportId);
-    if (!doReportExist) 
-      throw [createError("The report id provided do not exist.", 404, "REPORT_NOT_FOUND")]
-
-    // Synchronously add le comment a la BD
-    const data: iCommentValues = {
-      _id: null,
-      report_id: reportId,
-      author_id: userId,
-      content: comment
-    }
-    const newComment = Comment.createComment(data);
-    return newComment;
-  }
   
   static async findAllReports() {
     const dbReports = await ReportModel.find().populate('commentCount');
@@ -138,26 +122,6 @@ export default class Report {
 
   static async findUpvotedList(userId: string): Promise<mongoose.Document[]> {
     return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
-  }
-
-  
-  static async findReportWithComments(reportId: string): Promise<mongoose.Document> {
-    // Id's validation
-    if (!Types.ObjectId.isValid(reportId)) {
-      throw createError("The report ID's provided is invalid.", 401, "INVALID_ID");
-    }
-
-    const report = await ReportModel.findById(reportId)
-      .populate({
-        path: 'comments',
-        populate: { path: 'author_id', select: 'avatar_url username' },
-      });
-    
-    if (!report) {
-      throw (createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
-    }
-
-    return report;
   }
   
 

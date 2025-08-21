@@ -6,19 +6,19 @@ const props = defineProps<{
   comment: CommentData
 }>()
 
-
 </script>
 
 <template>
   <div class="flex flex-col">
     <div class="flex">
-      <img 
-        :src="props.comment.avatar_url || userPlaceholder"
+      <img
+        :src="props.comment?.author_id.avatar_url || userPlaceholder"
         alt="avatar"
+        class="w-[25px] h-[25px] rounded-full"
         @error="($event) => ($event.target as HTMLImageElement).src = userPlaceholder"
       >
-      <h2>{{ props.comment.username }}</h2>
+      <h2 class="ml-1 font-bold">{{ props.comment.author_id.username }}</h2>
     </div>
-    <p>{{ props.comment.content }}</p>
+    <p class="text-xs">{{ props.comment.content }}</p>
   </div>
 </template>

@@ -3,12 +3,12 @@ import { iCommentValues } from "./Comment";
 
 const commentSchema = new Schema({
   report_id: {
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: "Report",
     required: true
   },
   author_id: {
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },

@@ -16,7 +16,6 @@ export const useReportStore = defineStore('report', () => {
     isFetching.value = true
     fetchPromise = axios.get<ReportData[]>('http://localhost:3000/api/report')
     .then(res => {     
-      console.log(res.data);
       reports.value = res.data.sort((a, b) => b.upvote_user_ids.length - a.upvote_user_ids.length)
     }).catch(() => {
       reports.value = []
@@ -34,7 +33,6 @@ export const useReportStore = defineStore('report', () => {
     try {
       const res = await axios.get<ReportData[]>('http://localhost:3000/api/report/followed', { withCredentials: true })
       followedReports.value = res.data
-      console.log(followedReports.value);
       
     } catch (error) {
       console.error(error)
