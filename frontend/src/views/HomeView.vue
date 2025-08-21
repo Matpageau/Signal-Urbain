@@ -12,6 +12,7 @@ import ReportCard from '@/components/feature/home/ReportCard.vue';
 import { useReportStore } from '@/stores/reportStore';
 import BaseModal from '@/components/shared/ReportModal.vue';
 import { categoryEnum, type ReportData } from '@/types/Report';
+import router from '@/router';
 
 const userStore = useUserStore()
 const reportStore = useReportStore()
@@ -72,7 +73,7 @@ const handleReportModal = (report: ReportData) => {
           <img :src="avatarPlaceholder" alt="Avatar" class="h-[49px] w-[49px] rounded-full mr-1">
           <p>{{ userStore.currentUser.username }}</p>
         </div>
-        <GearIcon class="cursor-pointer"/>
+        <GearIcon class="cursor-pointer" @click="router.push('/profile')"/>
       </div>
     </div>
     <FilterBar class="absolute top-4 left-[398px]" @change="handleFilterChange"/>

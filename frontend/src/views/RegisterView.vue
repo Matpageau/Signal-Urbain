@@ -87,7 +87,7 @@ watch([username, email, password, confirmPassword], () => {
         />
       </form>
       <div class="flex flex-col items-center">
-        <p>{{ t('ALREADYHAVEACCOUNT') }}<a href="/login">{{ t('CONNECTNOW') }}</a></p>
+        <p>{{ t('ALREADYHAVEACCOUNT') }}<a href="/login" class="text-(--blue)">{{ t('CONNECTNOW') }}</a></p>
         <BaseButton class="mt-4 bg-(--blue) hover:bg-(--blue_hover) text-white px-15" @click="handleRegister">
           <p>{{ t('SIGNUP') }}</p>
         </BaseButton>
