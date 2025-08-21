@@ -93,6 +93,7 @@ export default class Report {
   
   static async findAllReports() {
     const dbReports = await ReportModel.find().populate('commentCount');
+
     if (!dbReports || dbReports.length === 0) {
       return [];
     }
@@ -100,14 +101,18 @@ export default class Report {
     return dbReports;
   }
 
-
-  static async findReportById(userId: string) {
+  /**
+   * This function seeks a report with an ID. 
+   * @param reportId The id of the desired report.
+   * @returns A document of the report requested with a "commentCount" or, null if not found.
+   */
+  static async findReportById(reportId: string): Promise<mongoose.Document | null> {
     // Id's validation
-    if (!Types.ObjectId.isValid(userId)) {
+    if (!Types.ObjectId.isValid(reportId)) {
       throw createError("The ID's provided is invalid.", 401, "INVALID_ID");
     }
 
-    const dbReport = await ReportModel.findById(userId).populate('commentCount');
+    const dbReport = await ReportModel.findById(reportId).populate('commentCount');
     if (!dbReport) {
       return null;
     }
@@ -115,8 +120,28 @@ export default class Report {
     return dbReport;
   }
 
+
   static async findUpvotedList(userId: string): Promise<mongoose.Document[]> {
     return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
+  }
+
+  static async findReportWithComments(reportId: string): Promise<mongoose.Document> {
+    // Id's validation
+    if (!Types.ObjectId.isValid(reportId)) {
+      throw createError("The ID's provided is invalid.", 401, "INVALID_ID");
+    }
+
+    const report = await ReportModel.findById(reportId)
+      .populate({
+        path: 'comments',
+        populate: { path: 'author_id', select: 'username' },
+      });
+    
+    if (!report) {
+      throw (createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
+    }
+
+    return report;
   }
   
 

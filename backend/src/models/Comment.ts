@@ -37,5 +37,13 @@ export default class Comment {
       throw error;
     }
   } 
-  static async findAllComment(){}
+
+  // static async findReportComments(reportId: string) {
+  //   return CommentModel.find({ report_Id: reportId })
+  //     .populate({
+  //       path: 'comments',
+  //       populate: { path: 'author_id', select: 'username'}
+  //     })
+  //   .sort({ createdAt: -1 });
+  // }
 }

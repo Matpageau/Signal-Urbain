@@ -1,8 +1,6 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import Report, { iReportValues } from '../models/Report';
 import createError from '../utils/Error';
-import User, { iUserValues } from '../models/User';
-import { error } from 'console';
 
 const reportController = {
 
@@ -81,9 +79,24 @@ const reportController = {
       next(error);
     }
   },
-  
 
-  // TODO PATCH REQUEST updateReport()
+
+  async getReportComments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { reportId } = req.params;
+      if (!reportId) {
+        return next(createError("The report id provided is invalid.", 400, "INVALID__REPORT_ID"));
+      }
+
+      const report = Report.findReportWithComments(reportId);
+      return res.status(200).json(report);
+      
+    } catch (error) {
+      next(error);
+    }
+  },
+
+    
   async updateReport(req: Request, res: Response, next: NextFunction) {},
 
   
@@ -124,6 +137,8 @@ const reportController = {
       next(error);
     }
   },
+
+  // TODO PATCH REQUEST updateReport()
 }
 
 
