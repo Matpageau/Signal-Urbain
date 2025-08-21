@@ -10,8 +10,10 @@ import { computed, ref } from 'vue';
 import type { PinData } from '@/types/Pin';
 import UpvoteIcon from '../icons/UpvoteIcon.vue';
 import { useReportStore } from '@/stores/reportStore';
-import { getStatus } from '@/utils/reportUtils';
+import { useReportUtils } from '@/composables/useReportUtils';
 import { useUserStore } from '@/stores/userStore';
+
+const { getStatus } = useReportUtils()
 
 const userStore = useUserStore()
 const reportStore = useReportStore()

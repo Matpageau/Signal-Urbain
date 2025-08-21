@@ -5,9 +5,10 @@ import UpvoteIcon from '@/components/icons/UpvoteIcon.vue';
 import PinComp from '@/components/shared/PinComp.vue';
 import { useReportStore } from '@/stores/reportStore';
 import type { ReportData } from '@/types/Report';
-import { getNeighborhood, getType } from '@/utils/reportUtils';
+import { useReportUtils } from '@/composables/useReportUtils';
 import { useUserStore } from '@/stores/userStore';
 
+const { getType, getNeighborhood } = useReportUtils()
 const userStore = useUserStore()
 const reportStore = useReportStore()
 
