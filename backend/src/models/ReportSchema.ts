@@ -40,8 +40,5 @@ reportSchema.virtual('commentCount', {
   count: true
 })
 
-reportSchema.set("toObject", { virtuals: true });
-reportSchema.set("toJSON", { virtuals: true });
-
 const ReportModel = mongoose.model('Report', reportSchema);
 export default ReportModel;

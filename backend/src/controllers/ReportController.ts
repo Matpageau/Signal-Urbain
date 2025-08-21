@@ -82,9 +82,11 @@ const reportController = {
     }
   },
   
+
   // TODO PATCH REQUEST updateReport()
   async updateReport(req: Request, res: Response, next: NextFunction) {},
 
+  
   async upvoteReport(req: Request, res: Response, next: NextFunction) { 
     try {
       const user = req.user;
