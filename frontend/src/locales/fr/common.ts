@@ -12,4 +12,7 @@ export default {
   SIGNUPNOW: "Créer maintenant",
   SIGNUP: "S'inscrire",
   SIGNIN: "Se connecter",
+  BACKONAPP: "← Revenir sur l'application",
+  SETTINGS: "Paramètres",
+  FOLLOWEDREPORTS: "Rapports suivis",
 }

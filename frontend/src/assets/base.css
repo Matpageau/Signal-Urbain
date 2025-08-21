@@ -36,12 +36,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  color: var(--blue);
-}
-
 a:hover {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .scrollbar-none::-webkit-scrollbar {

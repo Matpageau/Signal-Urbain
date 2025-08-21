@@ -2,11 +2,13 @@
 import { ref, watch } from 'vue';
 import BaseButton from '@/components/shared/BaseButton.vue';
 import { categoryEnum } from '@/types/Report';
+import { useI18n } from 'vue-i18n';
 
 const emit = defineEmits<{
   (e: 'change', categories: categoryEnum[]): void
 }>()
 
+const { t } = useI18n()
 const filters = ref<categoryEnum[]>([])
 
 const handleFilterChange = (category: categoryEnum) => {  
