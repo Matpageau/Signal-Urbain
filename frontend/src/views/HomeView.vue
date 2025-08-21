@@ -13,7 +13,9 @@ import { useReportStore } from '@/stores/reportStore';
 import BaseModal from '@/components/shared/ReportModal.vue';
 import { categoryEnum, type ReportData } from '@/types/Report';
 import router from '@/router';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n()
 const userStore = useUserStore()
 const reportStore = useReportStore()
 
@@ -66,7 +68,7 @@ const handleReportModal = (report: ReportData) => {
         />
       </div>
       <a v-if="!userStore.currentUser" href="/login" class="flex shrink-0 items-center justify-center bg-(--blue) hover:bg-(--blue_hover) transition-colors mt-4 h-[56px] text-white font-bold rounded-lg cursor-pointer">
-        <p class="text-white text-center">Se connecter</p>
+        <p class="text-white text-center">{{ t('SIGNIN') }}</p>
       </a>
       <div v-else class="flex items-center justify-between px-2 shrink-0 h-[56px] bg-white mt-4 rounded-lg">
         <div class="flex items-center">

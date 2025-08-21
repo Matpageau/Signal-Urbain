@@ -5,7 +5,7 @@ import { categoryEnum, statusEnum, type ReportData } from '@/types/Report';
 import PlusIcon from '../icons/PlusIcon.vue';
 import BaseButton from './BaseButton.vue';
 import PinComp from './PinComp.vue';
-import { getNeighborhood, getType } from '@/utils/reportUtils';
+import { useReportUtils } from '@/composables/useReportUtils';
 import elementPlaceholder from '@/assets/img/elementor-placeholder-image.png'
 import userPlaceholder from '@/assets/img/Avatar placeholder.png'
 import SelectMap from '../feature/modal/SelectMap.vue';
@@ -15,7 +15,11 @@ import { useReportStore } from '@/stores/reportStore';
 import { useUserStore } from '@/stores/userStore';
 import CommentComp from '../feature/modal/CommentComp.vue';
 import type { CommentData } from '@/types/Comment';
+import { useI18n } from 'vue-i18n';
 
+const { getType, getStatus, getNeighborhood } = useReportUtils()
+
+const { t } = useI18n()
 const userStore = useUserStore()
 const reportStore = useReportStore()
 
@@ -95,7 +99,7 @@ watch(() => coord.value, async (newCoord) => {
             <div class="flex items-center">
               <h1 class="font-bold text-2xl">{{ getType(category) }}</h1>
               <div class="w-[20px] h-[1px] bg-black ml-3 mr-1"></div>
-              <p class="italic">{{ props.report?.status ?? 'Creating' }}</p>
+              <p class="italic">{{ getStatus(props.report?.status) ?? 'Creating' }}</p>
             </div>
             <p class="text-neutral-500">{{ neighborhood }}</p>
           </div>
@@ -106,7 +110,7 @@ watch(() => coord.value, async (newCoord) => {
             class="px-4 mr-4 bg-(--blue) hover:bg-(--blue_hover) text-white"
             @click="handleCreateReport"
           >
-            Sauvegarder
+            {{ t('SAVE') }}
           </BaseButton>
           <PlusIcon class="rotate-45 cursor-pointer" :onclick="() => emit('close')"/>
         </div>
