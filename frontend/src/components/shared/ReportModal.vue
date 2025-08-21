@@ -38,13 +38,24 @@ const image2 = ref<string>(props.report?.medias[1] ?? "")
 const image3 = ref<string>(props.report?.medias[2] ?? "")
 
 onMounted(async () => {
-  const [resNeighborhood, resComments] = await Promise.all([
-    getNeighborhood(props.report?.long, props.report?.lat),
-    axios.get(`http://localhost:3000/api/comment/${props.report?._id}/comments`)
-  ])
+  if(props.report) {
+    const [resNeighborhood, resComments] = await Promise.allSettled([
+      getNeighborhood(props.report?.long, props.report.lat),
+      axios.get(`http://localhost:3000/api/comment/${props.report._id}/comments`)
+    ])
+    
+    if(resNeighborhood.status == 'fulfilled') {
+      neighborhood.value = resNeighborhood.value
+    } else {
+      console.error("Error neighborhood", resNeighborhood.reason)
+    }
 
-  neighborhood.value = resNeighborhood
-  commentList.value = resComments.data
+    if(resComments.status == 'fulfilled') {
+      commentList.value = resComments.value.data
+    } else {
+      console.error("Error comments", resComments.reason)
+    }
+  }  
 })
 
 const handleCreateReport = async () => {

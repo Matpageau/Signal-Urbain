@@ -47,7 +47,6 @@ const userController = {
 
 	async getByToken(req: Request, res: Response, next: NextFunction) {
 		try {
-		
 			const errorMessages = [];
 			const token = req.cookies.token;
       

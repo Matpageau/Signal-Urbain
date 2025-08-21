@@ -15,7 +15,7 @@ export const useReportStore = defineStore('report', () => {
     isFetching.value = true
     fetchPromise = axios.get<ReportData[]>('http://localhost:3000/api/report')
     .then(res => {     
-      reports.value = res.data
+      reports.value = res.data.sort((a, b) => b.upvote_user_ids.length - a.upvote_user_ids.length)
     }).catch(() => {
       reports.value = []
     })
@@ -41,6 +41,7 @@ export const useReportStore = defineStore('report', () => {
       const index = reports.value.findIndex(r => r._id == id)
       if(index != -1) {
         reports.value[index] = res.data
+        reports.value.sort((a, b) => b.upvote_user_ids.length - a.upvote_user_ids.length)
       }
     } catch (error) {
       console.error("Erreur upvote", error)

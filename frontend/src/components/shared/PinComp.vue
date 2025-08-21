@@ -83,7 +83,7 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
       class="absolute flex flex-col bg-white w-[135px] h-[110px] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg p-2 z-50"
     > 
       <img :src="props.report.medias[0]" alt="report image" class="rounded-lg shrink-0 h-[75px] cursor-pointer object-cover" @click="emit('select')">
-      <div class="flex justify-between">
+      <div class="flex justify-between items-center">
         <p>{{ getStatus(effectiveStatus) }}</p>
         <div class="flex items-center justify-end shrink-0">
           <p>{{ effectiveUpvote }}</p>
