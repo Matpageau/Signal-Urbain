@@ -1,7 +1,7 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import Report, { iReportValues } from '../models/Report';
 import createError from '../utils/Error';
-import { iUserValues } from '../models/User';
+import User, { iUserValues } from '../models/User';
 import { error } from 'console';
 
 const reportController = {
@@ -22,7 +22,8 @@ const reportController = {
     } catch (error) {
       next(error)
     }
-   },
+  },
+  
 
   async getAllReport(req: Request, res: Response, next: NextFunction) {
     try {
@@ -40,7 +41,8 @@ const reportController = {
     } catch (error) {
       next(error)
     }
-   },
+  },
+  
 
   async getReport(req: Request, res: Response, next: NextFunction) {
     try {

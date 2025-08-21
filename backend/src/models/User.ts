@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import createError from '../utils/Error';
 import UserModel from './UserSchema';
+import ReportModel from './ReportSchema';
 
 export enum UserRoleEnum {
   USER = 'user',
@@ -235,6 +236,11 @@ export default class User {
       throw [createError("The email provided dit not match any user", 404, "EMAIL_NOT_FOUND")];
 
     return user;
+  }
+
+
+  static async findUpvotedList(userId: string): Promise<mongoose.Document[]> {
+    return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
   }
   
   

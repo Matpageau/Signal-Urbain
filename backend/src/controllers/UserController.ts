@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import User, { iUserValues, UserRoleEnum } from '../models/User';
 import jwt from 'jsonwebtoken';
 import createError from '../utils/Error';
+import ReportModel from '../models/ReportSchema';
+import { Types } from 'mongoose';
 
 const userController = {
 
@@ -43,40 +45,6 @@ const userController = {
       next(error);
     }
 	},
-
-
-	async getByToken(req: Request, res: Response, next: NextFunction) {
-		try {
-		
-			const errorMessages = [];
-			const token = req.cookies.token;
-      
-			if (!token) {
-				errorMessages.push(createError("There is no token provided.", 401, "TOKEN_MISSING"))
-			}
-			
-			const secret = process.env.PRIV_JWT_CODE
-			const decodedToken = jwt.verify(token, secret!) as { _id: string }
-
-			if (!decodedToken._id) {
-				errorMessages.push(createError("The token provided is invalid.", 401, "TOKEN_INVALID"))
-			}
-			
-			const user = await User.findUserById(decodedToken._id);
-			if (!user) {
-				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
-			}
-
-			if (errorMessages.length > 0) {
-        throw errorMessages;
-      }
-
-			res.status(200).send(user);
-	
-		} catch (error) {
-			next(error)
-		}
-	},
 	
 
 	async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -100,16 +68,30 @@ const userController = {
 	
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
-			const errorMessages = [];
-			const dbUser = await User.findUserById(req.params.id);
+			const userId = req.user?._id;
+			if (!userId) 
+				return next(createError("No user id provided.", 400, "INVALID_ID"));
 
-			// Validation
-			if (!dbUser) {
-				errorMessages.push(createError("The id provided dit not match any user.", 404, "USER_NOT_FOUND"));
-				throw errorMessages;
-			}
+			const userDoc = await User.findUserById(userId.toString());
+			if (!userDoc) 
+				return next(createError("The id provided dit not match any user.", 404, "USER_NOT_FOUND"));
+			
+			res.status(200).json(userDoc);
 
-			res.status(200).json(dbUser);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+
+	async getUpvotedReport(req: Request, res: Response, next: NextFunction) {
+		try {
+			const userId = req.user?._id?.toString();
+			if (!userId) 
+				return next(createError("No user id provided.", 400, "INVALID_ID"));
+			
+			const userUpvoteList = User.findUpvotedList(userId);
+			res.status(200).json(userUpvoteList);
 
 		} catch (error) {
 			next(error);

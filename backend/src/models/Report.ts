@@ -16,7 +16,6 @@ export enum statusEnum {
   INPROGRESS = 'in_progress',
   RESOLVED = 'resolved'
 }
-
 export interface iReportValues {
   _id: string | Types.ObjectId | null;
   category: categoryEnum;
@@ -128,7 +127,7 @@ export default class Report {
   static async upvoteReport(userId: string , reportId: string) {
 
     // Id's validation
-    if (!Types.ObjectId.isValid(reportId)) 
+    if (!Types.ObjectId.isValid(userId) && !Types.ObjectId.isValid(reportId)) 
       throw (createError("One of the ID's provided is invalid.", 400, "INVALID_ID"))
     
     // Finding the report and user in the database

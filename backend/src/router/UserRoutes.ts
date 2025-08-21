@@ -1,25 +1,26 @@
 import express from "express";
-import UserCrontroller from "../controllers/UserController";
-// import AuthJWT from "../middlewares/AuthJWT";
+import UserController from "../controllers/UserController";
+import { AuthJWT, isAdmin, isCityAdmin } from "../middlewares/AuthJWT";
 
 const UserRoutes = express.Router();
 
 // http://localhost:3000/api/user/all
-UserRoutes.post("/register", UserCrontroller.createUser);
+UserRoutes.post("/register", UserController.createUser);
 
 // http://localhost:3000/api/user/login
-UserRoutes.post("/login", UserCrontroller.login);
+UserRoutes.post("/login", UserController.login);
 
 // http://localhost:3000/api/user/me
-UserRoutes.get("/me", UserCrontroller.getByToken)
+UserRoutes.get("/me", AuthJWT, UserController.getUserById)
 
-// // http://localhost:3000/api/user/all
-// UserRoutes.get("/", AuthJWT, UserCrontroller.getAllUsers);
+// TODO GET/followed -> return toute les reports upvoted par un User
+// Recoit credential, utilise le REQ.USER
+UserRoutes.get("/followed", AuthJWT, UserController.getUpvotedReport)
 
-// // http://localhost:3000/api/user/:id
-// UserRoutes.get("/:id", AuthJWT, UserCrontroller.getUserById);
+// http://localhost:3000/api/user/all
+UserRoutes.get("/", AuthJWT, isAdmin, UserController.getAllUsers);
 
-// // http://localhost:3000/api/user/:id
-// UserRoutes.delete("/:id", AuthJWT, UserCrontroller.deleteUser);
+// http://localhost:3000/api/user/:id
+UserRoutes.delete("/:id", AuthJWT, isAdmin, UserController.deleteUser);
 
 export default UserRoutes;

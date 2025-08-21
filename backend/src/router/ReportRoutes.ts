@@ -1,6 +1,6 @@
 import express from "express";
 import ReportController from "../controllers/ReportController";
-import { AuthJWT } from "../middlewares/AuthJWT";
+import { AuthJWT, isAdmin, isCityAdmin, isUser } from "../middlewares/AuthJWT";
 
 const ReportRoutes = express.Router();
 
@@ -12,11 +12,9 @@ ReportRoutes.get("/", ReportController.getAllReport);
 ReportRoutes.get("/:id", ReportController.getReport);
 
 // Patch
-// TODO ADD Role authentication 
-ReportRoutes.patch("/:reportId/upvote", AuthJWT, ReportController.upvoteReport);
+ReportRoutes.patch("/:reportId/upvote", AuthJWT, isUser, ReportController.upvoteReport);
 
 // Delete 
-// TODO ADD Role authentication 
-ReportRoutes.delete("/delete/:id", AuthJWT, ReportController.deleteReport);
+ReportRoutes.delete("/delete/:id", AuthJWT, isCityAdmin, ReportController.deleteReport);
 
 export default ReportRoutes;
