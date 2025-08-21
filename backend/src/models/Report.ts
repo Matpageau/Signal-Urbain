@@ -1,6 +1,7 @@
 import mongoose, { Types } from "mongoose";
 import createError from '../utils/Error';
 import ReportModel from "./ReportSchema";
+import Comment, { iCommentValues } from "./Comment";
 
 export enum categoryEnum  {
   POTHOLE = 'pothole',
@@ -67,10 +68,7 @@ export default class Report {
         medias: this.medias
       });
 
-      await reportMongoModel.save();
-
-      return reportMongoModel
-      
+      return await reportMongoModel.save();
     } catch (error) {
       throw [createError("An error happened during data saving", 500, "SAVING_DATA_ERROR")];
     }
@@ -89,6 +87,23 @@ export default class Report {
     } catch (error) {
       throw error;
     }
+  }
+
+  static async addCommentToReport(userId: string, reportId: string, comment: string) {
+    // Validate if report exist
+    const doReportExist = ReportModel.findById(reportId);
+    if (!doReportExist) 
+      throw [createError("The report id provided do not exist.", 404, "REPORT_NOT_FOUND")]
+
+    // Synchronously add le comment a la BD
+    const data: iCommentValues = {
+      _id: null,
+      report_id: reportId,
+      author_id: userId,
+      content: comment
+    }
+    const newComment = Comment.createComment(data);
+    return newComment;
   }
   
   static async findAllReports() {
@@ -125,16 +140,17 @@ export default class Report {
     return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
   }
 
+  
   static async findReportWithComments(reportId: string): Promise<mongoose.Document> {
     // Id's validation
     if (!Types.ObjectId.isValid(reportId)) {
-      throw createError("The ID's provided is invalid.", 401, "INVALID_ID");
+      throw createError("The report ID's provided is invalid.", 401, "INVALID_ID");
     }
 
     const report = await ReportModel.findById(reportId)
       .populate({
         path: 'comments',
-        populate: { path: 'author_id', select: 'username' },
+        populate: { path: 'author_id', select: 'avatar username' },
       });
     
     if (!report) {

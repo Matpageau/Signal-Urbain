@@ -4,15 +4,15 @@ import CommentModel from "./CommentSchema";
 
 export interface iCommentValues {
   _id: string | null;
-  report_id: Types.ObjectId;
-  author_id: Types.ObjectId;
+  report_id: string;
+  author_id: string;
   content: string;
 }
 
 export default class Comment {
   _id: string | null;
-  report_id: Types.ObjectId;
-  author_id: Types.ObjectId;
+  report_id: string;
+  author_id: string;
   content: string;
   
   constructor({ _id, report_id, author_id, content }: iCommentValues) {
@@ -22,7 +22,7 @@ export default class Comment {
     this.content = content
   }
 
-  async saveReport() {
+  async saveComment() {
     try {
       const commentValues = new CommentModel({
         _id: this._id,
@@ -31,19 +31,21 @@ export default class Comment {
         content: this.content
       })
 
-      await commentValues.save();
+      return await commentValues.save();
 
     } catch (error) {
       throw error;
     }
   } 
 
-  // static async findReportComments(reportId: string) {
-  //   return CommentModel.find({ report_Id: reportId })
-  //     .populate({
-  //       path: 'comments',
-  //       populate: { path: 'author_id', select: 'username'}
-  //     })
-  //   .sort({ createdAt: -1 });
-  // }
+  static async createComment(data: iCommentValues) {
+    try {
+      const newCommentObj = new Comment(data);
+      const newComment = await newCommentObj.saveComment();
+
+      return await newComment.populate("author_id", "avatar username ");
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -4,16 +4,14 @@ import { AuthJWT, isAdmin, isCityAdmin, isUser } from "../middlewares/AuthJWT";
 
 const ReportRoutes = express.Router();
 
-// Create
+// Post
 ReportRoutes.post("/", ReportController.createReport);
+ReportRoutes.post("/:reportId/comments", AuthJWT, ReportController.commentReport)
 
 // Get
 ReportRoutes.get("/", ReportController.getAllReport);
-
 ReportRoutes.get("/:reportId/comments", ReportController.getReportComments)
-
 ReportRoutes.get("/followed", AuthJWT, ReportController.getUpvotedReport)
-
 
 // Patch
 ReportRoutes.patch("/:reportId/upvote", AuthJWT, isUser, ReportController.upvoteReport);

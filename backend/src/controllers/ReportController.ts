@@ -21,6 +21,29 @@ const reportController = {
       next(error)
     }
   },
+
+
+  async commentReport(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user;
+      const userId = user && user._id;
+      const { reportId } = req.params;
+      
+      if (!reportId || !userId || typeof userId !== 'string' || typeof reportId !== 'string') 
+        return next(createError("The user ID provided is invalid.", 400, "USER_ID_INVALID"));
+      
+      const comment = req.body;
+      if (!comment && comment.toTrim() === "") {
+        return next(createError("The comment is null/undefined", 400, "COMMENTS_IS_FAULTY"))
+      }
+
+      const newComment = Report.addCommentToReport(userId, reportId, comment);
+      res.status(201).json(newComment);
+      
+    } catch (error) {
+      next(error)
+    }
+  },
   
 
   async getAllReport(req: Request, res: Response, next: NextFunction) {
@@ -69,7 +92,7 @@ const reportController = {
     try {
       const userId = req.user?._id?.toString();
       if (!userId) 
-        return next(createError("No user id provided.", 400, "INVALID_ID"));
+        return next(createError("Invalid user id/credential.", 400, "INVALID_ID"));
       
       const userUpvoteList = await Report.findUpvotedList(userId);
 

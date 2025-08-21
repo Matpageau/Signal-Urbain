@@ -1,14 +1,14 @@
 import mongoose, { Schema } from "mongoose";
 import { iCommentValues } from "./Comment";
 
-const commentSchema = new Schema<iCommentValues>({
+const commentSchema = new Schema({
   report_id: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: "Report",
     required: true
   },
   author_id: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: "User",
     required: true,
   },
