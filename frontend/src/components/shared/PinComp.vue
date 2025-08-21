@@ -88,7 +88,7 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
         <div class="flex items-center justify-end shrink-0">
           <p>{{ effectiveUpvote }}</p>
           <UpvoteIcon 
-            :class="['ml-4 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report?._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
+            :class="['ml-1 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report?._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
             @click="reportStore.upvoteReport(props.report._id)"
           />
         </div>

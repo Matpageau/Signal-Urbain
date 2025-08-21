@@ -16,14 +16,20 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  (e: 'click'): void,
+  (e: 'upvote'): void
 }>()
 
 const neighborhood = ref<string>("Loading...")
 
 onMounted(async () => {
-  neighborhood.value = await getNeighborhood(props.report.long, props.report.lat)
+  neighborhood.value = await getNeighborhood(props.report.long, props.report.lat)  
 })
+
+const handleUpvote = () => {
+  reportStore.upvoteReport(props.report._id)
+  emit('upvote')
+}
 </script>
 
 <template>
@@ -35,7 +41,7 @@ onMounted(async () => {
         <p class="leading-none text-xs">{{ neighborhood }}</p>
       </div>
     </div>
-    <img :src="props.report.medias[0]" alt="report image" class="my-3 cursor-pointer" @click="emit('click')">
+    <img :src="props.report.medias[0]" alt="report image" class="my-3 cursor-pointer aspect-16/9 object-cover" @click="emit('click')">
     <div class="flex justify-between">
       <div class="flex">
         <CommentIcon class="mr-4"/>
@@ -45,7 +51,7 @@ onMounted(async () => {
         <p>{{ props.report.upvote_user_ids.length }}</p>
         <UpvoteIcon 
           :class="['ml-4 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
-          @click="reportStore.upvoteReport(props.report._id)"
+          @click="handleUpvote"
         />
       </div>
     </div>
