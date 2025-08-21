@@ -204,11 +204,11 @@ watch(() => coord.value, async (newCoord) => {
                   @click="handleCreateComment"
                 />
               </div>
-              <CommentComp 
+              <!-- <CommentComp 
                 v-for="comment in commentList"
                 :key="comment._id"
                 :comment="comment"
-              />
+              /> -->
             </div>
           </div>
         </div>
