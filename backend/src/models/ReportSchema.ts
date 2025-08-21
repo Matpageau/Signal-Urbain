@@ -33,12 +33,21 @@ const reportSchema = new Schema({
   }
 });
 
+reportSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'report_id'
+});
+
 reportSchema.virtual('commentCount', {
   ref: 'Comment',
   localField: '_id',
   foreignField: 'report_id',
   count: true
 })
+
+reportSchema.set('toObject', { virtuals: true });
+reportSchema.set('toJSON', { virtuals: true });
 
 const ReportModel = mongoose.model('Report', reportSchema);
 export default ReportModel;
