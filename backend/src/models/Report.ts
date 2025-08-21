@@ -69,6 +69,8 @@ export default class Report {
       });
 
       await reportMongoModel.save();
+
+      return reportMongoModel
       
     } catch (error) {
       throw [createError("An error happened during data saving", 500, "SAVING_DATA_ERROR")];
@@ -81,9 +83,9 @@ export default class Report {
       
       data.status = statusEnum.CREATED;
 
-      const newReport = new Report(data);
-      await newReport.saveReport();
-      return newReport; 
+      const newReportObj = new Report(data);
+      const newReport = await newReportObj.saveReport();
+      return newReport.populate('commentCount'); 
       
     } catch (error) {
       throw error;
