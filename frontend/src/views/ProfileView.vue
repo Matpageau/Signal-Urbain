@@ -2,29 +2,25 @@
 import { useUserStore } from '@/stores/userStore';
 import userPlaceholder from '@/assets/img/Avatar placeholder.png'
 import { computed, onMounted, ref, watch } from 'vue';
-import axios from 'axios';
 import type { categoryEnum, ReportData } from '@/types/Report';
 import FilterBar from '@/components/feature/home/FilterBar.vue';
 import ReportCard from '@/components/feature/home/ReportCard.vue';
 import BaseInput from '@/components/shared/BaseInput.vue';
+import BaseModal from '@/components/shared/ReportModal.vue';
 import { useI18n } from 'vue-i18n';
+import { useReportStore } from '@/stores/reportStore';
 
 const { locale, t } = useI18n()
+
+const reportStore = useReportStore()
 const userStore = useUserStore()
 
-const followedReports = ref<ReportData[]>([])
 const selectedCategories = ref<categoryEnum[]>([]);
+const isModalOpen = ref(false)
+const selectedReport = ref<ReportData>()
 
 onMounted(async () => {
-  try {
-    const followedRes = await axios.get(`http://localhost:3000/api/report/followed`, { withCredentials: true })
-
-    if(followedRes.data) {
-      followedReports.value = followedRes.data
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  reportStore.fetchFollowedReports()
 })
 
 const handleFilterChange = (categories: categoryEnum[]) => {  
@@ -32,12 +28,17 @@ const handleFilterChange = (categories: categoryEnum[]) => {
 };
 
 const filteredReports = computed(() => {
-  if (!selectedCategories.value.length) return followedReports.value;
+  if (!selectedCategories.value.length) return reportStore.followedReports;
 
-  return followedReports.value.filter(report =>
+  return reportStore.followedReports.filter(report =>
     selectedCategories.value.includes(report.category)
   );
 });
+
+const handleReportModal = (report: ReportData) => {
+  selectedReport.value = report
+  isModalOpen.value = true
+}
 
 watch(locale, (newLang) => {
   document.cookie = `lang=${newLang}; path=/; max-age=31536000`; 
@@ -46,11 +47,17 @@ watch(locale, (newLang) => {
 </script>
 
 <template>
-  <div class="flex w-full h-full">
-    <div class="w-full flex m-5">
-      <div class="w-2/3">
+  <div class="flex w-full h-full overflow-hidden">
+    <BaseModal
+      v-if="isModalOpen"
+      :report="selectedReport"
+      @close="isModalOpen = false"
+    />
+    <div class="w-full flex p-5">
+      <div class="flex flex-col w-2/3 h-full">
         <a href="/" class="text-xl">{{ t('BACKONAPP') }}</a>
-        <div class="mt-5 m-5">
+
+        <div class="m-5 flex flex-col flex-1 min-h-0">
           <div class="flex items-center">
             <img 
               :src="userStore.currentUser?.avatar_url || userPlaceholder"
@@ -60,17 +67,18 @@ watch(locale, (newLang) => {
             >
             <h1 class="ml-3 text-3xl font-bold">{{ userStore.currentUser?.username }}</h1>
           </div>
-          <div class="mt-10">
+          <div class="flex flex-col mt-10 flex-1 min-h-0">
             <div class="flex text-xl">
               <h2 class="font-bold">{{ t('FOLLOWEDREPORTS') }}</h2>
               <p class="ml-1">({{ filteredReports.length }})</p>
             </div>
             <FilterBar class="mt-1" @change="handleFilterChange"/>
-            <div class="grid grid-cols-3 overflow-y-scroll scrollbar-none">
+            <div class="grid grid-cols-3 gap-2 mt-5 overflow-y-auto scrollbar-none flex-1 min-h-0">
               <ReportCard 
                 v-for="report in filteredReports"
                 :key="report._id"
                 :report="report"
+                @click="() => handleReportModal(report)"
               />
             </div>
           </div>

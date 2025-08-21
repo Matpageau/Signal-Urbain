@@ -5,6 +5,7 @@ import { computed, ref } from "vue";
 
 export const useReportStore = defineStore('report', () => {
   const reports = ref<ReportData[]>([])
+  const followedReports = ref<ReportData[]>([])
   const isFetching = ref(false)
   const isReady = ref(false)
   let fetchPromise: Promise<void> | null = null
@@ -15,6 +16,7 @@ export const useReportStore = defineStore('report', () => {
     isFetching.value = true
     fetchPromise = axios.get<ReportData[]>('http://localhost:3000/api/report')
     .then(res => {     
+      console.log(res.data);
       reports.value = res.data.sort((a, b) => b.upvote_user_ids.length - a.upvote_user_ids.length)
     }).catch(() => {
       reports.value = []
@@ -26,6 +28,18 @@ export const useReportStore = defineStore('report', () => {
     })
     
     return fetchPromise
+  }
+
+  const fetchFollowedReports = async () => {
+    try {
+      const res = await axios.get<ReportData[]>('http://localhost:3000/api/report/followed', { withCredentials: true })
+      followedReports.value = res.data
+      console.log(followedReports.value);
+      
+    } catch (error) {
+      console.error(error)
+      followedReports.value = []
+    }
   }
 
   const getReportsByCategory = (categories: categoryEnum[]) => {
@@ -43,6 +57,19 @@ export const useReportStore = defineStore('report', () => {
         reports.value[index] = res.data
         reports.value.sort((a, b) => b.upvote_user_ids.length - a.upvote_user_ids.length)
       }
+
+      const followedIndex = followedReports.value.findIndex(r => r._id == id)
+      if(res.data.upvote_user_ids.includes(res.data._id)) {
+        if(followedIndex == -1) {
+          followedReports.value.push(res.data)
+        } else {
+          followedReports.value[followedIndex] = res.data
+        }
+      } else {
+        if( followedIndex != -1) {
+          followedReports.value.splice(followedIndex, 1)
+        }
+      }
     } catch (error) {
       console.error("Erreur upvote", error)
     }
@@ -50,8 +77,10 @@ export const useReportStore = defineStore('report', () => {
 
   return {
     reports,
+    followedReports,
     isReady,
     fetchReports,
+    fetchFollowedReports,
     getReportsByCategory,
     upvoteReport
   }

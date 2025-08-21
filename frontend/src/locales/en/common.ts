@@ -1,15 +1,42 @@
 export default {
+  // Authentication
   REGISTER: "Register",
   LOGIN: "Login",
   USERNAME: "Username",
-  EMAIL: "Email adress",
-  EMAILORUSERNAME: "Email adress or username",
+  EMAIL: "Email address",
+  EMAILORUSERNAME: "Email or username",
   PASSWORD: "Password",
   CONFIRMPASSWORD: "Confirm password",
-  ALREADYHAVEACCOUNT: "Already have an account ? ",
-  DONTHAVEACCOUNT: "Don't have an account ? ",
-  CONNECTNOW: "Connect now",
+  ALREADYHAVEACCOUNT: "Already have an account? ",
+  DONTHAVEACCOUNT: "Don't have an account? ",
+  CONNECTNOW: "Login now",
   SIGNUPNOW: "Sign up now",
-  SIGNUP: "S'inscrire",
-  SIGNIN: "Sign in",
+  SIGNUP: "Sign up",
+  SIGNIN: "Login",
+
+  // General
+  BACKONAPP: "← Back to app",
+  SETTINGS: "Settings",
+  FOLLOWEDREPORTS: "Followed reports",
+  SAVE: "Save",
+
+  // Report types
+  POTHOLE: "Pothole",
+  DMGELEMENT: "Damaged element",
+  ROADOBST: "Road obstacle",
+  FAULTTRAFIC: "Faulty traffic lights",
+  DANGEROUSTREE: "Dangerous tree",
+  VANDALISM: "Vandalism",
+  OTHER: "Other",
+
+  // Status
+  CREATED: "Created",
+  INPROGRESS: "In progress",
+  RESOLVED: "Resolved",
+  LOADING: "Loading...",
+
+  // Report
+  DESCRIPTION: "Description",
+  COMMENTS: "Comments",
+  GENERALINFOS: "General information",
 }
