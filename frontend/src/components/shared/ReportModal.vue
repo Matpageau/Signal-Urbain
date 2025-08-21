@@ -47,7 +47,7 @@ onMounted(async () => {
   if(props.report) {
     const [resNeighborhood, resComments] = await Promise.allSettled([
       getNeighborhood(props.report?.long, props.report.lat),
-      axios.get(`http://localhost:3000/api/comment/${props.report._id}/comments`)
+      axios.get(`http://localhost:3000/api/report/${props.report._id}/comments`)
     ])
     
     if(resNeighborhood.status == 'fulfilled') {
@@ -86,7 +86,10 @@ const handleCreateReport = async () => {
 
 const handleCreateComment = async () => {
   try {
-    const resCom = await axios.post(`http://localhost:3000/api/report/${props.report?._id}/comments`)
+    const resCom = await axios.post(
+      `http://localhost:3000/api/report/${props.report?._id}/comments`,
+      { comment: newComment.value },
+      { withCredentials: true }) 
 
     if(resCom.data) {
       newComment.value = ""

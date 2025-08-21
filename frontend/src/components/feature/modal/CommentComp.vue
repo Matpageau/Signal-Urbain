@@ -13,11 +13,11 @@ const props = defineProps<{
   <div class="flex flex-col">
     <div class="flex">
       <img 
-        :src="props.comment.author.avatar_url || userPlaceholder"
+        :src="props.comment.avatar_url || userPlaceholder"
         alt="avatar"
         @error="($event) => ($event.target as HTMLImageElement).src = userPlaceholder"
       >
-      <h2>{{ props.comment.author.username }}</h2>
+      <h2>{{ props.comment.username }}</h2>
     </div>
     <p>{{ props.comment.content }}</p>
   </div>

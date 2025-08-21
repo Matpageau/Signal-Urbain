@@ -43,7 +43,7 @@ export default class Comment {
       const newCommentObj = new Comment(data);
       const newComment = await newCommentObj.saveComment();
 
-      return await newComment.populate("author_id", "avatar username ");
+      return await newComment.populate("author_id", "avatar_url username ");
     } catch (error) {
       throw error;
     }

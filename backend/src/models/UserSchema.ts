@@ -22,9 +22,10 @@ const userSchema = new Schema<iUserValues>({
     type: Date,
     required: true
   },
-  avatar: {
+  avatar_url: {
     type: String,
-    required: false
+    required: false,
+    default: ""
   }
 });
 

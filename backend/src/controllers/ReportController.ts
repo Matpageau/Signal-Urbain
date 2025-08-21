@@ -32,7 +32,7 @@ const reportController = {
       if (!reportId || !userId || typeof userId !== 'string' || typeof reportId !== 'string') 
         return next(createError("The user ID provided is invalid.", 400, "USER_ID_INVALID"));
       
-      const comment = req.body;
+      const { comment } = req.body;
       if (!comment && comment.toTrim() === "") {
         return next(createError("The comment is null/undefined", 400, "COMMENTS_IS_FAULTY"))
       }

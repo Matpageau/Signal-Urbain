@@ -15,7 +15,6 @@ declare global {
 export const AuthJWT = (req: Request, res: Response, next: NextFunction) => {
 
   try {
-
     const token = req.cookies.token;
     if (!token) return next ([createError("Access denied. The token is invalid.", 401, "INVALID_TOKEN")]);
     

@@ -18,7 +18,7 @@ export interface iUserValues {
   email: string;
   role: UserRoleEnum;
   createdAt: Date;
-  avatar?: string;
+  avatar_url?: string;
 }
 
 export default class User {
@@ -28,7 +28,7 @@ export default class User {
   role: iUserValues['role'];
   email: string;
   createdAt: Date;
-  avatar?: string;
+  avatar_url?: string;
 
   constructor({ _id, username, email, password, role }: iUserValues) {
     this._id = _id || null;
@@ -37,7 +37,7 @@ export default class User {
     this.role = role;
     this.email = email;
     this.createdAt = new Date();
-    this.avatar = undefined;
+    this.avatar_url = undefined;
   }
 
   /**
@@ -53,7 +53,7 @@ export default class User {
         role: this.role,
         email: this.email,
         createdAt: this.createdAt,
-        avatar: this.avatar
+        avatar_url: this.avatar_url
       });
       await userValues.save();
       
@@ -176,7 +176,7 @@ export default class User {
         username: user.username,
         role: user.role,
         createdAt: user.createdAt,
-        avatar: user.avatar
+        avatar_url: user.avatar_url
       };
       
       const secret = process.env.PRIV_JWT_CODE;

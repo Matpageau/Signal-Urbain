@@ -150,7 +150,7 @@ export default class Report {
     const report = await ReportModel.findById(reportId)
       .populate({
         path: 'comments',
-        populate: { path: 'author_id', select: 'avatar username' },
+        populate: { path: 'author_id', select: 'avatar_url username' },
       });
     
     if (!report) {
