@@ -63,7 +63,6 @@ const userController = {
 			}
 			
 			const user = await User.findUserById(decodedToken._id);
-      
 			if (!user) {
 				errorMessages.push(createError("The user could not be found with this token.", 404, "USER_NOT_FOUND"))
 			}
@@ -121,21 +120,13 @@ const userController = {
 
 	async deleteUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			const errorMessages = [];
 			const id  = req.params.id;
 			const user = await User.findUserById(id);
 
 			// Validation
-			if (!user) {
-				errorMessages.push(createError("The id provided dit not match any user", 404, "USER_NOT_FOUND"));
-				throw errorMessages;
-			}
-			// Admin validation
-			if (user.role != 'admin') {
-				errorMessages.push(createError("You do not have the rights to delete a user.", 404, "RIGHTS_ERROR"))
-				throw errorMessages;
-			}
-				
+			if (!user) 
+				throw [createError("The id provided dit not match any user", 404, "USER_NOT_FOUND")];
+
 			await User.deleteUserById(req.params.id);
 			res.status(200).json(`User with id of ${req.params.id} was found and successfully deleted.`);
 

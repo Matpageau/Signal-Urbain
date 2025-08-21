@@ -102,6 +102,7 @@ export default class User {
     }
   }
 
+
   /**
    * A static async function that logs in a user by verifying their credentials.
    * @param email The username of the user trying to log in.
@@ -111,39 +112,29 @@ export default class User {
   static async loginUser(email: string, password: string): Promise<{ token: string | null, user: iUserValues } > {
     try {
       // TODO Add the username login feature
-      const errorMessages: any[] = [];
-      const user = await User.findByEmail(email);
-      if (!user) {
-        errorMessages.push(createError("The email provided is not found.", 404, "EMAIL_NOT_FOUND"));
-        throw errorMessages;
-      }
+      const userDoc = await User.findByEmail(email);
+      if (!userDoc) 
+        throw [createError("The email provided is not found.", 404, "EMAIL_NOT_FOUND")];
+
+      const userFound = userDoc.toObject() as iUserValues;
 
       // Verify password
-      const isValidPassword = await user.comparePassword(password);
-      if (!isValidPassword) {
-        errorMessages.push(createError("The password provided is invalid.", 404, "PASSWORD_INVALID"));        
-        throw errorMessages;
-      }
-      
+      const isValidPassword = await this.comparePassword(password, userFound.password);
+      if (!isValidPassword) 
+        throw [createError("The password provided is invalid.", 404, "PASSWORD_INVALID")];        
+
       // Generate JWT for 1 day
-      const token = user.generateToken(false);
+      const token = this.generateToken(userFound, false);
       
       return {
         token,
-        user: {
-          _id: user._id,
-          username: user.username,
-          password:  "",
-          email: user.email,
-          role: user.role,
-          createdAt: user.createdAt,
-          avatar: user.avatar
-        }
+        user: userFound
       };
     } catch (error) {
       throw error;
     }
   }
+
 
   /**
    * This async function use bcrypt module to hash the raw password.
@@ -155,38 +146,36 @@ export default class User {
     return await bcrypt.hash(this.password, salt);
   };
 
+
   /**
    * @param rawPassword 
    * This async function use bcrypt module to compare the raw password with the encrypted password.
    * It returns true if they match, false otherwise.
    * @returns A boolean
    */
-  async comparePassword(rawPassword: string): Promise<boolean> {
-  
-    const errorMessages = [];
+  static comparePassword(inputPassword: string, dbPassword: any): Promise<boolean> {
 
-    if (!rawPassword || rawPassword.trim() === '') {
-      errorMessages.push(createError("The password provided is invalid.", 401, "PASSWORD_INVALID" ))
-      throw errorMessages;
-    }
-    
-    return bcrypt.compare(rawPassword, this.password);
+    if (!inputPassword || inputPassword.trim() === '') 
+      throw [createError("The password provided is invalid.", 401, "PASSWORD_INVALID")];
+ 
+    return bcrypt.compare(inputPassword, dbPassword);
   };
+
 
   /**
    * This function uses jwt.sign functions and generates a JWT token for the user.
    * @param rememberMe A boolean that manage the duration of the token by indicating if the user wants to be remembered (true, 7day) or not (false, 15min).
    * @returns A JWT token as a string
    */
-  generateToken(rememberMe: boolean = false): string {
+  static generateToken(user: iUserValues, rememberMe: boolean = false): string {
     try {
-      const userPayload = {
-        _id: this._id,
-        email: this.email,
-        username: this.username,
-        role: this.role,
-        createdAt: this.createdAt,
-        avatar: this.avatar
+      const userObject = {
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        createdAt: user.createdAt,
+        avatar: user.avatar
       };
       
       const secret = process.env.PRIV_JWT_CODE;
@@ -195,7 +184,7 @@ export default class User {
         expiresIn: rememberMe ? 1000 * 60 * 60 * 24 * 7 : 1000 * 60 * 60 * 24
       };
 
-      const token = jwt.sign(userPayload, secret!, options);
+      const token = jwt.sign(userObject, secret!, options);
       return token;
 
     } catch (error) {
@@ -203,76 +192,51 @@ export default class User {
     }
   }
 
+
   /**
    * This async function retrieves all users from the database.
    * @returns It returns an array of User instances.
    */
-  static async findAll(): Promise<User[]> {
+  static async findAll(): Promise<mongoose.Document[]> {
 
     const dbUsers = await UserModel.find();
     if (!dbUsers || dbUsers.length === 0) {
       return [];
     }
 
-    return dbUsers.map((user: any) => new User({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: user.role,
-      createdAt: user.createdAt,
-      avatar: user.avatar
-    }));
+    return dbUsers;
   }
+
 
   /**
    * An async function that searches for a user by their ID in the database.
    * @param userId The ID of the user to search for. 
    * @returns It returns the user object if found, or null if not found.
    */
-  static async findUserById(userId: string): Promise<User | null> {
+  static async findUserById(userId: string): Promise<mongoose.Document> {
 
     const user = await UserModel.findById(userId);
-    if (!user) {
-      return null;
-    }
-
-    return new User({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: user.role,
-      createdAt: user.createdAt,
-      avatar: user.avatar
-    });
+    if (!user) 
+      throw [createError("The email provided dit not match any user", 404, "EMAIL_NOT_FOUND")];
+    
+    return user;
   }
+
 
   /**
    * An async function that searches for a user by their email in the database.
    * @param email The email of the user to search for.
-   * @returns It returns the user object if found, or null if not found.
+   * @returns A mongoose.Document of the corresponding email.
    */
-  static async findByEmail(email: string): Promise<User | null> {
-    
-    const errorMessages = [];
+  static async findByEmail(email: string): Promise<mongoose.Document> {
+
     const user = await mongoose.model('User').findOne({ email });
-    
-    if (!user) {
-      errorMessages.push(createError("The email provided dit not match any user", 404, "EMAIL_NOT_FOUND"))
-      throw errorMessages;
-    }
-    
-    return new User({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      role: user.role,
-      createdAt: user.createdAt,
-      avatar: user.avatar
-    });
+    if (!user) 
+      throw [createError("The email provided dit not match any user", 404, "EMAIL_NOT_FOUND")];
+
+    return user;
   }
+  
   
   /**
    * An async function that deletes a user by their ID from the database.

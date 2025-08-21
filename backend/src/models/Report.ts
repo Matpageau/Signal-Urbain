@@ -91,38 +91,37 @@ export default class Report {
   }
   
   static async findAllReports() {
-    const reports = await ReportModel.find().populate('commentCount');
-    if (!reports || reports.length === 0) {
+    const dbReports = await ReportModel.find().populate('commentCount');
+    if (!dbReports || dbReports.length === 0) {
       return [];
     }
     
-    return reports
+    return dbReports;
   }
 
-  static async findReportById(userId: string) {
-    const errorMessages = [];
 
+  static async findReportById(userId: string) {
     // Id's validation
     if (!Types.ObjectId.isValid(userId)) {
-      errorMessages.push(createError("The ID's provided is invalid.", 401, "INVALID_ID"))
-      throw errorMessages;
+      throw createError("The ID's provided is invalid.", 401, "INVALID_ID");
     }
 
-    const dbReport = await ReportModel.findById(userId);
+    const dbReport = await ReportModel.findById(userId).populate('commentCount');
     if (!dbReport) {
       return null;
     }
 
-    return dbReport
+    return dbReport;
   }
+
 
   // TODO PATCH Request updateReportById()
   static async updateReportById(reportId: string) {
-
     // Update status
     // Update description
     // Update comment
   }
+
 
   static async upvoteReport(userId: string , reportId: string) {
 
@@ -155,6 +154,7 @@ export default class Report {
       ).populate('commentCount');
     }
   }
+
 
   static async deleteReportById(reportId: string) {
     const report = await ReportModel.findByIdAndDelete(reportId);
