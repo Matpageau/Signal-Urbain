@@ -31,6 +31,7 @@ export default {
 
   // Status
   CREATED: "Created",
+  CREATING: "Créationn",
   INPROGRESS: "In progress",
   RESOLVED: "Resolved",
   LOADING: "Loading...",

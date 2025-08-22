@@ -8,6 +8,7 @@ import { useReportStore } from '@/stores/reportStore';
 import type { ReportData } from '@/types/Report';
 import ChevronIcon from '@/components/icons/ChevronIcon.vue';
 import CommentComp from './CommentComp.vue';
+import { UserRoleEnum } from '@/types/User';
 
 const userStore = useUserStore()
 const reportStore = useReportStore()
@@ -56,7 +57,7 @@ const autoGrow = (e: Event) => {
 
 <template>
   <div class="flex flex-col gap-4 max-h-[300px] overflow-y-auto">
-    <div class="flex">
+    <div v-if="userStore.currentUser?.role == UserRoleEnum.USER" class="flex">
       <img
         :src="userStore.currentUser?.avatar_url || userPlaceholder"
         alt="avatar"
