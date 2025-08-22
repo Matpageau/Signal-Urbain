@@ -3,6 +3,7 @@ import createError from '../utils/Error';
 import ReportModel from "./ReportSchema";
 import Comment, { iCommentValues } from "./Comment";
 import CommentModel from "./CommentSchema";
+import { create } from "domain";
 
 export enum categoryEnum  {
   POTHOLE = 'pothole',
@@ -49,6 +50,10 @@ export default class Report {
     this.upvote_user_ids = [];
     this.medias = medias || [];
   }
+
+  static getClassKeys() {
+    return [ "_id", "category", "status", "description", "long", "lat", "upvote_user_ids", "medias"]
+  }
   
   /**
    * Use this function with an object of type Report : iReportValues.
@@ -77,8 +82,6 @@ export default class Report {
 
   static async createReport(data: iReportValues) {
     try {
-      //TODO Specific error each required report Key value
-      
       data.status = statusEnum.CREATED;
 
       const newReportObj = new Report(data);
@@ -93,9 +96,8 @@ export default class Report {
   static async findAllReports() {
     const dbReports = await ReportModel.find().populate('commentCount');
 
-    if (!dbReports || dbReports.length === 0) {
+    if (!dbReports || dbReports.length === 0) 
       return [];
-    }
     
     return dbReports;
   }
@@ -107,9 +109,8 @@ export default class Report {
    */
   static async findReportById(reportId: string): Promise<mongoose.Document | null> {
     // Id's validation
-    if (!Types.ObjectId.isValid(reportId)) {
-      throw createError("The ID's provided is invalid.", 401, "INVALID_ID");
-    }
+    if (!Types.ObjectId.isValid(reportId)) 
+      throw createError("The report ID provided is invalid.", 401, "INVALID_ID"); 
 
     const dbReport = await ReportModel.findById(reportId).populate('commentCount');
     if (!dbReport) {
@@ -125,11 +126,24 @@ export default class Report {
   }
   
 
-  // TODO PATCH Request updateReportById()
-  static async updateReportById(reportId: string) {
-    // Update status
-    // Update description
-    // Update comment
+  static async updateReportStatusById(reportId: string, newStatus: string) {
+    const errorMessages = [];
+    
+    if (!Types.ObjectId.isValid(reportId)) 
+      errorMessages.push(createError("The report ID provided is invalid.", 401, "INVALID_ID"));
+      
+    const updatedReport = ReportModel.findByIdAndUpdate(
+      reportId,
+      { status: newStatus },
+      { new: true}
+    )
+    if (!updatedReport) 
+      errorMessages.push(createError("The report ID provided is invalid.", 401, "INVALID_ID"));
+      
+    if (errorMessages.length > 0)
+    throw errorMessages; 
+
+    return updatedReport;
   }
 
 
@@ -139,14 +153,13 @@ export default class Report {
     if (!Types.ObjectId.isValid(userId) && !Types.ObjectId.isValid(reportId)) 
       throw (createError("One of the ID's provided is invalid.", 400, "INVALID_ID"))
     
-    // Finding the report and user in the database
     const report = await ReportModel.findById(reportId).lean();
     if (!report) 
       throw (createError("The id provided dit not match any report.", 404, "REPORT_NOT_FOUND"))
 
-    // Verifier si le user a deja upvote ce report
     const userObjectId = new Types.ObjectId(userId);
     
+    // Verifier si le user a deja upvote ce report
     if (report.upvote_user_ids.some((id: any) => id.toString() === userObjectId.toString())) {
       // Remove the upvote_user_id vote
       return await ReportModel.findByIdAndUpdate(

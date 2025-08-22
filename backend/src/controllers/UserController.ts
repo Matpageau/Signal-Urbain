@@ -86,6 +86,15 @@ const userController = {
 	},
 
 	// TODO Put request updateUserById()
+	async updateUserById() {
+		try {
+			// update username
+			// change avatar
+			// change password
+		} catch (error) {
+			
+		}
+	},
 
 	async deleteUser(req: Request, res: Response, next: NextFunction) {
 		try {

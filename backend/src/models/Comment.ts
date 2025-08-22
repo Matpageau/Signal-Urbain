@@ -23,21 +23,6 @@ export default class Comment {
     this.content = content
   }
 
-  static async findReportComments(reportId: string): Promise<mongoose.Document[]> {
-    // Id's validation
-    if (!Types.ObjectId.isValid(reportId)) {
-      throw createError("The report ID's provided is invalid.", 401, "INVALID_ID");
-    }
-
-    const comments = await CommentModel.find(
-      { report_id: reportId },
-      "content"
-    )
-    .populate('author_id', '_id username avatar_url')
-
-    return comments;
-  }
-
   async saveComment() {
     try {
       const commentValues = new CommentModel({
@@ -68,4 +53,18 @@ export default class Comment {
 
     return await newComment.populate("author_id", "_id username avatar_url");
   }
+
+  static async findReportComments(reportId: string): Promise<mongoose.Document[]> {
+    // Id's validation
+    if (!Types.ObjectId.isValid(reportId)) 
+      throw createError("The report ID's provided is invalid.", 401, "INVALID_ID");
+    
+    const comments = await CommentModel.find(
+      { report_id: reportId },
+      "content"
+    ).populate('author_id', '_id username avatar_url')
+
+    return comments;
+  }
+
 }
