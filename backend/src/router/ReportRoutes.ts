@@ -14,7 +14,6 @@ ReportRoutes.get("/:reportId/comments", CommentController.getReportComments)
 
 ReportRoutes.post("/:reportId/comments", AuthJWT, CommentController.createComment)
 
-
 // Patch
 ReportRoutes.patch("/:reportId/upvote", AuthJWT, isUser, ReportController.upvoteReport);
 

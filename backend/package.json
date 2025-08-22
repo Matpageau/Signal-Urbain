@@ -8,8 +8,7 @@
   "scripts": {
     "build": "tsc",
     "app": "node .",
-    "dev": "npm run build && npm run app",
-    "watch": "tsc --watch"
+    "dev": "concurrently \"tsc --watch\" \"nodemon dist/server.js\""
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -32,6 +31,8 @@
     "@types/i18next-fs-backend": "^1.1.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.2.0",
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
