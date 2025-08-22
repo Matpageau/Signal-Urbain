@@ -14,10 +14,13 @@ import { useReportStore } from '@/stores/reportStore';
 import { useI18n } from 'vue-i18n';
 import CommentSection from '../feature/modal/CommentSection.vue';
 import type { CommentData } from '@/types/Comment';
+import { useUserStore } from '@/stores/userStore';
+import { UserRoleEnum } from '@/types/User';
 
 const { getType, getStatus, getNeighborhood } = useReportUtils()
 
 const { t } = useI18n()
+const userStore = useUserStore()
 const reportStore = useReportStore()
 
 const props = defineProps<{
@@ -38,6 +41,7 @@ const description = ref<string>('')
 const image1 = ref<string>(props.report?.medias[0] ?? "")
 const image2 = ref<string>(props.report?.medias[1] ?? "")
 const image3 = ref<string>(props.report?.medias[2] ?? "")
+const status = ref<statusEnum>(props.report?.status ?? statusEnum.CREATED)
 
 onMounted(async () => {
   if(props.report) {
@@ -85,6 +89,21 @@ watch(() => coord.value, async (newCoord) => {
     neighborhood.value = await getNeighborhood(newCoord[0], newCoord[1])
   }
 })
+
+watch(() => status.value, async (newStatus) => {
+  if(newStatus) {
+    try {
+      const upRes = await axios.patch(`http://localhost:3000/api/report/${props.report?._id}/update`, {status: status.value}, {withCredentials: true})
+
+      if(upRes.data) {
+        const index = reportStore.reports.findIndex(r => r._id == upRes.data._id)
+        reportStore.reports[index] = upRes.data
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+})
 </script>
 
 <template>
@@ -92,17 +111,27 @@ watch(() => coord.value, async (newCoord) => {
     <div class="relative bg-white w-1/2 h-fit rounded-lg p-3">
       <div class="flex justify-between">
         <div class="flex">
-          <PinComp :report="props.report" :pin-data="{category: category, status: statusEnum.CREATED, upvote: 1}"/>
+          <PinComp :pin-data="{category: category, status: status, upvote: props.report?.upvote_user_ids.length}"/>
           <div class="ml-2">
             <div class="flex items-center">
               <h1 class="font-bold text-2xl">{{ getType(category) }}</h1>
               <div class="w-[20px] h-[1px] bg-black ml-3 mr-1"></div>
-              <p class="italic">{{ getStatus(props.report?.status) ?? 'Creating' }}</p>
+              <p class="italic">{{ getStatus(status) ?? t('CREATING') }}</p>
             </div>
             <p class="text-neutral-500">{{ neighborhood }}</p>
           </div>
         </div>
         <div class="flex items-center h-1/2">
+          <BaseInput
+            v-if="userStore.currentUser?.role != UserRoleEnum.USER"
+            type="select"
+            v-model="status"
+            :options="[
+              {label: t('CREATED') , value: statusEnum.CREATED},
+              {label: t('INPROGRESS') , value: statusEnum.INPROGRESS},
+              {label: t('RESOLVED') , value: statusEnum.RESOLVED},
+            ]"
+          />
           <BaseButton 
             v-if="!report"
             class="px-4 mr-4 bg-(--blue) hover:bg-(--blue_hover) text-white"
