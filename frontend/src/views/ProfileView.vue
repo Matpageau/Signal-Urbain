@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore';
 import userPlaceholder from '@/assets/img/Avatar placeholder.png'
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { categoryEnum, ReportData } from '@/types/Report';
 import FilterBar from '@/components/feature/home/FilterBar.vue';
 import ReportCard from '@/components/feature/home/ReportCard.vue';
@@ -20,10 +20,6 @@ const selectedCategories = ref<categoryEnum[]>([]);
 const isModalOpen = ref(false)
 const selectedReport = ref<ReportData>()
 const page = ref<number>(0)
-
-onMounted(async () => {
-  reportStore.fetchFollowedReports(page.value)
-})
 
 const handleFilterChange = (categories: categoryEnum[]) => {  
   selectedCategories.value = categories
@@ -45,6 +41,10 @@ const handleReportModal = (report: ReportData) => {
 watch(locale, (newLang) => {
   document.cookie = `lang=${newLang}; path=/; max-age=31536000`; 
 });
+
+watch(page, (newPage) => {
+  reportStore.fetchFollowedReports(newPage)
+}, {immediate: true})
 
 </script>
 
@@ -72,11 +72,11 @@ watch(locale, (newLang) => {
           <div class="flex flex-col mt-10 flex-1 min-h-0">
             <div class="flex text-xl">
               <h2 class="font-bold">{{ t('FOLLOWEDREPORTS') }}</h2>
-              <p class="ml-1">({{ filteredReports.length }})</p>
+              <p class="ml-1">({{ filteredReports.length }} / {{ reportStore.followedReportsCount }})</p>
             </div>
             <div class="flex items-center justify-between">
               <FilterBar class="mt-1" @change="handleFilterChange"/>
-              <PaginatorComp :total-items="reportStore.followedReportsCount"/>
+              <PaginatorComp v-model="page" :total-items="reportStore.followedReportsCount"/>
             </div>
             <div class="grid grid-cols-3 gap-2 mt-5 overflow-y-auto scrollbar-none flex-1 min-h-0">
               <ReportCard 

@@ -148,7 +148,7 @@ export default class Report {
       reportId,
       { status: newStatus },
       { new: true}
-    )
+    ).populate("commentCount")
     if (!updatedReport) 
       errorMessages.push(createError("The report ID provided is invalid.", 401, "INVALID_ID"));
       

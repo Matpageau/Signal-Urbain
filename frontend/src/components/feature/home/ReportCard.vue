@@ -7,6 +7,7 @@ import { useReportStore } from '@/stores/reportStore';
 import type { ReportData } from '@/types/Report';
 import { useReportUtils } from '@/composables/useReportUtils';
 import { useUserStore } from '@/stores/userStore';
+import { UserRoleEnum } from '@/types/User';
 
 const { getType, getNeighborhood } = useReportUtils()
 const userStore = useUserStore()
@@ -24,7 +25,7 @@ const emit = defineEmits<{
 const neighborhood = ref<string>("Loading...")
 
 onMounted(async () => {
-  neighborhood.value = await getNeighborhood(props.report.long, props.report.lat)  
+  neighborhood.value = await getNeighborhood(props.report.long, props.report.lat)   
 })
 
 const handleUpvote = () => {
@@ -51,7 +52,7 @@ const handleUpvote = () => {
       <div class="flex">
         <p>{{ props.report.upvote_user_ids.length }}</p>
         <UpvoteIcon 
-          :class="['ml-4 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
+          :class="['ml-4', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}, {'cursor-pointer': userStore.currentUser?.role == UserRoleEnum.USER}]" 
           @click="handleUpvote"
         />
       </div>

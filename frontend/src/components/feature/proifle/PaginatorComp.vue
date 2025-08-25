@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ChevronIcon from '@/components/icons/ChevronIcon.vue';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
-const page = ref<number>(0)
+const page = defineModel<number>({ default: 0 })
 
 const props = defineProps<{
   totalItems: number

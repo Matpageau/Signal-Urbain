@@ -12,6 +12,7 @@ import UpvoteIcon from '../icons/UpvoteIcon.vue';
 import { useReportStore } from '@/stores/reportStore';
 import { useReportUtils } from '@/composables/useReportUtils';
 import { useUserStore } from '@/stores/userStore';
+import { UserRoleEnum } from '@/types/User';
 
 const { getStatus } = useReportUtils()
 
@@ -90,7 +91,7 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
         <div class="flex items-center justify-end shrink-0">
           <p>{{ effectiveUpvote }}</p>
           <UpvoteIcon 
-            :class="['ml-1 cursor-pointer', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report?._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}]" 
+            :class="['ml-1', { 'fill-red-500 stroke-red-800': reportStore.reports.find(r => r._id == props.report?._id)?.upvote_user_ids.includes(userStore.currentUser?._id ?? '')}, {'cursor-pointer': userStore.currentUser?.role == UserRoleEnum.USER}]" 
             @click="reportStore.upvoteReport(props.report._id)"
           />
         </div>
