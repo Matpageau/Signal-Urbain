@@ -121,8 +121,20 @@ export default class Report {
   }
 
 
-  static async findUpvotedList(userId: string): Promise<mongoose.Document[]> {
-    return await ReportModel.find({ upvote_user_ids: userId }).populate('commentCount');
+  static async findUpvotedList(limit: number, page: number, userId: string) {
+
+    const reportToSkip = page * limit;
+    const totalReports = await ReportModel.countDocuments({ upvote_user_ids: userId });
+
+    const userReportList = await ReportModel.find({ upvote_user_ids: userId })
+      .skip(reportToSkip)
+      .limit(limit)
+      .populate('commentCount');
+    
+    return {
+      reports: userReportList,
+      reportsCount: totalReports
+    };
   }
   
 
@@ -132,7 +144,7 @@ export default class Report {
     if (!Types.ObjectId.isValid(reportId)) 
       errorMessages.push(createError("The report ID provided is invalid.", 401, "INVALID_ID"));
       
-    const updatedReport = ReportModel.findByIdAndUpdate(
+    const updatedReport = await ReportModel.findByIdAndUpdate(
       reportId,
       { status: newStatus },
       { new: true}

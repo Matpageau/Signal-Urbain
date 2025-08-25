@@ -76,19 +76,25 @@ const reportController = {
 
   async getUpvotedReport(req: Request, res: Response, next: NextFunction) {
     try {
+      let { limit, page } = req.query;
+
       const userId = req.user?._id?.toString();
       if (!userId) 
         return next(createError("Invalid user id/credential.", 400, "INVALID_ID"));
-      
-      const userUpvoteList = await Report.findUpvotedList(userId);
 
-      res.status(200).json(userUpvoteList);
+      const parsedLimit = typeof limit === 'string' ? parseInt(limit) : 9; 
+      const parsedPage = typeof page === 'string' ? parseInt(page) : 0;
+      
+      const userUpvoteList = await Report.findUpvotedList(parsedLimit, parsedPage, userId);
+
+      res.status(200).json( userUpvoteList );
 
     } catch (error) {
       next(error);
     }
   },
 
+  
   async updateReport(req: Request, res: Response, next: NextFunction) {
     try {
       const errorMessages = [];
@@ -100,7 +106,7 @@ const reportController = {
       if (!incStatus)
         errorMessages.push(createError("The status body is invalid.", 400, "INVALID_REPORT_STATUS"));
 
-      const updatedReport = Report.updateReportStatusById(reportId, incStatus)
+      const updatedReport = await Report.updateReportStatusById(reportId, incStatus)
       return updatedReport;
 
     } catch (error) {
@@ -129,6 +135,7 @@ const reportController = {
     }
   },
 
+
   async deleteReport(req: Request, res: Response, next: NextFunction) { 
     try {
       const { reportId } = req.query;
@@ -147,7 +154,7 @@ const reportController = {
     }
   },
 
-  // Comments features
+
   async createComment(req: Request, res: Response, next: NextFunction) {
     try {
       const user = req.user;
@@ -184,10 +191,7 @@ const reportController = {
     } catch (error) {
       next(error);
     }
-  },
-
-  // TODO PATCH REQUEST updateReport()
-  // receive req.body
+  }
 }
 
 
