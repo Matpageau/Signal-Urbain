@@ -100,8 +100,8 @@ const reportController = {
       if (!incStatus)
         errorMessages.push(createError("The status body is invalid.", 400, "INVALID_REPORT_STATUS"));
 
-      const updatedReport = Report.updateReportStatusById(reportId, incStatus)
-      return updatedReport;
+      const updatedReport = await Report.updateReportStatusById(reportId, incStatus)
+      res.status(200).json(updatedReport)
 
     } catch (error) {
       next(error);

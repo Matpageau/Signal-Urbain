@@ -6,6 +6,7 @@ import { computed, ref } from "vue";
 export const useReportStore = defineStore('report', () => {
   const reports = ref<ReportData[]>([])
   const followedReports = ref<ReportData[]>([])
+  const followedReportsCount = ref<number>(0)
   const isFetching = ref(false)
   const isReady = ref(false)
   let fetchPromise: Promise<void> | null = null
@@ -29,11 +30,11 @@ export const useReportStore = defineStore('report', () => {
     return fetchPromise
   }
 
-  const fetchFollowedReports = async () => {
+  const fetchFollowedReports = async (page: number) => {
     try {
-      const res = await axios.get<ReportData[]>('http://localhost:3000/api/report/followed', { withCredentials: true })
-      followedReports.value = res.data
-      
+      const res = await axios.get(`http://localhost:3000/api/report/followed?limit=9&page=${page}`, { withCredentials: true })
+      followedReports.value = res.data.reports
+      followedReportsCount.value = res.data.reportsCount
     } catch (error) {
       console.error(error)
       followedReports.value = []
@@ -76,6 +77,7 @@ export const useReportStore = defineStore('report', () => {
   return {
     reports,
     followedReports,
+    followedReportsCount,
     isReady,
     fetchReports,
     fetchFollowedReports,

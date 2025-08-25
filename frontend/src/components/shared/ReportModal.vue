@@ -35,6 +35,7 @@ const emit = defineEmits<{
 const neighborhood = ref<string>(t('LOADING'))
 const commentList = ref<CommentData[]>([])
 
+const report = ref<ReportData | undefined>(props.report)
 const coord = ref<[number, number] | undefined>(props.report?.long != undefined && props.report.lat != undefined ? [props.report.long, props.report.lat] : undefined)
 const category = ref<categoryEnum>(props.report?.category ?? categoryEnum.OTHER)
 const description = ref<string>('')
@@ -92,12 +93,14 @@ watch(() => coord.value, async (newCoord) => {
 
 watch(() => status.value, async (newStatus) => {
   if(newStatus) {
-    try {
-      const upRes = await axios.patch(`http://localhost:3000/api/report/${props.report?._id}/update`, {status: status.value}, {withCredentials: true})
-
+    try {      
+      const upRes = await axios.patch(`http://localhost:3000/api/report/${props.report?._id}/update`, {status: status.value}, {withCredentials: true})      
+      
       if(upRes.data) {
         const index = reportStore.reports.findIndex(r => r._id == upRes.data._id)
         reportStore.reports[index] = upRes.data
+        report.value = upRes.data
+        category.value = upRes.data.category
       }
     } catch (error) {
       console.error(error)
@@ -166,9 +169,9 @@ watch(() => status.value, async (newStatus) => {
           </div>
         </div>
         <div class="col-span-2 h-full rounded-2xl overflow-hidden">
-          <SelectMap 
+          <SelectMap
             :coord="coord"
-            :report="props.report"
+            :report="report"
             :pin-data="{category: category, status: statusEnum.CREATED, upvote: 1}"
             :can-move="!props.report"
             @select="(c) => coord = c"

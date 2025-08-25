@@ -9,6 +9,7 @@ import BaseInput from '@/components/shared/BaseInput.vue';
 import BaseModal from '@/components/shared/ReportModal.vue';
 import { useI18n } from 'vue-i18n';
 import { useReportStore } from '@/stores/reportStore';
+import PaginatorComp from '@/components/feature/proifle/PaginatorComp.vue';
 
 const { locale, t } = useI18n()
 
@@ -18,9 +19,10 @@ const userStore = useUserStore()
 const selectedCategories = ref<categoryEnum[]>([]);
 const isModalOpen = ref(false)
 const selectedReport = ref<ReportData>()
+const page = ref<number>(0)
 
 onMounted(async () => {
-  reportStore.fetchFollowedReports()
+  reportStore.fetchFollowedReports(page.value)
 })
 
 const handleFilterChange = (categories: categoryEnum[]) => {  
@@ -72,7 +74,10 @@ watch(locale, (newLang) => {
               <h2 class="font-bold">{{ t('FOLLOWEDREPORTS') }}</h2>
               <p class="ml-1">({{ filteredReports.length }})</p>
             </div>
-            <FilterBar class="mt-1" @change="handleFilterChange"/>
+            <div class="flex items-center justify-between">
+              <FilterBar class="mt-1" @change="handleFilterChange"/>
+              <PaginatorComp :total-items="reportStore.followedReportsCount"/>
+            </div>
             <div class="grid grid-cols-3 gap-2 mt-5 overflow-y-auto scrollbar-none flex-1 min-h-0">
               <ReportCard 
                 v-for="report in filteredReports"

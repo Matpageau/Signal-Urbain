@@ -14,6 +14,7 @@ import BaseModal from '@/components/shared/ReportModal.vue';
 import { categoryEnum, type ReportData } from '@/types/Report';
 import router from '@/router';
 import { useI18n } from 'vue-i18n';
+import { UserRoleEnum } from '@/types/User';
 
 const { t } = useI18n()
 const userStore = useUserStore()
@@ -80,6 +81,7 @@ const handleReportModal = (report: ReportData) => {
     </div>
     <FilterBar class="absolute top-4 left-[398px]" @change="handleFilterChange"/>
     <BaseButton
+      v-if="!userStore.currentUser || userStore.currentUser?.role == UserRoleEnum.USER"
       class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"
       :disable="!userStore.currentUser ? true : false"
       :onclick="() => handleCreateModal()"

@@ -132,7 +132,7 @@ export default class Report {
     if (!Types.ObjectId.isValid(reportId)) 
       errorMessages.push(createError("The report ID provided is invalid.", 401, "INVALID_ID"));
       
-    const updatedReport = ReportModel.findByIdAndUpdate(
+    const updatedReport = await ReportModel.findByIdAndUpdate(
       reportId,
       { status: newStatus },
       { new: true}
