@@ -45,8 +45,8 @@ const handleLogin = async () => {
 
 <template>
   <div class="flex justify-center items-center w-full h-full">
-    <img class="mr-40" :src="groupedIcons" alt="grouped pins">
-    <div class="flex gap-15 flex-col items-center w-1/4">
+    <img class="mr-40 hidden lg:block" :src="groupedIcons" alt="grouped pins">
+    <div class="flex gap-15 flex-col items-center w-3/4 lg:w-1/4">
       <div class="text-center">
         <h1 class="text-4xl font-medium">{{ t('LOGIN') }}</h1>
         <h1 class="font-junge text-4xl">Signal Urbain</h1>

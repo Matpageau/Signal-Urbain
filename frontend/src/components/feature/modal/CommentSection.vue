@@ -56,7 +56,7 @@ const autoGrow = (e: Event) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 max-h-[300px] overflow-y-auto">
+  <div class="flex flex-col gap-4 max-h-[300px]">
     <div v-if="userStore.currentUser?.role == UserRoleEnum.USER" class="flex">
       <img
         :src="userStore.currentUser?.avatar_url || userPlaceholder"

@@ -21,11 +21,9 @@ let markers: mapboxgl.Marker[] = []
 function renderMarkers(reports: ReportData[]) {
   if (!map) return
 
-  // supprimer les anciens
   markers.forEach(m => m.remove())
   markers = []
 
-  // recréer les nouveaux
   reports.forEach(report => {
     if (!map) return
     const el = document.createElement('div')
@@ -68,7 +66,7 @@ onMounted(() => {
     
       map.addControl(new mapboxgl.NavigationControl({
         showZoom: false
-      }))
+      }), 'bottom-right')
 
       const geolocate = new mapboxgl.GeolocateControl({
         positionOptions: {
@@ -78,7 +76,7 @@ onMounted(() => {
         fitBoundsOptions: {maxZoom: 12}
       })
 
-      map.addControl(geolocate)
+      map.addControl(geolocate, 'bottom-right')
 
       map.on('load', () => {
         renderMarkers(props.reports)

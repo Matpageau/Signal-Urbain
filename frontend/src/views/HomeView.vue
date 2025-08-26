@@ -59,8 +59,8 @@ const handleReportModal = (report: ReportData) => {
       @close="isModalOpen = false"
     />
     <BaseMapbox class="absolute top-0 left-0" :reports="filteredReports" @select="(r) => handleReportModal(r)"/>
-    <div class="absolute flex flex-col top-0 left-0 h-full w-fit pl-4 py-4">
-      <div class="flex flex-col gap-2 h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10 overflow-y-scroll scrollbar-none">
+    <div class="flex absolute flex-col top-0 left-0 h-full w-fit pl-4 py-4 justify-end">
+      <div class="hidden flex-col gap-2 h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10 overflow-y-scroll scrollbar-none lg:flex">
         <ReportCard 
           v-for="report in filteredReports"
           :key="report._id"
@@ -71,15 +71,15 @@ const handleReportModal = (report: ReportData) => {
       <a v-if="!userStore.currentUser" href="/login" class="flex shrink-0 items-center justify-center bg-(--blue) hover:bg-(--blue_hover) transition-colors mt-4 h-[56px] text-white font-bold rounded-lg cursor-pointer">
         <p class="text-white text-center">{{ t('SIGNIN') }}</p>
       </a>
-      <div v-else class="flex items-center justify-between px-2 shrink-0 h-[56px] bg-white mt-4 rounded-lg">
+      <div v-else class="flex items-center justify-between px-2 shrink-0 h-[46px] lg:h-[56px] bg-white mt-4 rounded-lg">
         <div class="flex items-center">
-          <img :src="avatarPlaceholder" alt="Avatar" class="h-[49px] w-[49px] rounded-full mr-1">
+          <img :src="avatarPlaceholder" alt="Avatar" class="h-[25px] lg:h-[49px] w-[25px]  lg:w-[49px] rounded-full mr-1">
           <p>{{ userStore.currentUser.username }}</p>
         </div>
-        <GearIcon class="cursor-pointer" @click="router.push('/profile')"/>
+        <GearIcon class="cursor-pointer ml-2" @click="router.push('/profile')"/>
       </div>
     </div>
-    <FilterBar class="absolute top-4 left-[398px]" @change="handleFilterChange"/>
+    <FilterBar class="w-full absolute top-4 left-0 lg:left-[398px] px-2" @change="handleFilterChange"/>
     <BaseButton
       v-if="!userStore.currentUser || userStore.currentUser?.role == UserRoleEnum.USER"
       class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"

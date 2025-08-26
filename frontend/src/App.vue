@@ -10,7 +10,7 @@ const userStore = useUserStore()
 </script>
 
 <template>
-  <main class="h-screen w-screen">
+  <main class="h-screen w-screen overflow-hidden">
     <RouterView />
   </main>
 </template>

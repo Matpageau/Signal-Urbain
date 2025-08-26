@@ -97,7 +97,7 @@ const getRingColor = (status?: statusEnum, nbUpvote?: number) => {
         </div>
       </div>
     </div>
-    <div :class="[getRingColor(effectiveStatus, effectiveUpvote), 'flex justify-center items-center border-4 rounded-full h-[30px] w-[30px] bg-white p-0.5 z-1']">
+    <div :class="[getRingColor(effectiveStatus, effectiveUpvote), 'flex justify-center items-center border-2 lg:border-4 rounded-full h-[21px] lg:h-[30px] w-[21px] lg:w-[30px] bg-white p-0.5 z-1']">
       <component :is="getIconType(effectiveCategory)" class="rounded-full" />
     </div>
   </div>

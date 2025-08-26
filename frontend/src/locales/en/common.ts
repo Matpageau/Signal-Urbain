@@ -13,9 +13,10 @@ export default {
   SIGNUPNOW: "Sign up now",
   SIGNUP: "Sign up",
   SIGNIN: "Login",
+  CITY: "City",
 
   // General
-  BACKONAPP: "← Back to app",
+  BACKONAPP: "← Back",
   SETTINGS: "Settings",
   FOLLOWEDREPORTS: "Followed reports",
   SAVE: "Save",

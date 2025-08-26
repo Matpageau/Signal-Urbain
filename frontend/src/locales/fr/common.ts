@@ -13,9 +13,10 @@ export default {
   SIGNUPNOW: "Créer maintenant",
   SIGNUP: "S'inscrire",
   SIGNIN: "Se connecter",
+  CITY: "Ville",
 
   // Général
-  BACKONAPP: "← Revenir sur l'application",
+  BACKONAPP: "← Retour",
   SETTINGS: "Paramètres",
   FOLLOWEDREPORTS: "Rapports suivis",
   SAVE: "Sauvegarder",

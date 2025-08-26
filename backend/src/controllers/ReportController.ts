@@ -1,8 +1,7 @@
-import { Express, Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Report, { iReportValues } from '../models/Report';
 import Comment from '../models/Comment';
-import createError from '../utils/Error';
-import { create } from 'domain';
+import createError from '../utils/Error';;
 
 const reportController = {
 
@@ -11,14 +10,21 @@ const reportController = {
       const errorMessages = [];
       const incReportData: iReportValues = req.body;
 
-      if (!incReportData.category)
+      if (!incReportData.category) {
         errorMessages.push(createError("A category is required.", 400, "CATEGORY_REQUIRED"));
-      else if (!incReportData.description && incReportData.description.trim() === "")
+      }
+      
+      if (!incReportData.description && incReportData.description.trim() === "") {
         errorMessages.push(createError("A small report description is required.", 400, "DESCRIPTION_REQUIRED"));
-      else if (!incReportData.long && !incReportData.lat)
+      }
+      
+      if (!incReportData.long && !incReportData.lat) {
         errorMessages.push(createError("A geolocatisation is required.", 400, "POSITION_REQUIRED"))
-      else if (incReportData.medias.length < 1)
+      }
+      
+      if (!incReportData.medias.some(m => m && m.trim() !== '')) {
         errorMessages.push(createError("At least one image is required.", 400, "MEDIA_REQUIRED"));
+      }
       
       if (errorMessages.length > 0)
         throw errorMessages;

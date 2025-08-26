@@ -55,7 +55,7 @@ watch([username, email, password, confirmPassword], () => {
 
 <template>
   <div class="flex justify-center items-center w-full h-full">
-    <div class="flex gap-15 flex-col items-center w-1/4">
+    <div class="flex gap-15 flex-col items-center w-3/4 lg:w-1/4">
       <div class="text-center">
         <h1 class="text-4xl font-medium">{{ t('REGISTER') }}</h1>
         <h1 class="font-junge text-4xl">Signal Urbain</h1>
@@ -93,6 +93,6 @@ watch([username, email, password, confirmPassword], () => {
         </BaseButton>
       </div>
     </div>
-    <img class="ml-40" :src="groupedPins" alt="grouped pins">
+    <img class="ml-40 hidden lg:block" :src="groupedPins" alt="grouped pins">
   </div>
 </template>

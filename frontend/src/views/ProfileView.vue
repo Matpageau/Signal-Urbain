@@ -49,36 +49,35 @@ watch(page, (newPage) => {
 </script>
 
 <template>
-  <div class="flex w-full h-full overflow-hidden">
+  <div class="flex w-full h-full overflow-y-auto">
     <BaseModal
       v-if="isModalOpen"
       :report="selectedReport"
       @close="isModalOpen = false"
     />
-    <div class="w-full flex p-5">
-      <div class="flex flex-col w-2/3 h-full">
-        <a href="/" class="text-xl">{{ t('BACKONAPP') }}</a>
-
-        <div class="m-5 flex flex-col flex-1 min-h-0">
+    <div class="w-full flex flex-col lg:flex-row p-5 h-fit lg:h-auto">
+      <div class="flex flex-col w-full lg:w-2/3 h-full">
+        <a href="/app" class="lg:text-xl">{{ t('BACKONAPP') }}</a>
+        <div class="lg:m-5 flex flex-col flex-1 min-h-0">
           <div class="flex items-center">
             <img 
               :src="userStore.currentUser?.avatar_url || userPlaceholder"
               alt="avatar"
-              class="w-[75px] h-[75px] rounded-full"
+              class="w-[35px] lg:w-[75px] h-[35px] lg:h-[75px] rounded-full"
               @error="($event) => ($event.target as HTMLImageElement).src = userPlaceholder"
             >
-            <h1 class="ml-3 text-3xl font-bold">{{ userStore.currentUser?.username }}</h1>
+            <h1 class="ml-3 lg:text-3xl font-bold">{{ userStore.currentUser?.username }}</h1>
           </div>
-          <div class="flex flex-col mt-10 flex-1 min-h-0">
-            <div class="flex text-xl">
+          <div class="flex flex-col mt-3 lg:mt-10 flex-1 min-h-0">
+            <div class="flex lg:text-xl">
               <h2 class="font-bold">{{ t('FOLLOWEDREPORTS') }}</h2>
               <p class="ml-1">({{ filteredReports.length }} / {{ reportStore.followedReportsCount }})</p>
             </div>
-            <div class="flex items-center justify-between">
-              <FilterBar class="mt-1" @change="handleFilterChange"/>
+            <div class="flex items-center justify-between min-w-0 gap-2">
+              <FilterBar class="pr-1" @change="handleFilterChange"/>
               <PaginatorComp v-model="page" :total-items="reportStore.followedReportsCount"/>
             </div>
-            <div class="grid grid-cols-3 gap-2 mt-5 overflow-y-auto scrollbar-none flex-1 min-h-0">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 mt-5 overflow-y-auto scrollbar-none flex-1 min-h-0">
               <ReportCard 
                 v-for="report in filteredReports"
                 :key="report._id"
@@ -89,7 +88,7 @@ watch(page, (newPage) => {
           </div>
         </div>
       </div>
-      <div class="flex flex-col items-center w-1/3 border-l border-neutral-200 p-20">
+      <div class="flex flex-col lg:items-center w-1/3 lg:border-l border-neutral-200 mt-5 mb-10 lg:mt-0 lg:p-20">
         <h1 class="text-xl font-bold">{{ t('SETTINGS') }}</h1>
         <div class="mt-3 w-full">
           <BaseInput 
