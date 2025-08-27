@@ -8,6 +8,14 @@ import AdminView from '@/views/AdminView.vue'
 import { useUserStore } from '@/stores/userStore'
 import { UserRoleEnum } from '@/types/User'
 
+const isConnected = async (to: unknown, from: unknown, next: NavigationGuardNext) => {
+  const userStore = useUserStore()
+  if(userStore.currentUser) {
+    next()
+  } else {
+    return next({ name: 'app'})
+  }
+}
 
 const isAdmin = async (to: unknown, from: unknown, next: NavigationGuardNext) => {
   const userStore = useUserStore()
@@ -38,7 +46,8 @@ const router = createRouter({
     {
       path: "/profile",
       name: "profile",
-      component: ProfileView
+      component: ProfileView,
+      beforeEnter: isConnected
     },
     {
       path: "/login",
