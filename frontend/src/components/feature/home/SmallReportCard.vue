@@ -18,7 +18,7 @@ const props = defineProps<{
 
   <div class="w-80 flex flex-col px-4 py-4 my-4 shadow-[4px_6px_18px_#BEBEBE] rounded-lg gap-4">
     <div class="flex flex-row gap-4">
-      <div class="flex w-[30px] h-[30px] items-center justify-center my-auto">
+      <div class="flex w-[30px] h-[30px] items-center justify-center my-auto rounded-full">
         <component :is="getIconType(props.reportIcon)" alt="report icon"/> 
       </div>
       <h2 class="text-lg font-semibold">{{ $t(reportName) }}</h2>

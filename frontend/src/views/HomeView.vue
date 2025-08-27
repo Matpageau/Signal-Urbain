@@ -4,6 +4,10 @@ import { useI18n } from 'vue-i18n';
 import SmallReportCard from '@/components/feature/home/SmallReportCard.vue';
 import { categoryEnum } from '@/types/Report';
 
+import UserIcon from '@/components/icons/UserIcon.vue';
+import PinIcon from '@/components/icons/PinIcon.vue';
+import CheckIcon from '@/components/icons/CheckIcon.vue';
+
 const { locale } = useI18n()
 const setLang = (lang: string) => {
   locale.value = lang
@@ -41,7 +45,8 @@ const setLang = (lang: string) => {
       <div class="grid grid-rows-2 grid-cols-3 gap-3 ">
         <SmallReportCard :report-icon="categoryEnum.POTHOLE" 
         report-name="POTHOLE" 
-        report-desc="POTHOLE_DESC"/>
+        report-desc="POTHOLE_DESC"
+        color="fcba03"/>
         <SmallReportCard :report-icon="categoryEnum.DMGELEMENT"
         report-name="DMGELEMENT" 
         report-desc="DMGELEMENT_DESC"/>
@@ -60,7 +65,7 @@ const setLang = (lang: string) => {
       </div>
     </div>
 
-    <section class="w-full py-10 px-4 bg-[#008CFF]">
+    <div class="w-full py-10 px-4 bg-[#008CFF]">
       <div class="flex flex-col text-center">
         <h3 class="text-3xl font-bold mb-6 text-white">{{ $t('READY') }}</h3>
         <p class="text-xl mb-10 text-blue-100 leading-relaxed">{{ $t('JOIN') }}</p>
@@ -83,9 +88,9 @@ const setLang = (lang: string) => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div class="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-16">
             <h3 class="text-3xl font-bold mb-4 text-gray-900">{{ $t('IMPACT') }}</h3>
@@ -94,29 +99,29 @@ const setLang = (lang: string) => {
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center group">
-              <div class="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <Users class="h-10 w-10 text-blue-600" />
+              <div class="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <UserIcon class="h-10 w-10 text-blue-600" />
               </div>
               <h4 class="text-3xl font-bold text-gray-900 mb-2">2,847</h4>
               <p class="text-gray-600 text-lg">{{ $t('ACTIVEUSERS') }}</p>
             </div>
             <div class="text-center group">
-              <div class="bg-green-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <MapPin class="h-10 w-10 text-green-600" />
+              <div class="bg-green-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <PinIcon class="h-10 w-10 text-green-600" />
               </div>
               <h4 class="text-3xl font-bold text-gray-900 mb-2">1,234</h4>
               <p class="text-gray-600 text-lg">{{ $t('TOTALREPORTS') }}</p>
             </div>
             <div class="text-center group">
-              <div class="bg-purple-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <CheckCircle class="h-10 w-10 text-purple-600" />
+              <div class="bg-purple-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <CheckIcon class="h-10 w-10 text-purple-600" />
               </div>
               <h4 class="text-3xl font-bold text-gray-900 mb-2">892</h4>
               <p class="text-gray-600 text-lg">{{ $t('RESOLVEDREPORTS') }}</p>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <div class="w-1/2 border-t border-gray-800 mt-4 py-4 text-center text-gray-500">
         <p>&copy; 2024 SignalUrbain. {{ $t('RIGHTS')}}</p>
