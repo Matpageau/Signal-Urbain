@@ -21,7 +21,6 @@ export const useUserStore = defineStore('user', () => {
       .get<UserData>('http://localhost:3000/api/user/me', { withCredentials: true })
       .then(res => {            
         currentUser.value = res.data
-        
       })
       .catch((err) => {
         console.error(err)

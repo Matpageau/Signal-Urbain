@@ -45,6 +45,15 @@ const userController = {
       next(error);
     }
 	},
+
+	async logout(req: Request, res: Response, next: NextFunction) {
+		res.clearCookie('token', {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'strict',	
+		}).status(200).json("Successfully logged out.");
+		next();
+	},
 	
 
 	async getAllUsers(req: Request, res: Response, next: NextFunction) {

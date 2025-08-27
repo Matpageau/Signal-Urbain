@@ -5,6 +5,7 @@ import BrokenWallIcon from '../icons/type/BrokenWallIcon.vue';
 import RoadObstacleIcon from '../icons/type/RoadObstavleIcon.vue';
 import TrafficIcon from '../icons/type/TrafficIcon.vue';
 import TreeIcon from '../icons/type/TreeIcon.vue';
+import VandalismIcon from '../icons/type/VandalismIcon.vue';
 import OtherIcon from '../icons/type/OtherIcon.vue';
 import { computed, ref } from 'vue';
 import type { PinData } from '@/types/Pin';
@@ -53,6 +54,8 @@ const getIconType = (category?: categoryEnum) => {
       return TrafficIcon
     case 'dangeroustree':
       return TreeIcon
+    case 'vandalism':
+      return VandalismIcon
     case 'other':
     default:
       return OtherIcon 

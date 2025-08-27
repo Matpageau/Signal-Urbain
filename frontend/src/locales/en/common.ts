@@ -21,6 +21,19 @@ export default {
   FOLLOWEDREPORTS: "Followed reports",
   SAVE: "Save",
 
+
+  SLOGAN: "Let's improve our daily lives together",
+  HOME_INTRO: "Quickly and easily report any urban issues in your neighborhood — from potholes to damaged equipment or unsafe conditions. Your feedback plays a key role in creating a cleaner, safer, and more welcoming city for everyone.",
+  READY: "Ready to make a difference?",
+  JOIN: "Join our community of engaged citizens and start reporting urban issues today.",
+  GOAPP: "Go to the app",
+  IMPACT: "Community Impact",
+  TOGETHER: "Together, we've already reported over 10,000 urban issues and helped resolve more than 7,500. Every report counts and contributes to improving our everyday environment.", 
+  ACTIVEUSERS: "Active users",
+  TOTALREPORTS: "Total reports",
+  RESOLVEDREPORTS: "Resolved reports",
+  RIGHTS: "All rights reserved.",
+
   // Report types
   POTHOLE: "Pothole",
   DMGELEMENT: "Damaged element",
@@ -29,6 +42,14 @@ export default {
   DANGEROUSTREE: "Dangerous tree",
   VANDALISM: "Vandalism",
   OTHER: "Other",
+
+  POTHOLE_DESC: "Hole or depression in the road surface.",
+  DMGELEMENT_DESC: "Damaged urban equipment (bench, sign, etc.).",
+  ROADOBST_DESC: "Obstacle blocking or obstructing the road.",
+  FAULTTRAFIC_DESC: "Faulty traffic light or signage.",
+  DANGEROUSTREE_DESC: "Unstable tree or dangerous branches.",
+  VANDALISM_DESC: "Act of intentional damage.",
+  OTHER_DESC: "Miscellaneous issue not categorized.",
 
   // Status
   CREATED: "Created",

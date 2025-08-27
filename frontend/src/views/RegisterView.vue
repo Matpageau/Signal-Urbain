@@ -34,7 +34,7 @@ const handleRegister = async () => {
 
       if(resLog.data) {
         userStore.fetchUser()
-        router.push('/')
+        router.push({name: "app"})
       }
     }
   } catch (error) {

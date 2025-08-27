@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type NavigationGuardNext } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
@@ -32,7 +33,7 @@ const router = createRouter({
     {
       path: "/app",
       name: "app",
-      component: HomeView
+      component: MainView
     },
     {
       path: "/profile",

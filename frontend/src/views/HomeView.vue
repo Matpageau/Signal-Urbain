@@ -1,92 +1,130 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
 
-import FilterBar from '@/components/feature/home/FilterBar.vue';
-import PlusIcon from '@/components/icons/PlusIcon.vue';
-import BaseButton from '@/components/shared/BaseButton.vue';
-import BaseMapbox from '@/components/shared/BaseMapbox.vue';
-import { useUserStore } from '@/stores/userStore';
-import avatarPlaceholder from '@/assets/img/Avatar placeholder.png'
-import GearIcon from '@/components/icons/GearIcon.vue';
-import ReportCard from '@/components/feature/home/ReportCard.vue';
-import { useReportStore } from '@/stores/reportStore';
-import BaseModal from '@/components/shared/ReportModal.vue';
-import { categoryEnum, type ReportData } from '@/types/Report';
-import router from '@/router';
 import { useI18n } from 'vue-i18n';
-import { UserRoleEnum } from '@/types/User';
+import SmallReportCard from '@/components/feature/home/SmallReportCard.vue';
+import { categoryEnum } from '@/types/Report';
 
-const { t } = useI18n()
-const userStore = useUserStore()
-const reportStore = useReportStore()
+import UserIcon from '@/components/icons/UserIcon.vue';
+import PinIcon from '@/components/icons/PinIcon.vue';
+import CheckIcon from '@/components/icons/CheckIcon.vue';
 
-const isModalOpen = ref(false)
-const selectedReport = ref<ReportData>()
-const selectedCategories = ref<categoryEnum[]>([]);
-
-onMounted(async () => {
-  await reportStore.fetchReports()
-})
-
-const filteredReports = computed(() => {
-  if (!selectedCategories.value.length) return reportStore.reports;
-
-  return reportStore.reports.filter(report =>
-    selectedCategories.value.includes(report.category)
-  );
-});
-
-const handleFilterChange = (categories: categoryEnum[]) => {  
-  selectedCategories.value = categories
-};
-
-const handleCreateModal = () => {
-  selectedReport.value = undefined
-  isModalOpen.value = true
+const { locale } = useI18n()
+const setLang = (lang: string) => {
+  locale.value = lang
 }
 
-const handleReportModal = (report: ReportData) => {
-  selectedReport.value = report
-  isModalOpen.value = true
-}
 </script>
 
 <template>
-  <div class="relative w-full h-full select-none">
-    <BaseModal
-      v-if="isModalOpen"
-      :report="selectedReport"
-      @close="isModalOpen = false"
-    />
-    <BaseMapbox class="absolute top-0 left-0" :reports="filteredReports" @select="(r) => handleReportModal(r)"/>
-    <div class="flex absolute flex-col top-0 left-0 h-full w-fit pl-4 py-4 justify-end">
-      <div class="hidden flex-col gap-2 h-full w-[370px] bg-neutral-100 rounded-lg p-2 z-10 overflow-y-scroll scrollbar-none lg:flex">
-        <ReportCard 
-          v-for="report in filteredReports"
-          :key="report._id"
-          :report="report"
-          @click="() => handleReportModal(report)"
-        />
+  <div class="flex w-full h-full flex-col items-center bg-white gap-10">
+
+    <div class="flex flex-row justify-between items-center px-90 w-full min-h-12 bg-[#008CFF]">
+      <h3 class="text-2xl font-semibold text-neutral-100"> Signal Urbain </h3>
+      
+      <ul class="flex flex-row gap-12">
+        <li>
+          <a href="/login" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNIN')}} </a>
+        </li>
+        <li>
+          <a href="/register" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNUP')}} </a>
+        </li>
+        <li class="flex flex-row gap-3">
+          <button class="text-neutral-100 font-semibold px-1 hover:bg-white rounded-md hover:text-[#008CFF]" @click="setLang('fr')">FR</button>
+          <button class="text-neutral-100 font-semibold px-1 hover:bg-white rounded-md hover:text-[#008CFF]" @click="setLang('en')">EN</button> 
+          <button class="text-neutral-100 font-semibold px-1 hover:bg-white rounded-md hover:text-[#008CFF]" @click="setLang('es')">ES</button>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="rounded-lg bg-white w-5/8 flex flex-col items-center">
+      <div class="flex text-center w-5/8 flex-col py-12">
+        <h1 class="text-[#1E1E1E] font-bold text-3xl">{{ $t('SLOGAN') }}</h1>
+        <p class="text-[#1E1E1E]">{{ $t('HOME_INTRO') }}</p>
       </div>
-      <a v-if="!userStore.currentUser" href="/login" class="flex shrink-0 items-center justify-center bg-(--blue) hover:bg-(--blue_hover) transition-colors mt-4 h-[56px] text-white font-bold rounded-lg cursor-pointer">
-        <p class="text-white text-center">{{ t('SIGNIN') }}</p>
-      </a>
-      <div v-else class="flex items-center justify-between px-2 shrink-0 h-[46px] lg:h-[56px] bg-white mt-4 rounded-lg">
-        <div class="flex items-center">
-          <img :src="avatarPlaceholder" alt="Avatar" class="h-[25px] lg:h-[49px] w-[25px]  lg:w-[49px] rounded-full mr-1">
-          <p>{{ userStore.currentUser.username }}</p>
-        </div>
-        <GearIcon class="cursor-pointer ml-2" @click="router.push('/profile')"/>
+      
+      <div class="grid grid-rows-2 grid-cols-3 gap-3 ">
+        <SmallReportCard :report-icon="categoryEnum.POTHOLE" 
+        report-name="POTHOLE" 
+        report-desc="POTHOLE_DESC"
+        color="fcba03"/>
+        <SmallReportCard :report-icon="categoryEnum.DMGELEMENT"
+        report-name="DMGELEMENT" 
+        report-desc="DMGELEMENT_DESC"/>
+        <SmallReportCard :report-icon="categoryEnum.ROADOBSTACLE"
+        report-name="ROADOBST" 
+        report-desc="ROADOBST_DESC"/> 
+        <SmallReportCard :report-icon="categoryEnum.FAULTYLIGHT"
+        report-name="FAULTTRAFIC" 
+        report-desc="FAULTTRAFIC_DESC"/> 
+        <SmallReportCard :report-icon="categoryEnum.DANGEROUSTREE"
+        report-name="DANGEROUSTREE" 
+        report-desc="DANGEROUSTREE_DESC"/> 
+        <SmallReportCard :report-icon="categoryEnum.VANDALISM"
+        report-name="VANDALISM" 
+        report-desc="VANDALISM_DESC"/>      
       </div>
     </div>
-    <FilterBar class="w-full absolute top-4 left-0 lg:left-[398px] px-2" @change="handleFilterChange"/>
-    <BaseButton
-      v-if="!userStore.currentUser || userStore.currentUser?.role == UserRoleEnum.USER"
-      class="absolute bottom-4 left-[398px] py-3 px-3 bg-(--blue) hover:bg-(--blue_hover) disabled:bg-neutral-400"
-      :disable="!userStore.currentUser ? true : false"
-      :onclick="() => handleCreateModal()"
-    >
-      <PlusIcon class="h-7 w-7 text-white stroke-3"/>
-    </BaseButton>
+
+    <div class="w-full py-10 px-4 bg-[#008CFF]">
+      <div class="flex flex-col text-center">
+        <h3 class="text-3xl font-bold mb-6 text-white">{{ $t('READY') }}</h3>
+        <p class="text-xl mb-10 text-blue-100 leading-relaxed">{{ $t('JOIN') }}</p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">        
+            <a
+              size="lg"
+              class="rounded-lg text-lg px-8 py-4 bg-white text text-[#008CFF] hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              href="/app"
+            >
+            {{ $t('GOAPP') }}
+          </a>
+          <div class="flex flex-row sm:flex-row gap-4 justify-center">
+            <a
+              size="lg" href="/register"
+              class="rounded-lg text-lg px-8 py-4 bg-white text text-[#008CFF] hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              >
+              {{ $t('SIGNUPNOW') }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-16">
+            <h3 class="text-3xl font-bold mb-4 text-gray-900">{{ $t('IMPACT') }}</h3>
+            <p class="text-gray-600 text-lg">{{  $t('TOGETHER') }}</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center group">
+              <div class="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <UserIcon class="h-10 w-10 text-blue-600" />
+              </div>
+              <h4 class="text-3xl font-bold text-gray-900 mb-2">2,847</h4>
+              <p class="text-gray-600 text-lg">{{ $t('ACTIVEUSERS') }}</p>
+            </div>
+            <div class="text-center group">
+              <div class="bg-green-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <PinIcon class="h-10 w-10 text-green-600" />
+              </div>
+              <h4 class="text-3xl font-bold text-gray-900 mb-2">1,234</h4>
+              <p class="text-gray-600 text-lg">{{ $t('TOTALREPORTS') }}</p>
+            </div>
+            <div class="text-center group">
+              <div class="bg-purple-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <CheckIcon class="h-10 w-10 text-purple-600" />
+              </div>
+              <h4 class="text-3xl font-bold text-gray-900 mb-2">892</h4>
+              <p class="text-gray-600 text-lg">{{ $t('RESOLVEDREPORTS') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-1/2 border-t border-gray-800 mt-4 py-4 text-center text-gray-500">
+        <p>&copy; 2024 SignalUrbain. {{ $t('RIGHTS')}}</p>
+      </div>
   </div>
 </template>
