@@ -76,7 +76,10 @@ const handleReportModal = (report: ReportData) => {
           <img :src="avatarPlaceholder" alt="Avatar" class="h-[49px] w-[49px] rounded-full mr-1">
           <p>{{ userStore.currentUser.username }}</p>
         </div>
-        <GearIcon class="cursor-pointer" @click="router.push('/profile')"/>
+        <GearIcon 
+          class="cursor-pointer transform transition-transform duration-300 hover:rotate-180 hover:scale-125"
+          @click="router.push('/profile')"
+        />
       </div>
     </div>
     <FilterBar class="absolute top-4 left-[398px]" @change="handleFilterChange"/>
