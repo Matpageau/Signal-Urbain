@@ -17,6 +17,7 @@ export default {
   BACKONAPP: "← Volver a la aplicación",
   SETTINGS: "Configuración",
   FOLLOWEDREPORTS: "Reportes seguidos",
+  POPULARREPORTS: "Reportes populares",
   SAVE: "Guardar",
 
   SLOGAN: "Mejoramos juntos nuestra vida diaria",

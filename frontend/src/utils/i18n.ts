@@ -2,12 +2,13 @@ import { createI18n } from 'vue-i18n'
 import fr from '@/locales/fr'
 import en from '@/locales/en'
 import es from '@/locales/es'
+import ma from '@/locales/ma'
 
 const i18n = createI18n({
   legacy: false,
   locale: 'fr',
   fallbackLocale: 'en',
-  messages: {fr, en, es},
+  messages: {fr, en, es, ma},
   numberFormats: {
     en: {
       currency: {
@@ -30,6 +31,14 @@ const i18n = createI18n({
       currency: {
         style: "currency",
         currency: "EUR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }
+    },
+    ma: {
+      currency: {
+        style: "currency",
+        currency: "CNY",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
       }

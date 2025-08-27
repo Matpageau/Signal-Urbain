@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore';
 import userPlaceholder from '@/assets/img/Avatar placeholder.png'
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import type { categoryEnum, ReportData } from '@/types/Report';
 import FilterBar from '@/components/feature/home/FilterBar.vue';
 import ReportCard from '@/components/feature/home/ReportCard.vue';
@@ -13,6 +13,7 @@ import PaginatorComp from '@/components/feature/proifle/PaginatorComp.vue';
 import BaseButton from '@/components/shared/BaseButton.vue';
 import axios from 'axios';
 import router from '@/router';
+import { UserRoleEnum } from '@/types/User';
 
 const { locale, t } = useI18n()
 
@@ -29,9 +30,11 @@ const handleFilterChange = (categories: categoryEnum[]) => {
 };
 
 const filteredReports = computed(() => {
-  if (!selectedCategories.value.length) return reportStore.followedReports;
+  const reports = userStore.currentUser?.role === UserRoleEnum.USER ? reportStore.followedReports : reportStore.reports;
+  
+  if (!selectedCategories.value.length) return reports;
 
-  return reportStore.followedReports.filter(report =>
+  return reports.filter(report =>
     selectedCategories.value.includes(report.category)
   );
 });
@@ -41,12 +44,16 @@ const handleReportModal = (report: ReportData) => {
   isModalOpen.value = true
 }
 
+onMounted(() => {
+  reportStore.fetchReports();
+})
+
 const handleLogout = async () => {
   try {
     await axios.post('http://localhost:3000/api/user/logout', {}, { withCredentials: true })
 
     userStore.currentUser = null;
-    router.push('/app');
+    router.push({name: "app"});
 
   } catch (error) {
     console.error(error);
@@ -59,7 +66,7 @@ watch(locale, (newLang) => {
 
 watch(page, (newPage) => {
   reportStore.fetchFollowedReports(newPage)
-}, {immediate: true})
+}, { immediate: true })
 
 </script>
 
@@ -85,12 +92,13 @@ watch(page, (newPage) => {
           </div>
           <div class="flex flex-col mt-3 lg:mt-10 flex-1 min-h-0">
             <div class="flex lg:text-xl">
-              <h2 class="font-bold">{{ t('FOLLOWEDREPORTS') }}</h2>
-              <p class="ml-1">({{ filteredReports.length }} / {{ reportStore.followedReportsCount }})</p>
+              <h2 v-if="userStore.currentUser?.role === UserRoleEnum.USER" class="font-bold">{{ t('FOLLOWEDREPORTS') }}</h2>
+              <h2 v-else class="font-bold">{{ t('POPULARREPORTS') }}</h2>
+              <p class="ml-1">({{ filteredReports.length }} / {{ userStore.currentUser?.role === UserRoleEnum.USER ? reportStore.followedReportsCount : reportStore.reports.length }})</p>
             </div>
             <div class="flex items-center justify-between min-w-0 gap-2">
               <FilterBar class="pr-1" @change="handleFilterChange"/>
-              <PaginatorComp v-model="page" :total-items="reportStore.followedReportsCount"/>
+              <PaginatorComp v-if="userStore.currentUser?.role === UserRoleEnum.USER" v-model="page" :total-items="reportStore.followedReportsCount"/>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 mt-5 overflow-y-auto scrollbar-none flex-1 min-h-0">
               <ReportCard 
@@ -118,9 +126,10 @@ watch(page, (newPage) => {
             type="select"
             v-model="locale"
             :options="[
-              {label: 'Francais', value: 'fr'},
+              { label: 'Francais', value: 'fr'},
               { label: 'English', value: 'en' },
-              { label: 'Español', value: 'es' }
+              { label: 'Español', value: 'es' },
+              { label: '中文', value: 'ma' }
             ]"
           />
         </div>

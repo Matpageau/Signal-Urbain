@@ -10,7 +10,7 @@ export default {
   ALREADYHAVEACCOUNT: "Vous avez déjà un compte ? ",
   DONTHAVEACCOUNT: "Vous n'avez pas de compte ? ",
   CONNECTNOW: "Se connecter maintenant",
-  SIGNUPNOW: "Créer maintenant",
+  SIGNUPNOW: "S'inscrire maintenant",
   SIGNUP: "S'inscrire",
   SIGNIN: "Se connecter",
   CITY: "Ville",
@@ -19,6 +19,7 @@ export default {
   BACKONAPP: "← Retour",
   SETTINGS: "Paramètres",
   FOLLOWEDREPORTS: "Rapports suivis",
+  POPULARREPORTS: "Rapports populaires",
   SAVE: "Sauvegarder",
 
   // Types de rapport

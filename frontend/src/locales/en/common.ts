@@ -19,6 +19,7 @@ export default {
   BACKONAPP: "← Back",
   SETTINGS: "Settings",
   FOLLOWEDREPORTS: "Followed reports",
+  POPULARREPORTS: "Popular reports",
   SAVE: "Save",
 
 

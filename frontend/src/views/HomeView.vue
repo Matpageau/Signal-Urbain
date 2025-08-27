@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { useI18n } from 'vue-i18n';
 import SmallReportCard from '@/components/feature/home/SmallReportCard.vue';
 import { categoryEnum } from '@/types/Report';
@@ -7,33 +6,37 @@ import { categoryEnum } from '@/types/Report';
 import UserIcon from '@/components/icons/UserIcon.vue';
 import PinIcon from '@/components/icons/PinIcon.vue';
 import CheckIcon from '@/components/icons/CheckIcon.vue';
+import BaseInput from '@/components/shared/BaseInput.vue';
 
-const { locale } = useI18n()
-const setLang = (lang: string) => {
-  locale.value = lang
-}
-
+const { locale } = useI18n();
 </script>
 
 <template>
-  <div class="flex w-full h-full flex-col items-center bg-white gap-10">
+  <div class="overflow-y-auto flex w-full h-full flex-col items-center bg-white gap-10">
 
-    <div class="flex flex-row justify-between items-center px-90 w-full min-h-12 bg-[#008CFF]">
+    <div class="flex flex-row justify-between items-center px-90 py-8 w-full min-h-12 bg-[#008CFF]">
       <h3 class="text-2xl font-semibold text-neutral-100"> Signal Urbain </h3>
       
-      <ul class="flex flex-row gap-12">
-        <li>
-          <a href="/login" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNIN')}} </a>
-        </li>
-        <li>
-          <a href="/register" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNUP')}} </a>
-        </li>
-        <li class="flex flex-row gap-3">
-          <button class="text-neutral-100 font-semibold px-1 hover:bg-white rounded-md hover:text-[#008CFF]" @click="setLang('fr')">FR</button>
-          <button class="text-neutral-100 font-semibold px-1 hover:bg-white rounded-md hover:text-[#008CFF]" @click="setLang('en')">EN</button> 
-          <button class="text-neutral-100 font-semibold px-1 hover:bg-white rounded-md hover:text-[#008CFF]" @click="setLang('es')">ES</button>
-        </li>
-      </ul>
+      <div class="flex flex-row items-center gap-12">
+        <a href="/login" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNIN')}} </a>
+        <a href="/register" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNUP')}} </a>
+      
+        <div class="flex flex-row gap-3">
+          <BaseInput
+            type="select"
+            v-model="locale"
+            class="bg-[#008CFF] text-neutral-100 border-0 focus:ring-0 focus:outline-0 hover:bg-white hover:rounded-md hover:text-[#008CFF]"
+            :dropdownClass="'bg-[#008CFF] text-neutral-100 border-0 focus:ring-0 focus:outline-0 hover:rounded-md hover:text-[#008CFF] '"
+            :options="[
+              { label: 'FR', value: 'fr'},
+              { label: 'EN', value: 'en' },
+              { label: 'ES', value: 'es' },
+              { label: '中文', value: 'ma' }
+            ]"
+          />
+        </div>
+        
+      </div>
     </div>
     
     <div class="rounded-lg bg-white w-5/8 flex flex-col items-center">

@@ -194,7 +194,7 @@ watch([coord, category, description, image1, image2, image3], () => {
             />
           </div>
         </div>
-        <p v-if="errorsMsgs.includes('POSITION_REQUIRED')" class="text-red-500">{{ t('errors.POSITION_REQUIRED') }}</p>
+        <p v-if="errorsMsgs.includes('POSITION_REQUIRED')" class="self-end mr-1 text-red-500">{{ t('errors.POSITION_REQUIRED') }}</p>
         <div v-if="props.report" class="mt-3">
           <div v-if="props.report.description">
             <h1 class="font-bold">{{ t('DESCRIPTION')}}</h1>
