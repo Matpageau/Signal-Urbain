@@ -29,7 +29,7 @@ const handleLogin = async () => {
 
     if(res.data) {
       userStore.fetchUser()
-      router.push('/')
+      router.push({name: "app"})
     }
   } catch (error) {
     const err = error as AxiosError<ApiError[]>

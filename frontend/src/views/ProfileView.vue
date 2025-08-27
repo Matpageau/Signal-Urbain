@@ -10,6 +10,9 @@ import BaseModal from '@/components/shared/ReportModal.vue';
 import { useI18n } from 'vue-i18n';
 import { useReportStore } from '@/stores/reportStore';
 import PaginatorComp from '@/components/feature/proifle/PaginatorComp.vue';
+import BaseButton from '@/components/shared/BaseButton.vue';
+import axios from 'axios';
+import router from '@/router';
 
 const { locale, t } = useI18n()
 
@@ -42,10 +45,21 @@ const handleReportModal = (report: ReportData) => {
   isModalOpen.value = true
 }
 
+const handleLogout = async () => {
+  try {
+    await axios.post('http://localhost:3000/api/user/logout', {}, { withCredentials: true })
+
+    userStore.currentUser = null;
+    router.push('/app');
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 watch(locale, (newLang) => {
   document.cookie = `lang=${newLang}; path=/; max-age=31536000`; 
 });
-
 </script>
 
 <template>
@@ -90,7 +104,15 @@ watch(locale, (newLang) => {
         </div>
       </div>
       <div class="flex flex-col items-center w-1/3 border-l border-neutral-200 p-20">
-        <h1 class="text-xl font-bold">{{ t('SETTINGS') }}</h1>
+        <div class="flex w-full justify-between items-center">
+          <h1 class="text-xl font-bold">{{ t('SETTINGS') }}</h1>
+          <BaseButton 
+            class="rounded-lg text-white p-3 bg-(--blue) hover:bg-(--blue_hover)" 
+            @click="handleLogout"
+            >
+            Logout
+          </BaseButton>
+        </div>
         <div class="mt-3 w-full">
           <BaseInput 
             type="select"
