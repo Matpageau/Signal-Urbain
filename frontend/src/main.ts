@@ -14,7 +14,7 @@ function getLangFromCookie(): string | null {
 
 const savedLang = getLangFromCookie()
 if (savedLang) {
-  if(savedLang === "fr" || savedLang === "en") {
+  if(savedLang === "fr" || savedLang === "en" || savedLang === "es") {
     i18n.global.locale.value = savedLang
   }
 }

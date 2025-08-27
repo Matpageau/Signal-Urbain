@@ -97,7 +97,8 @@ watch(locale, (newLang) => {
             v-model="locale"
             :options="[
               {label: 'Francais', value: 'fr'},
-              {label: 'English', value: 'en'}
+              { label: 'English', value: 'en' },
+              { label: 'Español', value: 'es' }
             ]"
           />
         </div>
