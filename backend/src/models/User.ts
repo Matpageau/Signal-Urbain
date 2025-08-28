@@ -70,7 +70,6 @@ export default class User {
    */
   static async registerUser(data: iUserValues) {
     try {
-      
     // Check if user already exists
     const existingUsername = await UserModel.findOne({ username: data.username });
     const existingEmail = await UserModel.findOne({ email: data.email });

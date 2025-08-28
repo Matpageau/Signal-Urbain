@@ -63,7 +63,6 @@ const getIconType = (category?: categoryEnum) => {
 }
 
 const getRingColor = (status?: statusEnum, nbUpvote?: number) => { 
-  console.log('status', status, 'nbUpvote', nbUpvote) 
   if (status == 'created') {
     if ((nbUpvote ?? 0) < 250) return 'border-neutral-500'
     else if ((nbUpvote ?? 0) < 500 ) return 'border-[#4a0000]'

@@ -10,8 +10,6 @@ const props = defineProps<{
   reportDesc: string
 }>()
 
-
-
 </script>
 
 <template>
