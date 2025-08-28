@@ -14,19 +14,19 @@ const { locale } = useI18n();
 <template>
   <div class="overflow-y-auto flex w-full h-full flex-col items-center bg-white gap-10">
 
-    <div class="flex flex-row justify-between items-center px-90 py-8 w-full min-h-12 bg-[#008CFF]">
+    <div class="flex flex-row justify-between items-center px-90 py-8 w-full min-h-12 bg-(--blue)">
       <h3 class="text-2xl font-semibold text-neutral-100"> Signal Urbain </h3>
       
       <div class="flex flex-row items-center gap-12">
-        <a href="/login" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNIN')}} </a>
-        <a href="/register" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-[#008CFF]"> {{ $t('SIGNUP')}} </a>
+        <a href="/login" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-(--blue_hover)"> {{ $t('SIGNIN')}} </a>
+        <a href="/register" class="text-neutral-100 font-semibold px-1 pb-1 hover:bg-white rounded-md hover:text-(--blue_hover)"> {{ $t('SIGNUP')}} </a>
       
         <div class="flex flex-row gap-3">
           <BaseInput
             type="select"
             v-model="locale"
-            class="bg-[#008CFF] text-neutral-100 border-0 focus:ring-0 focus:outline-0 hover:bg-white hover:rounded-md hover:text-[#008CFF]"
-            :dropdownClass="'bg-[#008CFF] text-neutral-100 border-0 focus:ring-0 focus:outline-0 hover:rounded-md hover:text-[#008CFF] '"
+            class="bg-(--blue) text-neutral-100 border-0 focus:ring-0 focus:outline-0 hover:bg-white hover:rounded-md hover:text-(--blue_hover)"
+            :dropdownClass="'bg-(--blue) text-neutral-100 border-0 focus:ring-0 focus:outline-0 hover:rounded-md hover:text-(--blue_hover) '"
             :options="[
               { label: 'FR', value: 'fr'},
               { label: 'EN', value: 'en' },

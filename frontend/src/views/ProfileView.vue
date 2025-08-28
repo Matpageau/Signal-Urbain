@@ -111,7 +111,7 @@ watch(page, (newPage) => {
           </div>
         </div>
       </div>
-      <div class="flex flex-col lg:items-center w-1/3 lg:border-l border-neutral-200 mt-5 mb-10 lg:mt-0 lg:p-20">
+      <div class="flex flex-col lg:items-center w-full lg:w-1/3 lg:border-l border-neutral-200 mt-5 mb-10 lg:mt-0 lg:p-20">
         <div class="flex w-full justify-between items-center">
           <h1 class="text-xl font-bold">{{ t('SETTINGS') }}</h1>
           <BaseButton 
